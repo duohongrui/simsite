@@ -1,0 +1,25 @@
+---
+title: "Choose Methods"
+output:
+  blogdown::html_page:
+    toc: true
+weight: 1
+---
+
+## Installation Guide 
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, collapse = FALSE, comment = "")
+```
+A
+```{r eval=FALSE}
+devtools::install_github("duohongrui/simpipe")
+```
+B
+```{r}
+print("Hello World!")
+```
+
+```{r pressure, echo=FALSE}
+plot(pressure)
+```
