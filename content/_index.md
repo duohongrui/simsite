@@ -5,30 +5,36 @@ draft: true
 chapter: false
 ---
 
-# Introduction
+### Overview
 
-<strong>Introduction</strong>
-Roses are <s>Blue</s>
+**simsite** is a web-based reference vignettes for illustrating the usage of simulation methods for single-cell RNA sequencing data.
 
-This **word** is bold.
+It contains three main sections:
 
-<div markdown="1">
+* Programming usage. All demonstrations and programming environment are in **R**. It shows a comprehensive pipeline from installing three main R packages ([simutils](https://github.com/duohongrui/simutils), [simmethods](https://github.com/duohongrui/simmethods) and [simpipe](https://github.com/duohongrui/simpipe) or [simpipeDocker](https://github.com/duohongrui/simpipe_Docker)), estimating parameters from real data, simulating different kinds of new datasets and evaluating the simulated datasets.
 
-This <em> word </em> is italic.
+* Online usage. It contains some methods that show the best performance and users can simulate new datasets fast and conveniently.
 
-</div>
+* References. [**simmethods**](https://github.com/duohongrui/simmethods) is the core package in our project. We collected 42+ methods and bundled them into a single package. For each method, we have already prepared a detailed vignette for users to learn to use the methods they are interested in.
+
+### Features
+
+#### Quick start
+
+[Programming start](/programming_usage/)
+
+[Install R packages](/programming_usage/1-installation)
+
+[Online usage start](/online_usage/)
 
 
+### Citation
+A comparison of simulation methods for single-cell RNA sequencing data.
 
+### Help and Issues
 
-<font size="2" color="blue">This is some text!</font>
+If you need help or have any issue about our tools and vignettes. Send an email to [duohongrui](https://github.com/duohongrui) (duohongrui@cqnu.edu.cn) or raise an issue on [github](https://github.com/duohongrui).
 
-<div class="row" markdown="1">
-	<div class="col-6" markdown="1">
-		<strong>Introduction</strong>
-	</div>
-	<div class="col-6" markdown="1">
-		Cite
-	</div>
-</div>
+### New Methods
 
+We are glad to add new simulation methods if some methods are innovative and creative that many users commonly used. If you have the requirements, please tell me by email (duohongrui@cqnu.edu.cn) or raise an [issue](https://github.com/duohongrui/simmethods/issues) for that.
