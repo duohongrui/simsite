@@ -38,7 +38,7 @@ devtools::install_github(&quot;duohongrui/simpipe&quot;)</code></pre>
 <h2>Download Docker Image</h2>
 <div id="install-docker-desktop" class="section level3">
 <h3>Install Docker Desktop</h3>
-<p>If you have not installed official Docker Desktop, please click <a href="https://www.docker.com/">here</a> and follow the instructions to install it.
+<p>If you have not installed official Docker Desktop, please click <a href="https://www.docker.com/">here</a> and follow the <a href="https://docs.docker.com/desktop/install/mac-install/">instructions</a> to install it.
 {{% notice note %}}
 The version of Docker Desktop for Apple Chip is available
 {{% /notice %}}</p>
@@ -63,5 +63,14 @@ The version of Docker Desktop for Apple Chip is available
 <p>Use <code>babelwhale::pull_container("duohongrui/simpipe")</code> command to pull simpipe Docker image in R (it will take 3-10 mins):</p>
 <pre class="r"><code># install.packages(&quot;babelwhale&quot;)
 babelwhale::pull_container(&quot;duohongrui/simpipe&quot;)</code></pre>
+<p>Once the image has been downloaded, check the image list:</p>
+<pre class="r"><code>babelwhale::list_docker_images(&quot;duohongrui/simutils_scgan&quot;)
+            ID                Repository    Tag
+1 c3b3d01cde78 duohongrui/simutils_scgan latest
+                                                                   Digest
+1 sha256:b4ea92956c521753b832960e39e9e76a25aa0138fbc6549304a6a0a59edb2190
+  CreatedSince                     CreatedAt   Size
+1   6 days ago 2022-09-07 23:16:34 +0800 CST 2.37GB</code></pre>
+<p>Until now, you have successfully established the programming environment 👍👍👍. Go to the <a href="/programming_usage/2-estimation">next page</a>.👈️</p>
 </div>
 </div>

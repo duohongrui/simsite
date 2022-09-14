@@ -33,9 +33,10 @@ devtools::install_github("dynverse/ti_slingshot/package/")
 
 ## Download Docker Image
 
+
 ### Install Docker Desktop
 
-If you have not installed official Docker Desktop, please click [here](https://www.docker.com/) and follow the instructions to install it.
+If you have not installed official Docker Desktop, please click [here](https://www.docker.com/) and follow the [instructions](https://docs.docker.com/desktop/install/mac-install/) to install it.
 {{% notice note %}}
 The version of Docker Desktop for Apple Chip is available
 {{% /notice %}}
@@ -59,6 +60,7 @@ babelwhale::pull_container("duohongrui/simpipe")
 
 Once the image has been downloaded, check the image list:
 ```{r}
-babelwhale::list_docker_images(container_id = "duohongrui/simutils")
+babelwhale::list_docker_images("duohongrui/simutils_scgan")
 ```
 
+Until now, you have successfully established the programming environment 👍👍👍. Go to the [ next page](/programming_usage/2-estimation).👈️
