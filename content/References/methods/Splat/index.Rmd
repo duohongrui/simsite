@@ -55,11 +55,21 @@ simulate_result <- simmethods::Splat_simulation(
   return_format = "SCE",
   seed = 111
 )
+```
+
+```{r}
 SCE_result <- simulate_result[["simulate_result"]]
 dim(SCE_result)
+```
+
+```{r}
 head(colData(SCE_result))
+```
+
+```{r}
 head(rowData(SCE_result))
 ```
+
 
 ### Determin the number of cells and genes
 
@@ -73,9 +83,13 @@ simulate_result <- simmethods::Splat_simulation(
                      nGenes = 1000),
   seed = 111
 )
+```
+
+```{r}
 result <- simulate_result[["simulate_result"]][["count_data"]]
 dim(result)
 ```
+
 
 ### Simulate two or more groups
 
@@ -96,17 +110,28 @@ simulate_result <- simmethods::Splat_simulation(
                      prob.group = c(0.1, 0.3, 0.6)),
   seed = 111
 )
+```
+
+```{r}
 result <- simulate_result[["simulate_result"]][["count_data"]]
 dim(result)
+```
+
+
+```{r}
 ## cell information
 cell_info <- simulate_result[["simulate_result"]][["col_meta"]]
 table(cell_info$group)
+```
 
+```{r}
 ## gene information
 gene_info <- simulate_result[["simulate_result"]][["row_meta"]]
 ### the proportion of DEGs
 table(gene_info$de_gene)[2]/nrow(result) ## de.prob = 0.1
 ```
+
+
 We can see that the proportion of differential expressed genes is 0.1 (equals to the default). Next, if we want to know the fold change between two groups, we will do division with the groups that we are interested in.
 ```{r fold change}
 ## fc between group2 and group1
@@ -136,8 +161,14 @@ simulate_result <- simmethods::Splat_simulation(
                      nGenes = 1000),
   seed = 111
 )
+```
+
+```{r}
 result <- simulate_result[["simulate_result"]][["count_data"]]
 dim(result)
+```
+
+```{r}
 ## cell information
 cell_info <- simulate_result[["simulate_result"]][["col_meta"]]
 table(cell_info$batch)
@@ -163,12 +194,21 @@ simulate_result <- simmethods::Splat_simulation(
                      prob.group = c(0.2, 0.3, 0.5)),
   seed = 111
 )
+```
+
+```{r}
 result <- simulate_result[["simulate_result"]][["count_data"]]
 dim(result)
+```
+
+```{r}
 ## cell information
 cell_info <- simulate_result[["simulate_result"]][["col_meta"]]
 table(cell_info$batch)
 table(cell_info$group)
+```
+
+```{r}
 ## gene information
 gene_info <- simulate_result[["simulate_result"]][["row_meta"]]
 ### proportion of DEGs
@@ -194,15 +234,26 @@ simulate_result <- simmethods::Splat_simulation(
                      prob.group = c(0.2, 0.3, 0.5)),
   seed = 111
 )
+```
+
+```{r}
 str(simulate_result)
+```
+
+
+```{r}
 counts <- simulate_result[["simulate_result"]][["count_data"]]
 ## cell information
 cell_info <- simulate_result[["simulate_result"]][["col_meta"]]
 head(cell_info)
+```
+
+```{r}
 ## gene information
 gene_info <- simulate_result[["simulate_result"]][["row_meta"]]
 head(gene_info)
 ```
+
 
 #### SingleCellExperiment
 
@@ -216,14 +267,21 @@ simulate_result <- simmethods::Splat_simulation(
                      prob.group = c(0.2, 0.3, 0.5)),
   seed = 111
 )
+```
+
+```{r}
 counts <- counts(simulate_result[["simulate_result"]])
 ## cell information
 cell_info <- as.data.frame(colData(simulate_result[["simulate_result"]]))
 head(cell_info)
+```
+
+```{r}
 ## gene information
 gene_info <- as.data.frame(rowData(simulate_result[["simulate_result"]]))
 head(gene_info)
 ```
+
 
 #### Seurat
 
@@ -240,16 +298,26 @@ simulate_result <- simmethods::Splat_simulation(
 seurat_result <- simulate_result[["simulate_result"]]
 ## Overview
 seurat_result
+```
+
+```{r}
 ## count matrix
 counts <- seurat_result@assays$originalexp@counts
 counts[1:10, 1:10]
+```
+
+```{r}
 ## cell information
 cell_info <- seurat_result@meta.data
 head(cell_info)
+```
+
+```{r}
 ## gene information
 gene_info <- seurat_result@assays[["originalexp"]]@meta.features
 head(gene_info)
 ```
+
 
 #### h5ad
 If we select `h5ad` format, it is not possible to return the result in R, so you can get the path where the `h5ad` files save to and we can go to the path and read it in **Python** by `scanpy.read_h5ad` function (if you have already installed Python and **scanpy** module).
