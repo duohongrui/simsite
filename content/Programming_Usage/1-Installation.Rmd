@@ -51,8 +51,14 @@ If it is `TRUE` in the result, that means Docker is successfully installed.
 
 ### Download simpipe Docker Image
 
-Use `babelwhale::pull_container("duohongrui/simpipe")` command to pull simpipe Docker image in R:
+Use `babelwhale::pull_container("duohongrui/simpipe")` command to pull simpipe Docker image in R (it will take 3-10 mins):
 ```{r eval=FALSE}
 # install.packages("babelwhale")
 babelwhale::pull_container("duohongrui/simpipe")
 ```
+
+Once the image has been downloaded, check the image list:
+```{r}
+babelwhale::list_docker_images(container_id = "duohongrui/simutils")
+```
+
