@@ -1,5 +1,5 @@
 +++
-title = "methods"
+title = "Vignettes"
 date = 2022-09-02T18:49:42+08:00
 chapter = false
 +++
