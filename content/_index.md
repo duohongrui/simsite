@@ -45,4 +45,4 @@ If you need help or have any issue about our tools and vignettes. Send an email 
 
 ### New Methods
 
-We are glad to add new simulation methods (especially for spatial transcriptomics data) if some methods are innovative and creative that many users commonly used. If you have the requirements, please tell me by email (duohongrui@cqnu.edu.cn) or raise an [issue](https://github.com/duohongrui/simmethods/issues) for that.
+We are glad to add new simulation methods (especially for simulating spatial transcriptomics data) if some methods are innovative and creative that many users commonly used. If you have the requirements, please tell Hongrui Duo by email (duohongrui@cqnu.edu.cn) or raise an [issue](https://github.com/duohongrui/simmethods/issues) for that.
