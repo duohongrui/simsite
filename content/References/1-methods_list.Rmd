@@ -33,7 +33,7 @@ Note that the `echo = FALSE` parameter was added to the code chunk to prevent pr
 
 ## Methods
 
-<a href="/references/methods/splat/">Splat</a>
+<a href="/references/methods/splat">Splat</a>
 
 
 

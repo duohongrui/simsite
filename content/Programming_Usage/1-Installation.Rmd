@@ -6,20 +6,53 @@ output:
 weight: 1
 ---
 
-## Installation Guide 
+There are two ways to install dependencies and set programming environment:
+
+* install multiple R packages and dependencies from github, it may take 5-30 mins.
+
+* install [Docker](https://www.docker.com/) first and download [simpipe Docker image](https://hub.docker.com/r/duohongrui/simpipe) from DockerHub. All manipulations in R can be done by [simpipeDoker](https://github.com/duohongrui/simpipe_Docker) package.
+
+## Installation from Github 
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE, collapse = FALSE, comment = "")
-```
-A
-```{r eval=FALSE}
-devtools::install_github("duohongrui/simpipe")
-```
-B
-```{r}
-print("Hello World!")
+knitr::opts_chunk$set(echo = TRUE, collapse = TRUE, comment = "")
 ```
 
-```{r pressure, echo=FALSE}
-plot(pressure)
+You can install the development version of simutils, simmethods and simpipe from GitHub with:
+```{r eval=FALSE}
+# install.packages("devtools")
+devtools::install_github("duohongrui/simutils")
+devtools::install_github("duohongrui/simmethods")
+devtools::install_github("duohongrui/simpipe")
+```
+
+If you want to use simpipe to simulate datasets with **trajectory information**, please install **tislingshot** first by:
+```{r eval=FALSE}
+devtools::install_github("dynverse/ti_slingshot/package/")
+```
+
+## Download Docker Image
+
+### Install Docker Desktop
+
+If you have not installed official Docker Desktop, please click [here](https://www.docker.com/) and follow the instructions to install it.
+{{% notice note %}}
+The version of Docker Desktop for Apple Chip is available
+{{% /notice %}}
+
+After installing Docker, start Docker service, open an R session and type `dynwrap::test_docker_installation(detailed = TRUE)`:
+```{r}
+dynwrap::test_docker_installation(detailed = TRUE)
+```
+If it is `TRUE` in the result, that means Docker is successfully installed.
+
+### Install simpipeDocker
+
+
+### Download simpipe Docker Image
+
+Use `babelwhale::pull_container("duohongrui/simpipe")` command to pull simpipe Docker image in R:
+```{r eval=FALSE}
+# install.packages("babelwhale")
+babelwhale::pull_container("duohongrui/simpipe")
 ```

@@ -9,16 +9,59 @@ weight: 1
 
 <div id="TOC">
 <ul>
-<li><a href="#installation-guide" id="toc-installation-guide">Installation Guide</a></li>
+<li><a href="#installation-from-github" id="toc-installation-from-github">Installation from Github</a></li>
+<li><a href="#download-docker-image" id="toc-download-docker-image">Download Docker Image</a>
+<ul>
+<li><a href="#install-docker-desktop" id="toc-install-docker-desktop">Install Docker Desktop</a></li>
+<li><a href="#install-simpipedocker" id="toc-install-simpipedocker">Install simpipeDocker</a></li>
+<li><a href="#download-simpipe-docker-image" id="toc-download-simpipe-docker-image">Download simpipe Docker Image</a></li>
+</ul></li>
 </ul>
 </div>
 
-<div id="installation-guide" class="section level2">
-<h2>Installation Guide</h2>
-<p>A</p>
-<pre class="r"><code>devtools::install_github(&quot;duohongrui/simpipe&quot;)</code></pre>
-<p>B</p>
-<pre class="r"><code>print(&quot;Hello World!&quot;)</code></pre>
-<pre><code>[1] &quot;Hello World!&quot;</code></pre>
-<p><img src="/Programming_Usage/1-Installation_files/figure-html/pressure-1.png" width="672" /></p>
+<p>There are two ways to install dependencies and set programming environment:</p>
+<ul>
+<li><p>install multiple R packages and dependencies from github, it may take 5-30 mins.</p></li>
+<li><p>install <a href="https://www.docker.com/">Docker</a> first and download <a href="https://hub.docker.com/r/duohongrui/simpipe">simpipe Docker image</a> from DockerHub. All manipulations in R can be done by <a href="https://github.com/duohongrui/simpipe_Docker">simpipeDoker</a> package.</p></li>
+</ul>
+<div id="installation-from-github" class="section level2">
+<h2>Installation from Github</h2>
+<p>You can install the development version of simutils, simmethods and simpipe from GitHub with:</p>
+<pre class="r"><code># install.packages(&quot;devtools&quot;)
+devtools::install_github(&quot;duohongrui/simutils&quot;)
+devtools::install_github(&quot;duohongrui/simmethods&quot;)
+devtools::install_github(&quot;duohongrui/simpipe&quot;)</code></pre>
+<p>If you want to use simpipe to simulate datasets with <strong>trajectory information</strong>, please install <strong>tislingshot</strong> first by:</p>
+<pre class="r"><code>devtools::install_github(&quot;dynverse/ti_slingshot/package/&quot;)</code></pre>
+</div>
+<div id="download-docker-image" class="section level2">
+<h2>Download Docker Image</h2>
+<div id="install-docker-desktop" class="section level3">
+<h3>Install Docker Desktop</h3>
+<p>If you have not installed official Docker Desktop, please click <a href="https://www.docker.com/">here</a> and follow the instructions to install it.
+{{% notice note %}}
+The version of Docker Desktop for Apple Chip is available
+{{% /notice %}}</p>
+<p>After installing Docker, start Docker service, open an R session and type <code>dynwrap::test_docker_installation(detailed = TRUE)</code>:</p>
+<pre class="r"><code>dynwrap::test_docker_installation(detailed = TRUE)
+✔ Docker is installed
+✔ Docker daemon is running
+✔ Docker is at correct version (&gt;1.0): 1.41
+✔ Docker is in linux mode
+✔ Docker can pull images
+✔ Docker can run image
+✔ Docker can mount temporary volumes
+✔ Docker test successful -----------------------------------------------------------------
+[1] TRUE</code></pre>
+<p>If it is <code>TRUE</code> in the result, that means Docker is successfully installed.</p>
+</div>
+<div id="install-simpipedocker" class="section level3">
+<h3>Install simpipeDocker</h3>
+</div>
+<div id="download-simpipe-docker-image" class="section level3">
+<h3>Download simpipe Docker Image</h3>
+<p>Use <code>babelwhale::pull_container("duohongrui/simpipe")</code> command to pull simpipe Docker image in R:</p>
+<pre class="r"><code># install.packages(&quot;babelwhale&quot;)
+babelwhale::pull_container(&quot;duohongrui/simpipe&quot;)</code></pre>
+</div>
 </div>
