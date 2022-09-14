@@ -19,11 +19,11 @@ It contains three main sections:
 
 #### Quick start
 
-[Programming start](/programming_usage/)
+[Programming start](/programming_usage/) ⬅
 
-[Install R packages or download Docker images](/programming_usage/1-installation)
+[Install R packages or download Docker images](/programming_usage/1-installation) ⬅
 
-[Online usage start](/online_usage/)
+[Online usage start](/online_usage/) ⬅
 
 ### Features
 
