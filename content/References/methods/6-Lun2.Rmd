@@ -1,0 +1,135 @@
+---
+title: "Lun2"
+output:
+  blogdown::html_page:
+    toc: yes
+weight: 6
+---
+
+<!-- github markdown built using 
+rmarkdown::render("vignettes/Lun2.Rmd", output_format = rmarkdown::github_document())
+-->
+
+```{r setup, include=FALSE, echo=FALSE}
+knitr::opts_chunk$set(echo = TRUE, comment = "#", collapse = TRUE)
+```
+Here Lun2 method will be demonstrated clearly and hope that this document can help you.
+
+## Estimating parameters from a real dataset
+
+Before simulating datasets, it is important to estimate some essential parameters from a real dataset in order to make the simulated data more real. If you do not have a single-cell transcriptomics count matrix now, you can use the data collected in simmethods package by `simmethods:data` command.
+
+When you use Lun2 to estimate parameters from a real dataset, you must input a numeric vector to specify the groups or plates that each cell comes from, like `other_prior = list(group.condition = the numeric vector)`.
+
+```{r load_data, message=FALSE, warning=FALSE, error=FALSE}
+library(simmethods)
+library(SingleCellExperiment)
+# Load data
+ref_data <- simmethods::data
+group_condition <- simmethods::group_condition
+## group_condition can must be a numeric vector.
+other_prior <- list(group.condition = as.numeric(group_condition))
+```
+
+Using `simmethods::Lun2_estimation` command to execute the estimation step.
+
+```{r estimate}
+estimate_result <- simmethods::Lun2_estimation(ref_data = ref_data,
+                                               other_prior = other_prior,
+                                               verbose = T,
+                                               seed = 10)
+```
+
+## Simulating datasets using Lun2
+
+After estimating parameter from a real dataset, we will simulate a dataset based on the learned parameters with different scenarios.
+
+1. Datasets with default parameters
+2. Determin the number of cells and genes
+3. Simulate two or more groups
+
+### Datasets with default parameters
+
+The reference data contains 160 cells and 4000 genes, if we simulate datasets with default parameters and then we will obtain a new data which has the same size as the reference data. In addtion, the simulated dataset will have one group of cells.
+
+```{r default_params}
+simulate_result <- simmethods::Lun2_simulation(
+  parameters = estimate_result[["estimate_result"]],
+  return_format = "SCE",
+  seed = 111
+)
+```
+
+```{r}
+SCE_result <- simulate_result[["simulate_result"]]
+dim(SCE_result)
+```
+
+```{r}
+head(colData(SCE_result))
+```
+
+```{r}
+head(rowData(SCE_result))
+```
+
+
+### Determin the number of cells and genes
+
+In Lun2, we can not set `nCells` directly and should set `cell.plates` instead. For example, if we want to simulate 500 cells, we can type `other_prior = list(cell.plates = rep(1, 500))`. For genes, we can just set `nGenes`.
+Here, we simulate a new dataset with 500 cells and 2000 genes:
+```{r customed cell and gene number}
+simulate_result <- simmethods::Lun2_simulation(
+  parameters = estimate_result[["estimate_result"]],
+  return_format = "list",
+  other_prior = list(cell.plates = rep(1, 500),
+                     nGenes = 2000),
+  seed = 111
+)
+```
+
+{{% notice note %}}
+The cell.plates parameter represents the sampling source of cells in real experiments.
+{{% /notice %}}
+
+```{r}
+result <- simulate_result[["simulate_result"]][["count_data"]]
+dim(result)
+```
+
+
+### Simulate two or more groups
+
+In Lun2, we can not set `nGroups` directly and should set `cell.plates ` instead. For example, if we want to simulate 2 groups, we can type `other_prior = list(cell.plates  = sample(1:2, 500, replace = TRUE))`. Note that the length of `cell.plates ` numeric vector must be equal to the cell number.
+
+For demonstration, we will simulate three groups using the learned parameters. We can set `de.prob = 0.2` to simulate 20% genes as DEGs.
+```{r groups}
+simulate_result <- simmethods::Lun2_simulation(
+  parameters = estimate_result[["estimate_result"]],
+  return_format = "list",
+  other_prior = list(cell.plates = sample(1:2, 500, replace = TRUE),
+                     nGenes = 2000,
+                     de.prob = 0.2,
+                     fc.group = 2),
+  seed = 111
+)
+```
+
+```{r}
+result <- simulate_result[["simulate_result"]][["count_data"]]
+dim(result)
+```
+
+
+```{r}
+## cell information
+cell_info <- simulate_result[["simulate_result"]][["col_meta"]]
+table(cell_info$plate)
+```
+
+```{r}
+## gene information
+gene_info <- simulate_result[["simulate_result"]][["row_meta"]]
+### the proportion of DEGs
+table(gene_info$de_gene)[2]/nrow(result) ## de.prob = 0.2
+```

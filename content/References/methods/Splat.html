@@ -3,6 +3,7 @@ title: "Splat"
 output:
   blogdown::html_page:
     toc: yes
+weight: 1
 ---
 
 
@@ -269,9 +270,9 @@ fc_group2_to_group3 &lt;- gene_info$DEFacGroup3/gene_info$DEFacGroup2</code></pr
 #   .. ..$ DEFacGroup3   : num [1:1000] 1 1 1 1 1 1 1 1 1 1 ...
 #  $ simulate_detection:&#39;data.frame&#39;:   1 obs. of  4 variables:
 #   ..$ Function_Call     : chr &quot;simulate_result&lt;-splatter::splatSimulate(parameters,method=submethod,verbose=verbose)&quot;
-#   ..$ Elapsed_Time_sec  : num 0.172
+#   ..$ Elapsed_Time_sec  : num 0.165
 #   ..$ Total_RAM_Used_MiB: num 7
-#   ..$ Peak_RAM_Used_MiB : num 4781066</code></pre>
+#   ..$ Peak_RAM_Used_MiB : num 4779828</code></pre>
 <pre class="r"><code>counts &lt;- simulate_result[[&quot;simulate_result&quot;]][[&quot;count_data&quot;]]
 ## cell information
 cell_info &lt;- simulate_result[[&quot;simulate_result&quot;]][[&quot;col_meta&quot;]]
@@ -447,10 +448,10 @@ head(gene_info)
 # Adding counts from originalexp as raw
 # Transfering meta.features to raw/var
 # Transfering meta.data to obs
-# Your data has been save to /var/folders/1l/xmc98tgx0m37wxtbtwnl6h7c0000gn/T//RtmpY7iH84/20220914214036.h5ad
+# Your data has been save to /var/folders/1l/xmc98tgx0m37wxtbtwnl6h7c0000gn/T//Rtmp5AFBiZ/20230218170540.h5ad
 save_path &lt;- simulate_result[[&quot;simulate_result&quot;]][[&quot;save_path&quot;]]
 save_path
-# [1] &quot;/var/folders/1l/xmc98tgx0m37wxtbtwnl6h7c0000gn/T//RtmpY7iH84/20220914214036.h5ad&quot;</code></pre>
+# [1] &quot;/var/folders/1l/xmc98tgx0m37wxtbtwnl6h7c0000gn/T//Rtmp5AFBiZ/20230218170540.h5ad&quot;</code></pre>
 <p>Now, we can go to the path and check the data. Here, we read the <code>h5ad</code> file in R using <strong>reticulate</strong> R package (note that <strong>Python</strong> and <strong>scanpy</strong> module must have been installed).</p>
 <pre class="r"><code>## install.packages(&quot;reticulate&quot;)
 scanpy &lt;- reticulate::import(&quot;scanpy&quot;)

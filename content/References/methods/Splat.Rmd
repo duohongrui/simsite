@@ -3,6 +3,7 @@ title: "Splat"
 output:
   blogdown::html_page:
     toc: yes
+weight: 1
 ---
 
 <!-- github markdown built using 
