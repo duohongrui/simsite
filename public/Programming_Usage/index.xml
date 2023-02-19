@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Programming Usage on simsite</title>
+    <link>/programming_usage/</link>
+    <description>Recent content in Programming Usage on simsite</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Thu, 01 Sep 2022 20:22:45 +0800</lastBuildDate><atom:link href="/programming_usage/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Installation</title>
+      <link>/programming_usage/1-installation/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>/programming_usage/1-installation/</guid>
+      <description>Installation from Github Download Docker Image Install Docker Desktop Install simpipeDocker Download simpipe Docker Image There are two ways to install dependencies and set programming environment:
+install multiple R packages and dependencies from github, it may take 5-30 mins.
+install Docker first and download simpipe Docker image from DockerHub. All manipulations in R can be done by simpipeDoker package.
+Installation from Github You can install the development version of simutils, simmethods and simpipe from GitHub with:</description>
+    </item>
+    
+    <item>
+      <title>Estimation Parameters</title>
+      <link>/programming_usage/2-estimation/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>/programming_usage/2-estimation/</guid>
+      <description>R Markdown Including Plots R Markdown This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see http://rmarkdown.rstudio.com.
+When you click the Knit button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:</description>
+    </item>
+    
+    <item>
+      <title>Simulation</title>
+      <link>/programming_usage/3-simulation/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>/programming_usage/3-simulation/</guid>
+      <description>R Markdown Including Plots R Markdown This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see http://rmarkdown.rstudio.com.
+When you click the Knit button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:</description>
+    </item>
+    
+    <item>
+      <title>Evaluation Datasets</title>
+      <link>/programming_usage/4-evaluate_datasets/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>/programming_usage/4-evaluate_datasets/</guid>
+      <description>R Markdown Including Plots R Markdown This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see http://rmarkdown.rstudio.com.
+When you click the Knit button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:</description>
+    </item>
+    
+  </channel>
+</rss>
