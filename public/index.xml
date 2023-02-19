@@ -9,10 +9,10 @@
     <lastBuildDate>Fri, 02 Sep 2022 18:49:42 +0800</lastBuildDate><atom:link href="/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>Choose Methods</title>
-      <link>/online_usage/1-choose_methods/</link>
+      <link>/online/1-choose_methods/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
-      <guid>/online_usage/1-choose_methods/</guid>
+      <guid>/online/1-choose_methods/</guid>
       <description> Installation Guide Installation Guide A
 devtools::install_github(&amp;quot;duohongrui/simpipe&amp;quot;) B
 print(&amp;quot;Hello World!&amp;quot;) [1] &amp;quot;Hello World!&amp;quot; </description>
@@ -20,10 +20,10 @@ print(&amp;quot;Hello World!&amp;quot;) [1] &amp;quot;Hello World!&amp;quot; </d
     
     <item>
       <title>Installation</title>
-      <link>/programming_usage/1-installation/</link>
+      <link>/programming/1-installation/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
-      <guid>/programming_usage/1-installation/</guid>
+      <guid>/programming/1-installation/</guid>
       <description>Installation from Github Download Docker Image Install Docker Desktop Install simpipeDocker Download simpipe Docker Image There are two ways to install dependencies and set programming environment:
 install multiple R packages and dependencies from github, it may take 5-30 mins.
 install Docker first and download simpipe Docker image from DockerHub. All manipulations in R can be done by simpipeDoker package.
@@ -52,10 +52,10 @@ Estimating parameters from a real dataset Before simulating datasets, it is impo
     
     <item>
       <title>Estimation Parameters</title>
-      <link>/programming_usage/2-estimation/</link>
+      <link>/programming/2-estimation/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
-      <guid>/programming_usage/2-estimation/</guid>
+      <guid>/programming/2-estimation/</guid>
       <description>R Markdown Including Plots R Markdown This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see http://rmarkdown.rstudio.com.
 When you click the Knit button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:</description>
     </item>
@@ -72,10 +72,10 @@ Estimating parameters from a real dataset Before simulating datasets, it is impo
     
     <item>
       <title>Simulation Online</title>
-      <link>/online_usage/2-simulation_online/</link>
+      <link>/online/2-simulation_online/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
-      <guid>/online_usage/2-simulation_online/</guid>
+      <guid>/online/2-simulation_online/</guid>
       <description>R Markdown Including Plots R Markdown This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see http://rmarkdown.rstudio.com.
 When you click the Knit button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:</description>
     </item>
@@ -92,20 +92,20 @@ Estimating parameters from a real dataset Before simulating datasets, it is impo
     
     <item>
       <title>Simulation</title>
-      <link>/programming_usage/3-simulation/</link>
+      <link>/programming/3-simulation/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
-      <guid>/programming_usage/3-simulation/</guid>
+      <guid>/programming/3-simulation/</guid>
       <description>R Markdown Including Plots R Markdown This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see http://rmarkdown.rstudio.com.
 When you click the Knit button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:</description>
     </item>
     
     <item>
       <title>Evaluation Datasets</title>
-      <link>/programming_usage/4-evaluate_datasets/</link>
+      <link>/programming/4-evaluate_datasets/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
-      <guid>/programming_usage/4-evaluate_datasets/</guid>
+      <guid>/programming/4-evaluate_datasets/</guid>
       <description>R Markdown Including Plots R Markdown This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see http://rmarkdown.rstudio.com.
 When you click the Knit button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:</description>
     </item>

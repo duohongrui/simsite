@@ -2,34 +2,34 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   <url>
-    <loc>/programming_usage/</loc>
+    <loc>/programming/</loc>
     <lastmod>2022-09-01T20:22:45+08:00</lastmod>
   </url><url>
-    <loc>/online_usage/1-choose_methods/</loc>
+    <loc>/online/1-choose_methods/</loc>
   </url><url>
-    <loc>/programming_usage/1-installation/</loc>
+    <loc>/programming/1-installation/</loc>
   </url><url>
     <loc>/references/1-methods_list/</loc>
   </url><url>
     <loc>/references/methods/splat/</loc>
   </url><url>
-    <loc>/online_usage/</loc>
+    <loc>/online/</loc>
     <lastmod>2022-09-01T20:22:45+08:00</lastmod>
   </url><url>
-    <loc>/programming_usage/2-estimation/</loc>
+    <loc>/programming/2-estimation/</loc>
   </url><url>
     <loc>/references/methods/simple/</loc>
   </url><url>
-    <loc>/online_usage/2-simulation_online/</loc>
+    <loc>/online/2-simulation_online/</loc>
   </url><url>
     <loc>/references/</loc>
     <lastmod>2022-09-02T17:53:43+08:00</lastmod>
   </url><url>
     <loc>/references/methods/kersplat/</loc>
   </url><url>
-    <loc>/programming_usage/3-simulation/</loc>
+    <loc>/programming/3-simulation/</loc>
   </url><url>
-    <loc>/programming_usage/4-evaluate_datasets/</loc>
+    <loc>/programming/4-evaluate_datasets/</loc>
   </url><url>
     <loc>/references/methods/splatpop/</loc>
   </url><url>

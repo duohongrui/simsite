@@ -9,7 +9,7 @@
 
     <link rel="shortcut icon" href="../../images/simsite_logo.png" type="image/x-icon" />
 
-    <title>Vignettes - simsite</title>
+    <title>Installation - simsite</title>
 
     
     <link href="../../css/nucleus.css?1676798339" rel="stylesheet">
@@ -37,7 +37,7 @@
     </style>
     
   </head>
-  <body class="" data-url="../../references/methods/">
+  <body class="" data-url="../../programming/1-installation/">
     <nav id="sidebar" class="">
 
 
@@ -82,7 +82,7 @@
   
     
     <li data-nav-id="/programming/" title="Programming Usage" class="dd-item
-        
+        parent
         
         
         ">
@@ -108,7 +108,7 @@
  
   
     
-      <li data-nav-id="/programming/1-installation/" title="Installation" class="dd-item ">
+      <li data-nav-id="/programming/1-installation/" title="Installation" class="dd-item active">
         <a href="../../programming/1-installation/">
         Installation
         
@@ -276,7 +276,7 @@
   
     
     <li data-nav-id="/references/" title="References" class="dd-item
-        parent
+        
         
         
         ">
@@ -327,7 +327,7 @@
     
     <li data-nav-id="/references/methods/" title="Vignettes" class="dd-item
         
-        active
+        
         
         ">
       <a href="../../references/methods/">
@@ -596,7 +596,7 @@
             
           
           
-            <a href='../../'></a> > <a href='../../references/'>References</a> > Vignettes
+            <a href='../../'></a> > <a href='../../programming/'>Programming Usage</a> > Installation
           
         
           
@@ -609,15 +609,7 @@
                 
                     <div class="progress">
     <div class="wrapper">
-<nav id="TableOfContents">
-  <ul>
-    <li>
-      <ul>
-        <li><a href="#chapter-x">Chapter X</a></li>
-      </ul>
-    </li>
-  </ul>
-</nav>
+
     </div>
 </div>
 
@@ -633,7 +625,7 @@
           
             <h1>
               
-              Vignettes
+              Installation
             </h1>
           
 
@@ -641,15 +633,78 @@
 
 
 
-	<h3 id="chapter-x">Chapter X</h3>
-<h1 id="some-chapter-title">Some Chapter title</h1>
-<p>Lorem Ipsum.</p>
+
+<div id="TOC">
+<ul>
+<li><a href="#installation-from-github" id="toc-installation-from-github">Installation from Github</a></li>
+<li><a href="#download-docker-image" id="toc-download-docker-image">Download Docker Image</a>
+<ul>
+<li><a href="#install-docker-desktop" id="toc-install-docker-desktop">Install Docker Desktop</a></li>
+<li><a href="#install-simpipedocker" id="toc-install-simpipedocker">Install simpipeDocker</a></li>
+<li><a href="#download-simpipe-docker-image" id="toc-download-simpipe-docker-image">Download simpipe Docker Image</a></li>
+</ul></li>
+</ul>
+</div>
+
+<p>There are two ways to install dependencies and set programming environment:</p>
+<ul>
+<li><p>install multiple R packages and dependencies from github, it may take 5-30 mins.</p></li>
+<li><p>install <a href="https://www.docker.com/">Docker</a> first and download <a href="https://hub.docker.com/r/duohongrui/simpipe">simpipe Docker image</a> from DockerHub. All manipulations in R can be done by <a href="https://github.com/duohongrui/simpipe_Docker">simpipeDoker</a> package.</p></li>
+</ul>
+<div id="installation-from-github" class="section level2">
+<h2>Installation from Github</h2>
+<p>You can install the development version of simutils, simmethods and simpipe from GitHub with:</p>
+<pre class="r"><code># install.packages(&quot;devtools&quot;)
+devtools::install_github(&quot;duohongrui/simutils&quot;)
+devtools::install_github(&quot;duohongrui/simmethods&quot;)
+devtools::install_github(&quot;duohongrui/simpipe&quot;)</code></pre>
+<p>If you want to use simpipe to simulate datasets with <strong>trajectory information</strong>, please install <strong>tislingshot</strong> first by:</p>
+<pre class="r"><code>devtools::install_github(&quot;dynverse/ti_slingshot/package/&quot;)</code></pre>
+</div>
+<div id="download-docker-image" class="section level2">
+<h2>Download Docker Image</h2>
+<div id="install-docker-desktop" class="section level3">
+<h3>Install Docker Desktop</h3>
+<p>If you have not installed official Docker Desktop, please click <a href="https://www.docker.com/">here</a> and follow the <a href="https://docs.docker.com/desktop/install/mac-install/">instructions</a> to install it.
+
+<div class="notices note" ><p>The version of Docker Desktop for Apple Chip is available</p>
+</div>
+</p>
+<p>After installing Docker, start Docker service, open an R session and type <code>dynwrap::test_docker_installation(detailed = TRUE)</code>:</p>
+<pre class="r"><code>dynwrap::test_docker_installation(detailed = TRUE)
+✔ Docker is installed
+✔ Docker daemon is running
+✔ Docker is at correct version (&gt;1.0): 1.41
+✔ Docker is in linux mode
+✔ Docker can pull images
+✔ Docker can run image
+✔ Docker can mount temporary volumes
+✔ Docker test successful -----------------------------------------------------------------
+[1] TRUE</code></pre>
+<p>If it is <code>TRUE</code> in the result, that means Docker is successfully installed.</p>
+</div>
+<div id="install-simpipedocker" class="section level3">
+<h3>Install simpipeDocker</h3>
+</div>
+<div id="download-simpipe-docker-image" class="section level3">
+<h3>Download simpipe Docker Image</h3>
+<p>Use <code>babelwhale::pull_container("duohongrui/simpipe")</code> command to pull simpipe Docker image in R (it will take 3-10 mins):</p>
+<pre class="r"><code># install.packages(&quot;babelwhale&quot;)
+babelwhale::pull_container(&quot;duohongrui/simpipe&quot;)</code></pre>
+<p>Once the image has been downloaded, check the image list:</p>
+<pre class="r"><code>babelwhale::list_docker_images(&quot;duohongrui/simutils_scgan&quot;)
+            ID                Repository    Tag
+1 c3b3d01cde78 duohongrui/simutils_scgan latest
+                                                                   Digest
+1 sha256:b4ea92956c521753b832960e39e9e76a25aa0138fbc6549304a6a0a59edb2190
+  CreatedSince                     CreatedAt   Size
+1   6 days ago 2022-09-07 23:16:34 +0800 CST 2.37GB</code></pre>
+<p>Until now, you have successfully established the programming environment 👍👍👍. Go to the <a href="../../programming_usage/2-estimation">next page</a>.👈️</p>
+</div>
+</div>
 
 
-
-
-
-<footer class=" footline" >
+<footer class="footline">
 	
 </footer>
 
@@ -684,8 +739,6 @@
             
                 
                     
-                        
-                        
                     
                 
                 
@@ -699,6 +752,26 @@
             
             
                 
+                    
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                        
+                        
                     
                 
                 
@@ -743,22 +816,6 @@
             
         
                     
-                        
-            
-            
-                
-                    
-                
-                
-
-                    
-                    
-                    
-
-                    
-            
-        
-                    
             
         
                     
@@ -815,7 +872,6 @@
             
                 
                     
-                    
                 
                 
 
@@ -830,9 +886,6 @@
             
             
                 
-                    
-                        
-                        
                     
                 
                 
@@ -850,7 +903,6 @@
             
                 
                     
-                    
                 
                 
 
@@ -863,9 +915,6 @@
             
             
                 
-                    
-                        
-                        
                     
                 
                 
@@ -1021,10 +1070,10 @@
 	 
 	 
 		
-			<a class="nav nav-prev" href="../../references/1-methods_list/" title="Methods List"> <i class="fa fa-chevron-left"></i></a>
+			<a class="nav nav-prev" href="../../programming/" title="Programming Usage"> <i class="fa fa-chevron-left"></i></a>
 		
 		
-			<a class="nav nav-next" href="../../references/methods/splat/" title="Splat" style="margin-right: 0px;"><i class="fa fa-chevron-right"></i></a>
+			<a class="nav nav-next" href="../../programming/2-estimation/" title="Estimation Parameters" style="margin-right: 0px;"><i class="fa fa-chevron-right"></i></a>
 		
 	
     </div>
@@ -1056,3 +1105,4 @@
 
   </body>
 </html>
+
