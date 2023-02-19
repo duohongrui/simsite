@@ -2,97 +2,97 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Vignettes on simsite</title>
-    <link>/references/methods/</link>
+    <link>/reference/methods/</link>
     <description>Recent content in Vignettes on simsite</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Fri, 02 Sep 2022 18:49:42 +0800</lastBuildDate><atom:link href="/references/methods/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Fri, 02 Sep 2022 18:49:42 +0800</lastBuildDate><atom:link href="/reference/methods/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>Splat</title>
-      <link>/references/methods/splat/</link>
+      <link>/reference/methods/splat/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
-      <guid>/references/methods/splat/</guid>
+      <guid>/reference/methods/splat/</guid>
       <description>Estimating parameters from a real dataset Simulating datasets using Splat Datasets with default parameters Determin the number of cells and genes Simulate two or more groups Simulate two or more batches Simulate more groups and batches simutaniously Return results with different format Here Splat method will be demonstrated clearly and hope that this document can help you.
 Estimating parameters from a real dataset Before simulating datasets, it is important to estimate some essential parameters from a real dataset in order to make the simulated data more real.</description>
     </item>
     
     <item>
       <title>Simple</title>
-      <link>/references/methods/simple/</link>
+      <link>/reference/methods/simple/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
-      <guid>/references/methods/simple/</guid>
+      <guid>/reference/methods/simple/</guid>
       <description>Estimating parameters from a real dataset Simulating datasets using Simple Datasets with default parameters Determin the number of cells and genes Here Simple method will be demonstrated clearly and hope that this document can help you.
 Estimating parameters from a real dataset Before simulating datasets, it is important to estimate some essential parameters from a real dataset in order to make the simulated data more real. If you do not have a single-cell transcriptomics count matrix now, you can use the data collected in simmethods package by simmethods:data command.</description>
     </item>
     
     <item>
       <title>Kersplat</title>
-      <link>/references/methods/kersplat/</link>
+      <link>/reference/methods/kersplat/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
-      <guid>/references/methods/kersplat/</guid>
+      <guid>/reference/methods/kersplat/</guid>
       <description>Estimating parameters from a real dataset Simulating datasets using Kersplat Datasets with default parameters Determin the number of cells and genes Here Kersplat method will be demonstrated clearly and hope that this document can help you.
 Estimating parameters from a real dataset Before simulating datasets, it is important to estimate some essential parameters from a real dataset in order to make the simulated data more real. If you do not have a single-cell transcriptomics count matrix now, you can use the data collected in simmethods package by simmethods:data command.</description>
     </item>
     
     <item>
       <title>SplatPop</title>
-      <link>/references/methods/splatpop/</link>
+      <link>/reference/methods/splatpop/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
-      <guid>/references/methods/splatpop/</guid>
+      <guid>/reference/methods/splatpop/</guid>
       <description>Estimating parameters from a real dataset Simulating datasets using SplatPop Datasets with default parameters Determin the number of cells and genes Simulate two or more groups Simulate two or more batches Simulate more groups and batches simutaniously Here SplatPop method will be demonstrated clearly and hope that this document can help you.
 Estimating parameters from a real dataset Before simulating datasets, it is important to estimate some essential parameters from a real dataset in order to make the simulated data more real.</description>
     </item>
     
     <item>
       <title>Lun</title>
-      <link>/references/methods/5-lun/</link>
+      <link>/reference/methods/5-lun/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
-      <guid>/references/methods/5-lun/</guid>
+      <guid>/reference/methods/5-lun/</guid>
       <description>Estimating parameters from a real dataset Simulating datasets using Lun Datasets with default parameters Determin the number of cells and genes Simulate two or more groups Here Lun method will be demonstrated clearly and hope that this document can help you.
 Estimating parameters from a real dataset Before simulating datasets, it is important to estimate some essential parameters from a real dataset in order to make the simulated data more real.</description>
     </item>
     
     <item>
       <title>Lun2</title>
-      <link>/references/methods/6-lun2/</link>
+      <link>/reference/methods/6-lun2/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
-      <guid>/references/methods/6-lun2/</guid>
+      <guid>/reference/methods/6-lun2/</guid>
       <description>Estimating parameters from a real dataset Simulating datasets using Lun2 Datasets with default parameters Determin the number of cells and genes Simulate two or more groups Here Lun2 method will be demonstrated clearly and hope that this document can help you.
 Estimating parameters from a real dataset Before simulating datasets, it is important to estimate some essential parameters from a real dataset in order to make the simulated data more real.</description>
     </item>
     
     <item>
       <title>SCRIP</title>
-      <link>/references/methods/7-scrip/</link>
+      <link>/reference/methods/7-scrip/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
-      <guid>/references/methods/7-scrip/</guid>
+      <guid>/reference/methods/7-scrip/</guid>
       <description>Estimating parameters from a real dataset Simulating datasets using SCRIP Datasets with default parameters Different modes in SCRIP Determin the number of cells and genes Simulate two or more groups Simulate two or more batches Simulate more groups and batches simutaniously Here SCRIP method will be demonstrated clearly and hope that this document can help you.
 Estimating parameters from a real dataset Before simulating datasets, it is important to estimate some essential parameters from a real dataset in order to make the simulated data more real.</description>
     </item>
     
     <item>
       <title>powsimR</title>
-      <link>/references/methods/8-powsimr/</link>
+      <link>/reference/methods/8-powsimr/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
-      <guid>/references/methods/8-powsimr/</guid>
+      <guid>/reference/methods/8-powsimr/</guid>
       <description>Estimating parameters from a real dataset Estimate parameters without ERCC spike-in Estimate parameters with ERCC spike-in Simulating datasets using powsimR Datasets with default parameters Determin the number of cells and genes Simulate two or more groups Simulate two or more batches Simulate more groups and batches simutaniously Here powsimR method will be demonstrated clearly and hope that this document can help you.
 Estimating parameters from a real dataset Before simulating datasets, it is important to estimate some essential parameters from a real dataset in order to make the simulated data more real.</description>
     </item>
     
     <item>
       <title>scDD</title>
-      <link>/references/methods/10-scdd/</link>
+      <link>/reference/methods/10-scdd/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
-      <guid>/references/methods/10-scdd/</guid>
+      <guid>/reference/methods/10-scdd/</guid>
       <description>Estimating parameters from a real dataset Simulating datasets using scDD Datasets with default parameters Determin the number of cells Here scDD method will be demonstrated clearly and hope that this document can help you.
 Estimating parameters from a real dataset Before simulating datasets, it is important to estimate some essential parameters from a real dataset in order to make the simulated data more real. If you do not have a single-cell transcriptomics count matrix now, you can use the data collected in simmethods package by simmethods:data command.</description>
     </item>
