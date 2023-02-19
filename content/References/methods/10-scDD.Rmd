@@ -1,0 +1,101 @@
+---
+title: "scDD"
+output:
+  blogdown::html_page:
+    toc: yes
+weight: 10
+---
+
+<!-- github markdown built using 
+rmarkdown::render("vignettes/scDD.Rmd", output_format = rmarkdown::github_document())
+-->
+
+```{r setup, include=FALSE, echo=FALSE}
+knitr::opts_chunk$set(echo = TRUE, comment = "#", collapse = TRUE)
+```
+Here scDD method will be demonstrated clearly and hope that this document can help you.
+
+## Estimating parameters from a real dataset
+
+Before simulating datasets, it is important to estimate some essential parameters from a real dataset in order to make the simulated data more real. If you do not have a single-cell transcriptomics count matrix now, you can use the data collected in simmethods package by `simmethods:data` command.
+
+When you use scDD to estimate parameters from a real dataset, you must input a numeric vector to specify the groups or plates that each cell comes from, like `other_prior = list(group.condition = the numeric vector)`.
+
+```{r load_data, message=FALSE, warning=FALSE, error=FALSE}
+library(simmethods)
+library(SingleCellExperiment)
+# Load data
+ref_data <- SingleCellExperiment::counts(scater::mockSCE())
+set.seed(111)
+group_condition <- sample(c(1, 2), 200, replace = TRUE)
+## group_condition can must be a numeric vector.
+other_prior <- list(group.condition = as.numeric(group_condition))
+```
+
+Using `simmethods::scDD_estimation` command to execute the estimation step.
+
+```{r estimate}
+estimate_result <- simmethods::scDD_estimation(ref_data = ref_data,
+                                               other_prior = other_prior,
+                                               verbose = T,
+                                               seed = 10)
+```
+
+Time consuming:
+```{r}
+estimate_result$estimate_detection$Elapsed_Time_sec
+```
+
+
+## Simulating datasets using scDD
+
+After estimating parameter from a real dataset, we will simulate a dataset based on the learned parameters with different scenarios.
+
+1. Datasets with default parameters
+2. Determin the number of cells
+
+### Datasets with default parameters
+
+The reference data contains 200 cells and 2000 genes, if we simulate datasets with default parameters and then we will obtain a new data which has the same size as the reference data. 
+
+The simulated dataset will always have **two group of cells using scDD**.
+
+```{r default_params, message=FALSE}
+simulate_result <- simmethods::scDD_simulation(
+  parameters = estimate_result[["estimate_result"]],
+  return_format = "SCE",
+  seed = 111
+)
+```
+
+```{r}
+SCE_result <- simulate_result[["simulate_result"]]
+dim(SCE_result)
+```
+
+```{r}
+table(colData(SCE_result)$group)
+```
+
+### Determin the number of cells
+
+In scDD, users can only set `nCells` to specify the number of cells because the genes are already fixed after estimation step.
+```{r customed cell number, message=FALSE}
+simulate_result <- simmethods::scDD_simulation(
+  parameters = estimate_result[["estimate_result"]],
+  return_format = "list",
+  other_prior = list(nCells = 1000),
+  seed = 111
+)
+```
+
+
+```{r}
+result <- simulate_result[["simulate_result"]][["count_data"]]
+dim(result)
+```
+
+```{r}
+col_data <- simulate_result$simulate_result$col_meta
+table(col_data$group)
+```

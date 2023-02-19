@@ -1,0 +1,96 @@
+---
+title: "scDD"
+output:
+  blogdown::html_page:
+    toc: yes
+weight: 10
+---
+
+
+<div id="TOC">
+<ul>
+<li><a href="#estimating-parameters-from-a-real-dataset" id="toc-estimating-parameters-from-a-real-dataset">Estimating parameters from a real dataset</a></li>
+<li><a href="#simulating-datasets-using-scdd" id="toc-simulating-datasets-using-scdd">Simulating datasets using scDD</a>
+<ul>
+<li><a href="#datasets-with-default-parameters" id="toc-datasets-with-default-parameters">Datasets with default parameters</a></li>
+<li><a href="#determin-the-number-of-cells" id="toc-determin-the-number-of-cells">Determin the number of cells</a></li>
+</ul></li>
+</ul>
+</div>
+
+<!-- github markdown built using 
+rmarkdown::render("vignettes/scDD.Rmd", output_format = rmarkdown::github_document())
+-->
+<p>Here scDD method will be demonstrated clearly and hope that this document can help you.</p>
+<div id="estimating-parameters-from-a-real-dataset" class="section level2">
+<h2>Estimating parameters from a real dataset</h2>
+<p>Before simulating datasets, it is important to estimate some essential parameters from a real dataset in order to make the simulated data more real. If you do not have a single-cell transcriptomics count matrix now, you can use the data collected in simmethods package by <code>simmethods:data</code> command.</p>
+<p>When you use scDD to estimate parameters from a real dataset, you must input a numeric vector to specify the groups or plates that each cell comes from, like <code>other_prior = list(group.condition = the numeric vector)</code>.</p>
+<pre class="r"><code>library(simmethods)
+library(SingleCellExperiment)
+# Load data
+ref_data &lt;- SingleCellExperiment::counts(scater::mockSCE())
+set.seed(111)
+group_condition &lt;- sample(c(1, 2), 200, replace = TRUE)
+## group_condition can must be a numeric vector.
+other_prior &lt;- list(group.condition = as.numeric(group_condition))</code></pre>
+<p>Using <code>simmethods::scDD_estimation</code> command to execute the estimation step.</p>
+<pre class="r"><code>estimate_result &lt;- simmethods::scDD_estimation(ref_data = ref_data,
+                                               other_prior = other_prior,
+                                               verbose = T,
+                                               seed = 10)
+# Estimating parameters using scDD
+# Performing Median Normalization
+# Setting up parallel back-end using 1 cores
+# Clustering observed expression data for each gene
+# Notice: Number of permutations is set to zero; using 
+#             Kolmogorov-Smirnov to test for differences in distributions
+#             instead of the Bayes Factor permutation test
+# Classifying significant genes into patterns</code></pre>
+<p>Time consuming:</p>
+<pre class="r"><code>estimate_result$estimate_detection$Elapsed_Time_sec
+# [1] 130.466</code></pre>
+</div>
+<div id="simulating-datasets-using-scdd" class="section level2">
+<h2>Simulating datasets using scDD</h2>
+<p>After estimating parameter from a real dataset, we will simulate a dataset based on the learned parameters with different scenarios.</p>
+<ol style="list-style-type: decimal">
+<li>Datasets with default parameters</li>
+<li>Determin the number of cells</li>
+</ol>
+<div id="datasets-with-default-parameters" class="section level3">
+<h3>Datasets with default parameters</h3>
+<p>The reference data contains 200 cells and 2000 genes, if we simulate datasets with default parameters and then we will obtain a new data which has the same size as the reference data.</p>
+<p>The simulated dataset will always have <strong>two group of cells using scDD</strong>.</p>
+<pre class="r"><code>simulate_result &lt;- simmethods::scDD_simulation(
+  parameters = estimate_result[[&quot;estimate_result&quot;]],
+  return_format = &quot;SCE&quot;,
+  seed = 111
+)</code></pre>
+<pre class="r"><code>SCE_result &lt;- simulate_result[[&quot;simulate_result&quot;]]
+dim(SCE_result)
+# [1] 2000  200</code></pre>
+<pre class="r"><code>table(colData(SCE_result)$group)
+# 
+# Group1 Group2 
+#    100    100</code></pre>
+</div>
+<div id="determin-the-number-of-cells" class="section level3">
+<h3>Determin the number of cells</h3>
+<p>In scDD, users can only set <code>nCells</code> to specify the number of cells because the genes are already fixed after estimation step.</p>
+<pre class="r"><code>simulate_result &lt;- simmethods::scDD_simulation(
+  parameters = estimate_result[[&quot;estimate_result&quot;]],
+  return_format = &quot;list&quot;,
+  other_prior = list(nCells = 1000),
+  seed = 111
+)</code></pre>
+<pre class="r"><code>result &lt;- simulate_result[[&quot;simulate_result&quot;]][[&quot;count_data&quot;]]
+dim(result)
+# [1] 2000 1000</code></pre>
+<pre class="r"><code>col_data &lt;- simulate_result$simulate_result$col_meta
+table(col_data$group)
+# 
+# Group1 Group2 
+#    500    500</code></pre>
+</div>
+</div>
