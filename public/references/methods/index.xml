@@ -97,5 +97,26 @@ Estimating parameters from a real dataset Before simulating datasets, it is impo
 Estimating parameters from a real dataset Before simulating datasets, it is important to estimate some essential parameters from a real dataset in order to make the simulated data more real. If you do not have a single-cell transcriptomics count matrix now, you can use the data collected in simmethods package by simmethods:data command.</description>
     </item>
     
+    <item>
+      <title>scDesign</title>
+      <link>/references/methods/11-scdesign/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>/references/methods/11-scdesign/</guid>
+      <description>Simulating datasets using scDesign Datasets with default parameters Determin the number of cells Simulate two or more groups Here scDesign method will be demonstrated clearly and hope that this document can help you.
+Simulating datasets using scDesign There is no estimation step when using scDesign, so we can directly simulate new datasets through reference data.
+library(simmethods) library(SingleCellExperiment) # Load data ref_data &amp;lt;- simmethods::data We will simulate a dataset based on refernece data with different scenarios.</description>
+    </item>
+    
+    <item>
+      <title>scDesign2</title>
+      <link>/references/methods/12-scdesign2/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>/references/methods/12-scdesign2/</guid>
+      <description>Estimating parameters from a real dataset Default estimation Information of cell groups Information of cell types Simulating datasets using scDesign2 Datasets with default parameters Determin the number of cells Simulate two or more groups Here scDesign2 method will be demonstrated clearly and hope that this document can help you.
+Estimating parameters from a real dataset Before simulating datasets, it is important to estimate some essential parameters from a real dataset in order to make the simulated data more real.</description>
+    </item>
+    
   </channel>
 </rss>
