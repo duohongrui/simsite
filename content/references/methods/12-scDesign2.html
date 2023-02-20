@@ -1,0 +1,153 @@
+---
+title: "scDesign2"
+output:
+  blogdown::html_page:
+    toc: yes
+weight: 12
+---
+
+
+<div id="TOC">
+<ul>
+<li><a href="#estimating-parameters-from-a-real-dataset" id="toc-estimating-parameters-from-a-real-dataset">Estimating parameters from a real dataset</a>
+<ul>
+<li><a href="#default-estimation" id="toc-default-estimation">Default estimation</a></li>
+<li><a href="#information-of-cell-groups" id="toc-information-of-cell-groups">Information of cell groups</a></li>
+<li><a href="#information-of-cell-types" id="toc-information-of-cell-types">Information of cell types</a></li>
+</ul></li>
+<li><a href="#simulating-datasets-using-scdesign2" id="toc-simulating-datasets-using-scdesign2">Simulating datasets using scDesign2</a>
+<ul>
+<li><a href="#datasets-with-default-parameters" id="toc-datasets-with-default-parameters">Datasets with default parameters</a></li>
+<li><a href="#determin-the-number-of-cells" id="toc-determin-the-number-of-cells">Determin the number of cells</a></li>
+<li><a href="#simulate-two-or-more-groups" id="toc-simulate-two-or-more-groups">Simulate two or more groups</a></li>
+</ul></li>
+</ul>
+</div>
+
+<!-- github markdown built using 
+rmarkdown::render("vignettes/Splat.Rmd", output_format = rmarkdown::github_document())
+-->
+<p>Here scDesign2 method will be demonstrated clearly and hope that this document can help you.</p>
+<div id="estimating-parameters-from-a-real-dataset" class="section level2">
+<h2>Estimating parameters from a real dataset</h2>
+<p>Before simulating datasets, it is important to estimate some essential parameters from a real dataset in order to make the simulated data more real. If you do not have a single-cell transcriptomics count matrix now, you can use the data collected in simmethods package by <code>simmethods:data</code> command.</p>
+<pre class="r"><code>library(simmethods)
+library(SingleCellExperiment)
+# Load data
+ref_data &lt;- simmethods::data</code></pre>
+<div id="default-estimation" class="section level3">
+<h3>Default estimation</h3>
+<pre class="r"><code>estimate_result &lt;- simmethods::scDesign2_estimation(
+  ref_data = ref_data,
+  verbose = TRUE,
+  seed = 111
+)
+# Estimating parameters using scDesign2</code></pre>
+</div>
+<div id="information-of-cell-groups" class="section level3">
+<h3>Information of cell groups</h3>
+<p>If the information of cell groups is available, you can use another way to estimate the parameters.</p>
+<pre class="r"><code>## cell groups
+group_condition &lt;- as.numeric(simmethods::group_condition)</code></pre>
+<pre class="r"><code>estimate_result &lt;- simmethods::scDesign2_estimation(
+  ref_data = ref_data,
+  other_prior = list(group.condition = group_condition),
+  verbose = TRUE,
+  seed = 111
+)
+# Estimating parameters using scDesign2</code></pre>
+</div>
+<div id="information-of-cell-types" class="section level3">
+<h3>Information of cell types</h3>
+<p>You can input information of cell types via <code>cell_type_sel</code> parameter described in <code>scDesign2::fit_model_scDesign2</code> function</p>
+<pre class="r"><code>estimate_result &lt;- simmethods::scDesign2_estimation(
+  ref_data = ref_data,
+  other_prior = list(cell_type_sel = paste0(&quot;cell_type&quot;, group_condition)),
+  verbose = TRUE,
+  seed = 111
+)
+# Estimating parameters using scDesign2</code></pre>
+</div>
+</div>
+<div id="simulating-datasets-using-scdesign2" class="section level2">
+<h2>Simulating datasets using scDesign2</h2>
+<p>After estimating parameter from a real dataset, we will simulate a dataset based on the learned parameters with different scenarios.</p>
+<ol style="list-style-type: decimal">
+<li>Datasets with default parameters</li>
+<li>Determin the number of cells</li>
+<li>Simulate two or more groups</li>
+</ol>
+<div id="datasets-with-default-parameters" class="section level3">
+<h3>Datasets with default parameters</h3>
+<p>The reference data contains 160 cells and 4000 genes, if we simulate datasets with default parameters and then we will obtain a new data which has the same size as the reference data.</p>
+<pre class="r"><code>simulate_result &lt;- simmethods::scDesign2_simulation(
+  parameters = estimate_result[[&quot;estimate_result&quot;]],
+  return_format = &quot;SCE&quot;,
+  seed = 111
+)
+# nCells: 160
+# nGenes: 4000
+# nGroups: 2</code></pre>
+<p>{{% notice note %}}
+We will get two or groups if information of cell groups or cell type is used in estimation step.
+{{% /notice %}}</p>
+<pre class="r"><code>SCE_result &lt;- simulate_result[[&quot;simulate_result&quot;]]
+dim(SCE_result)
+# [1] 4000  160</code></pre>
+<pre class="r"><code>table(colData(SCE_result)$group)
+# 
+# Group1 Group2 
+#     80     80</code></pre>
+</div>
+<div id="determin-the-number-of-cells" class="section level3">
+<h3>Determin the number of cells</h3>
+<p>{{% notice note %}}
+We can only set the cell number in scDesign2.
+{{% /notice %}}</p>
+<p>Here, we simulate a new dataset with 500 cells:</p>
+<pre class="r"><code>simulate_result &lt;- simmethods::scDesign2_simulation(
+  parameters = estimate_result[[&quot;estimate_result&quot;]],
+  return_format = &quot;list&quot;,
+  other_prior = list(nCells = 500),
+  seed = 111
+)
+# nCells: 500
+# nGenes: 4000
+# nGroups: 2</code></pre>
+<pre class="r"><code>result &lt;- simulate_result[[&quot;simulate_result&quot;]][[&quot;count_data&quot;]]
+dim(result)
+# [1] 4000  500</code></pre>
+</div>
+<div id="simulate-two-or-more-groups" class="section level3">
+<h3>Simulate two or more groups</h3>
+<p>In scDesign2, we can not set <code>nGroups</code> directly and should set <code>prob.group</code> instead. For example, if we want to simulate 2 groups, we can type <code>other_prior = list(prob.group = c(0.5, 0.5))</code>. Note that the sum of <code>prob.group</code> numeric vector must equal to 1, so we can also set <code>prob.group = c(0.3, 0.7)</code>.</p>
+<p>In addtion, if we want to simulate three or more groups, we should obey the rules:</p>
+<ul>
+<li>The length of <code>prob.group</code> vector must always equal to the <strong>number of cell groups or cell types used in estimation step</strong>.</li>
+<li>The sum of <code>prob.group</code> numeric vector must equal to 1.</li>
+</ul>
+<p>For demonstration, we can only simulate two groups using the learned parameters.</p>
+<pre class="r"><code>simulate_result &lt;- simmethods::scDesign2_simulation(
+  parameters = estimate_result[[&quot;estimate_result&quot;]],
+  return_format = &quot;list&quot;,
+  other_prior = list(nCells = 500,
+                     prob.group = c(0.4, 0.6)),
+  seed = 111
+)
+# nCells: 500
+# nGenes: 4000
+# nGroups: 2</code></pre>
+<p>{{% notice tip %}}
+If you did not input information of cell groups or cell types in the estimation step, you can not simulate groups.
+{{% /notice %}}</p>
+<pre class="r"><code>result &lt;- simulate_result[[&quot;simulate_result&quot;]][[&quot;count_data&quot;]]
+dim(result)
+# [1] 4000  500</code></pre>
+<pre class="r"><code>## cell information
+cell_info &lt;- simulate_result[[&quot;simulate_result&quot;]][[&quot;col_meta&quot;]]
+table(cell_info$group)
+# 
+# Group1 Group2 
+#    200    300</code></pre>
+</div>
+</div>

@@ -1,0 +1,127 @@
+---
+title: "scDesign"
+output:
+  blogdown::html_page:
+    toc: yes
+weight: 11
+---
+
+
+<div id="TOC">
+<ul>
+<li><a href="#simulating-datasets-using-scdesign" id="toc-simulating-datasets-using-scdesign">Simulating datasets using scDesign</a>
+<ul>
+<li><a href="#datasets-with-default-parameters" id="toc-datasets-with-default-parameters">Datasets with default parameters</a></li>
+<li><a href="#determin-the-number-of-cells" id="toc-determin-the-number-of-cells">Determin the number of cells</a></li>
+<li><a href="#simulate-two-or-more-groups" id="toc-simulate-two-or-more-groups">Simulate two or more groups</a></li>
+</ul></li>
+</ul>
+</div>
+
+<!-- github markdown built using 
+rmarkdown::render("vignettes/scDesign.Rmd", output_format = rmarkdown::github_document())
+-->
+<p>Here scDesign method will be demonstrated clearly and hope that this document can help you.</p>
+<div id="simulating-datasets-using-scdesign" class="section level2">
+<h2>Simulating datasets using scDesign</h2>
+<p>There is no estimation step when using scDesign, so we can directly simulate new datasets through reference data.</p>
+<pre class="r"><code>library(simmethods)
+library(SingleCellExperiment)
+# Load data
+ref_data &lt;- simmethods::data</code></pre>
+<p>We will simulate a dataset based on refernece data with different scenarios.</p>
+<ol style="list-style-type: decimal">
+<li>Datasets with default parameters</li>
+<li>Determin the number of cells and genes</li>
+<li>Simulate two or more groups</li>
+</ol>
+<div id="datasets-with-default-parameters" class="section level3">
+<h3>Datasets with default parameters</h3>
+<p>The reference data contains 160 cells and 4000 genes, if we simulate datasets with default parameters and then we will obtain a new data which has the same size as the reference data. In addtion, the simulated dataset will have one group of cells.</p>
+<pre class="r"><code>simulate_result &lt;- simmethods::scDesign_simulation(
+  ref_data = ref_data,
+  return_format = &quot;SCE&quot;,
+  seed = 111
+)
+# nCells: 160
+# nGenes: 4000
+# nGroups: 1
+# de.prob: 0.1
+# fc.group: up--5
+# fc.group: down--1.5
+# [1] &quot;estimate expression parameters&quot;</code></pre>
+<pre class="r"><code>SCE_result &lt;- simulate_result[[&quot;simulate_result&quot;]]
+dim(SCE_result)
+# [1] 4000  160</code></pre>
+<pre class="r"><code>head(colData(SCE_result))
+# DataFrame with 6 rows and 1 column
+#         cell_name
+#       &lt;character&gt;
+# Cell1       Cell1
+# Cell2       Cell2
+# Cell3       Cell3
+# Cell4       Cell4
+# Cell5       Cell5
+# Cell6       Cell6</code></pre>
+</div>
+<div id="determin-the-number-of-cells" class="section level3">
+<h3>Determin the number of cells</h3>
+<p>{{% notice note %}}
+We can only set the cell number in scDesign.
+{{% /notice %}}</p>
+<p>Here, we simulate a new dataset with 500 cells:</p>
+<pre class="r"><code>simulate_result &lt;- simmethods::scDesign_simulation(
+  ref_data = ref_data,
+  return_format = &quot;list&quot;,
+  other_prior = list(nCells = 500),
+  seed = 111
+)
+# nCells: 500
+# nGenes: 4000
+# nGroups: 1
+# de.prob: 0.1
+# fc.group: up--5
+# fc.group: down--1.5
+# [1] &quot;estimate expression parameters&quot;</code></pre>
+<pre class="r"><code>result &lt;- simulate_result[[&quot;simulate_result&quot;]][[&quot;count_data&quot;]]
+dim(result)
+# [1] 4000  500</code></pre>
+</div>
+<div id="simulate-two-or-more-groups" class="section level3">
+<h3>Simulate two or more groups</h3>
+<p>In scDesign, we can et <code>nGroups</code> directly, together with the proportions of different cell groups by <code>prob.group</code>. Moreover, the proportion of DEGs via <code>de.prob</code> and fold change via <code>fc.group</code> can be customed.</p>
+<p>For demonstration, we will simulate three groups.</p>
+<pre class="r"><code>simulate_result &lt;- simmethods::scDesign_simulation(
+  ref_data = ref_data,
+  return_format = &quot;list&quot;,
+  other_prior = list(nCells = 500,
+                     nGroups = 3,
+                     prob.group = c(0.1, 0.3, 0.6),
+                     de.prob = 0.2,
+                     fc.group = 4),
+  seed = 111
+)
+# nCells: 500
+# nGenes: 4000
+# nGroups: 3
+# de.prob: 0.2
+# fc.group: up--4
+# fc.group: down--4
+# [1] &quot;estimate expression parameters&quot;</code></pre>
+<pre class="r"><code>result &lt;- simulate_result[[&quot;simulate_result&quot;]][[&quot;count_data&quot;]]
+dim(result)
+# [1] 4000  500</code></pre>
+<pre class="r"><code>## cell information
+cell_info &lt;- simulate_result[[&quot;simulate_result&quot;]][[&quot;col_meta&quot;]]
+table(cell_info$group)
+# 
+# Group1 Group2 Group3 
+#     50    150    300</code></pre>
+<pre class="r"><code>## gene information
+gene_info &lt;- simulate_result[[&quot;simulate_result&quot;]][[&quot;row_meta&quot;]]
+### the proportion of DEGs
+table(gene_info$de_gene)[2]/nrow(result) ## de.prob = 0.2
+# yes 
+# 0.2</code></pre>
+</div>
+</div>
