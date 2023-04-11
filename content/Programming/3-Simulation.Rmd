@@ -1,5 +1,5 @@
 ---
-title: "Simulation"
+title: "Simulation Datasets"
 output:
   blogdown::html_page:
     toc: true
