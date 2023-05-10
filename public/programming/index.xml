@@ -13,10 +13,10 @@
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
       <guid>/programming/1-installation/</guid>
-      <description>Installation from Github Download Docker Image Install Docker Desktop Install simpipeDocker Download simpipe Docker Image There are two ways to install dependencies and set programming environment:
+      <description>Choice1: Installation from Github Choice2: Download Docker Image Install Docker Desktop Download simpipe Docker Image Install simpipe2docker There are two ways to configure programming environment and execute simulation procedure:
 install multiple R packages and dependencies from github, it may take 5-30 mins.
-install Docker first and download simpipe Docker image from DockerHub. All manipulations in R can be done by simpipeDoker package.
-Installation from Github You can install the development version of simutils, simmethods and simpipe from GitHub with:</description>
+install Docker first and download simpipe Docker image from DockerHub. All manipulations in R can be done by a lightweight simpipe2doker package.
+Choice1: Installation from Github The first way to configure your programming environment is to install all of the packages and necessary dependencies</description>
     </item>
     
     <item>
@@ -25,8 +25,8 @@ Installation from Github You can install the development version of simutils, si
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
       <guid>/programming/2-estimation/</guid>
-      <description>Estimation Priors For Estimation Estimation This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see http://rmarkdown.rstudio.com.
-When you click the Knit button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:</description>
+      <description>Estimate Parameters From Local R Step1: Load Packages Step2: Prepare Your Data and Prior Information Step3: Estimate Parameters Estimate Parameters From Docker in R Estimate Parameters By Simpipe Package One dataset ▶️ Multiple Methods Multiple datasets ▶️ Multiple Methods Estimating essential parameters from the real datasets is a necessary step before simulating a new dataset. In this vignette, we demonstrate three ways of performing estimation step, including:
+Depend on local R environment Utilize Docker and link Docker and R Special estimation scenarios by Simpipe package Estimate Parameters From Local R Make sure that you have already installed three main packages (simutils, simmethods and simpipe) before doing estimation.</description>
     </item>
     
     <item>

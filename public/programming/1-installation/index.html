@@ -9,25 +9,25 @@
 
     <link rel="shortcut icon" href="../../images/simsite_logo.png" type="image/x-icon" />
 
-    <title>Installation - simsite</title>
+    <title>Installation   simsite</title>
 
     
-    <link href="../../css/nucleus.css?1681201802" rel="stylesheet">
-    <link href="../../css/fontawesome-all.min.css?1681201802" rel="stylesheet">
-    <link href="../../css/hybrid.css?1681201802" rel="stylesheet">
-    <link href="../../css/featherlight.min.css?1681201802" rel="stylesheet">
-    <link href="../../css/perfect-scrollbar.min.css?1681201802" rel="stylesheet">
-    <link href="../../css/auto-complete.css?1681201802" rel="stylesheet">
-    <link href="../../css/atom-one-dark-reasonable.css?1681201802" rel="stylesheet">
-    <link href="../../css/theme.css?1681201802" rel="stylesheet">
-    <link href="../../css/tabs.css?1681201802" rel="stylesheet">
-    <link href="../../css/hugo-theme.css?1681201802" rel="stylesheet">
+    <link href="../../css/nucleus.css?1683703312" rel="stylesheet">
+    <link href="../../css/fontawesome-all.min.css?1683703312" rel="stylesheet">
+    <link href="../../css/hybrid.css?1683703312" rel="stylesheet">
+    <link href="../../css/featherlight.min.css?1683703312" rel="stylesheet">
+    <link href="../../css/perfect-scrollbar.min.css?1683703312" rel="stylesheet">
+    <link href="../../css/auto-complete.css?1683703312" rel="stylesheet">
+    <link href="../../css/atom-one-dark-reasonable.css?1683703312" rel="stylesheet">
+    <link href="../../css/theme.css?1683703312" rel="stylesheet">
+    <link href="../../css/tabs.css?1683703312" rel="stylesheet">
+    <link href="../../css/hugo-theme.css?1683703312" rel="stylesheet">
     
-    <link href="../../css/theme-mine.css?1681201802" rel="stylesheet">
+    <link href="../../css/theme-mine.css?1683703312" rel="stylesheet">
     
-    <link href="../../css/foo.css?1681201802" rel="stylesheet"><link href="../../css/bar.css?1681201802" rel="stylesheet">
+    <link href="../../css/foo.css?1683703312" rel="stylesheet"><link href="../../css/bar.css?1683703312" rel="stylesheet">
 
-    <script src="../../js/jquery-3.3.1.min.js?1681201802"></script>
+    <script src="../../js/jquery-3.3.1.min.js?1683703312"></script>
 
     <style>
       :root #header + #content > #left > #rlblock_left{
@@ -55,14 +55,14 @@
     <span data-search-clear=""><i class="fas fa-times"></i></span>
 </div>
 
-<script type="text/javascript" src="../../js/lunr.min.js?1681201802"></script>
-<script type="text/javascript" src="../../js/auto-complete.js?1681201802"></script>
+<script type="text/javascript" src="../../js/lunr.min.js?1683703312"></script>
+<script type="text/javascript" src="../../js/auto-complete.js?1683703312"></script>
 <script type="text/javascript">
     
         var baseurl = "\/";
     
 </script>
-<script type="text/javascript" src="../../js/search.js?1681201802"></script>
+<script type="text/javascript" src="../../js/search.js?1683703312"></script>
 
     
   </div>
@@ -1035,24 +1035,25 @@
 
 <div id="TOC">
 <ul>
-<li><a href="#installation-from-github" id="toc-installation-from-github">Installation from Github</a></li>
-<li><a href="#download-docker-image" id="toc-download-docker-image">Download Docker Image</a>
+<li><a href="#choice1-installation-from-github" id="toc-choice1-installation-from-github">Choice1: Installation from Github</a></li>
+<li><a href="#choice2-download-docker-image" id="toc-choice2-download-docker-image">Choice2: Download Docker Image</a>
 <ul>
 <li><a href="#install-docker-desktop" id="toc-install-docker-desktop">Install Docker Desktop</a></li>
-<li><a href="#install-simpipedocker" id="toc-install-simpipedocker">Install simpipeDocker</a></li>
 <li><a href="#download-simpipe-docker-image" id="toc-download-simpipe-docker-image">Download simpipe Docker Image</a></li>
+<li><a href="#install-simpipe2docker" id="toc-install-simpipe2docker">Install simpipe2docker</a></li>
 </ul></li>
 </ul>
 </div>
 
-<p>There are two ways to install dependencies and set programming environment:</p>
+<p>There are two ways to configure programming environment and execute simulation procedure:</p>
 <ul>
 <li><p>install multiple R packages and dependencies from github, it may take 5-30 mins.</p></li>
-<li><p>install <a href="https://www.docker.com/">Docker</a> first and download <a href="https://hub.docker.com/r/duohongrui/simpipe">simpipe Docker image</a> from DockerHub. All manipulations in R can be done by <a href="https://github.com/duohongrui/simpipe_Docker">simpipeDoker</a> package.</p></li>
+<li><p>install <a href="https://www.docker.com/">Docker</a> first and download <a href="https://hub.docker.com/r/duohongrui/simpipe">simpipe Docker image</a> from DockerHub. All manipulations in R can be done by a lightweight <a href="https://github.com/duohongrui/simpipe2docker">simpipe2doker</a> package.</p></li>
 </ul>
-<div id="installation-from-github" class="section level2">
-<h2>Installation from Github</h2>
-<p>You can install the development version of simutils, simmethods and simpipe from GitHub with:</p>
+<div id="choice1-installation-from-github" class="section level2">
+<h2>Choice1: Installation from Github</h2>
+<p>The first way to configure your programming environment is to install all of the packages and necessary dependencies</p>
+<p>You can install the development version of <strong>simutils</strong>, <strong>simmethods</strong> and <strong>simpipe</strong> from GitHub by:</p>
 <pre class="r"><code># install.packages(&quot;devtools&quot;)
 devtools::install_github(&quot;duohongrui/simutils&quot;)
 devtools::install_github(&quot;duohongrui/simmethods&quot;)
@@ -1060,8 +1061,9 @@ devtools::install_github(&quot;duohongrui/simpipe&quot;)</code></pre>
 <p>If you want to use simpipe to simulate datasets with <strong>trajectory information</strong>, please install <strong>tislingshot</strong> first by:</p>
 <pre class="r"><code>devtools::install_github(&quot;dynverse/ti_slingshot/package/&quot;)</code></pre>
 </div>
-<div id="download-docker-image" class="section level2">
-<h2>Download Docker Image</h2>
+<div id="choice2-download-docker-image" class="section level2">
+<h2>Choice2: Download Docker Image</h2>
+<p>We provide another way for users to configure your environment by Docker. To achieve the interaction between Docker and R environment, we build a lightweight R package <a href="https://github.com/duohongrui/simpipe2docker">simpipe2docker</a> which is used for calling commands in terminal to link Docker and R. It is more easier to manipulate and suitable for different operation systems and R versions, avoiding complex configurations in various environments.</p>
 <div id="install-docker-desktop" class="section level3">
 <h3>Install Docker Desktop</h3>
 <p>If you have not installed official Docker Desktop, please click <a href="https://www.docker.com/">here</a> and follow the <a href="https://docs.docker.com/desktop/install/mac-install/">instructions</a> to install it.
@@ -1082,23 +1084,27 @@ devtools::install_github(&quot;duohongrui/simpipe&quot;)</code></pre>
 [1] TRUE</code></pre>
 <p>If it is <code>TRUE</code> in the result, that means Docker is successfully installed.</p>
 </div>
-<div id="install-simpipedocker" class="section level3">
-<h3>Install simpipeDocker</h3>
-</div>
 <div id="download-simpipe-docker-image" class="section level3">
 <h3>Download simpipe Docker Image</h3>
 <p>Use <code>babelwhale::pull_container("duohongrui/simpipe")</code> command to pull simpipe Docker image in R (it will take 3-10 mins):</p>
 <pre class="r"><code># install.packages(&quot;babelwhale&quot;)
 babelwhale::pull_container(&quot;duohongrui/simpipe&quot;)</code></pre>
 <p>Once the image has been downloaded, check the image list:</p>
-<pre class="r"><code>babelwhale::list_docker_images(&quot;duohongrui/simutils_scgan&quot;)
-            ID                Repository    Tag
-1 c3b3d01cde78 duohongrui/simutils_scgan latest
+<pre class="r"><code>babelwhale::list_docker_images(&quot;duohongrui/simpipe&quot;)
+            ID         Repository    Tag
+1 a9d30539a083 duohongrui/simpipe latest
                                                                    Digest
-1 sha256:b4ea92956c521753b832960e39e9e76a25aa0138fbc6549304a6a0a59edb2190
-  CreatedSince                     CreatedAt   Size
-1   6 days ago 2022-09-07 23:16:34 +0800 CST 2.37GB</code></pre>
-<p>Until now, you have successfully established the programming environment 👍👍👍. Go to the <a href="../../programming_usage/2-estimation">next page</a>.👈️</p>
+1 sha256:eae62ba3d06916db8216ef8b240de2c64b691efd8ecd96735f8c111bb5911f8c
+   CreatedSince                     CreatedAt   Size
+1 10 months ago 2022-07-13 02:11:51 +0800 CST 4.94GB</code></pre>
+</div>
+<div id="install-simpipe2docker" class="section level3">
+<h3>Install simpipe2docker</h3>
+<p>Get the simpipe2docker package from github by:</p>
+<pre class="r"><code>devtools::install_github(&quot;duhongrui/simpipe2docker&quot;)</code></pre>
+<p>Load the package and check whether it is installed successfully:</p>
+<pre class="r"><code>library(simpipe2docker)</code></pre>
+<p>Until now, you have successfully established the programming environment 👍👍👍. Go to the <a href="../../programming/2-estimation">next page</a>.👈️</p>
 </div>
 </div>
 
@@ -1786,16 +1792,16 @@ babelwhale::pull_container(&quot;duohongrui/simpipe&quot;)</code></pre>
     <div style="left: -1000px; overflow: scroll; position: absolute; top: -1000px; border: none; box-sizing: content-box; height: 200px; margin: 0px; padding: 0px; width: 200px;">
       <div style="border: none; box-sizing: content-box; height: 200px; margin: 0px; padding: 0px; width: 200px;"></div>
     </div>
-    <script src="../../js/clipboard.min.js?1681201802"></script>
-    <script src="../../js/perfect-scrollbar.min.js?1681201802"></script>
-    <script src="../../js/perfect-scrollbar.jquery.min.js?1681201802"></script>
-    <script src="../../js/jquery.sticky.js?1681201802"></script>
-    <script src="../../js/featherlight.min.js?1681201802"></script>
-    <script src="../../js/highlight.pack.js?1681201802"></script>
+    <script src="../../js/clipboard.min.js?1683703312"></script>
+    <script src="../../js/perfect-scrollbar.min.js?1683703312"></script>
+    <script src="../../js/perfect-scrollbar.jquery.min.js?1683703312"></script>
+    <script src="../../js/jquery.sticky.js?1683703312"></script>
+    <script src="../../js/featherlight.min.js?1683703312"></script>
+    <script src="../../js/highlight.pack.js?1683703312"></script>
     <script>hljs.initHighlightingOnLoad();</script>
-    <script src="../../js/modernizr.custom-3.6.0.js?1681201802"></script>
-    <script src="../../js/learn.js?1681201802"></script>
-    <script src="../../js/hugo-learn.js?1681201802"></script>
+    <script src="../../js/modernizr.custom-3.6.0.js?1683703312"></script>
+    <script src="../../js/learn.js?1683703312"></script>
+    <script src="../../js/hugo-learn.js?1683703312"></script>
     
         
             <script src="https://unpkg.com/mermaid@8.8.0/dist/mermaid.min.js"></script>

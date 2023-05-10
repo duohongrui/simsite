@@ -7,20 +7,250 @@ weight: 2
 ---
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
+knitr::opts_chunk$set(echo = TRUE, comment = "#", collapse = TRUE)
 ```
 
-## Estimation
+Estimating essential parameters from the real datasets is a necessary step before simulating a new dataset. In this vignette, we demonstrate three ways of performing estimation step, including:
 
-This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
+- Depend on local R environment
+- Utilize Docker and link Docker and R
+- Special estimation scenarios by Simpipe package
 
-When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
+## Estimate Parameters From Local R
 
-```{r cars}
-summary(cars)
+Make sure that you have already installed three main packages (**simutils**, **simmethods** and **simpipe**) before doing estimation. If not, please refer to [Installation](/programming/1-installation).
+
+### Step1: Load Packages
+
+First, library our packages by:
+
+```{r load_packages, message=FALSE}
+library(simmethods)
+library(simpipe)
 ```
 
-## Priors For Estimation
+### Step2: Prepare Your Data and Prior Information
+
+In the estimation, real dataset or the input dataset is necessary. You can load the example dataset in **simmethods** by:
+
+```{r prepare_data}
+ref_data <- simmethods::data
+```
+
+{{% notice note %}}
+The gene expression profile should be a matrix, not the sparese one or a data frame.
+{{% /notice %}}
+
+The prior information of cell groups is also in the **simmethods** package, and we will demonstrate how to use it later.
+
+```{r information}
+group_information <- simmethods::group_condition
+```
 
 
+### Step3: Estimate Parameters
 
+#### Example A: Splat (Only need gene expression matrix)
+
+Splat is one of the methods in [Splatter](https://bioconductor.org/packages/release/bioc/html/splatter.html) package and only reference (real) data is needed to learn the useful parameters. We can directly call `Splat_estimation` function to do so.
+
+
+```{r Splat1, warning=FALSE}
+estimation_result <- simmethods::Splat_estimation(
+  ref_data = ref_data,
+  seed = 111)
+```
+
+The list of result contains two types of information:
+
+- `estimate_result`, the learned parameters by Splat
+- `estimate_detection`, the running time and memory usage detected by [peakRAM](https://cran.r-project.org/web/packages/peakRAM/index.html) package.
+
+#### Example B: zingeR (Cell group information is needed)
+
+In zingeR method, the information of cell groups is needed. We can prepare a numeric vector to specify the identity for every cell in the expression matrix.
+
+```{r information2}
+group_information <- as.numeric(simmethods::group_condition)
+```
+
+The `other_prior` parameter learns the list of other prior information, including:
+
+- `group.condition`, the numeric vector of cell group labels.
+- `batch.condition`, the numeric vector of cell batch labels.
+- other names
+
+After preparing the dataset and prior information, we can use zingeR to estimate paramaters.
+```{r zingeR, warning=FALSE}
+estimation_result <- simmethods::zingeR_estimation(
+  ref_data = ref_data,
+  other_prior = list(group.condition = group_information),
+  seed = 111,
+  verbose = TRUE)
+```
+
+
+#### Example C: Parameter and Prior Information
+Sometimes users may want to know what parameters are presented in a method and what kinds of prior information are needed. Usually, user can browse the `help` vignette by `help(function_name)` or `?function_name`.
+
+For example, if we want to know the parameters in the SPsimSeq method, we can call `help(SPsimSeq_simulation)`.
+
+```{r helo_SPsimSeq, eval=FALSE}
+help(SPsimSeq_simulation)
+```
+
+We detailed the prior information and parameters that the method requires and users usually use.
+```{r details}
+# Details
+# In addtion to simulate datasets with default parameters, users want to simulate other kinds of datasets, e.g. a counts matrix with 2 or more # cell groups. In SPsimSeq, you can set extra parameters to simulate datasets.
+# 
+# The customed parameters you can set are below:
+# 
+# nCells. In SPsimSeq, you can set nCells directly. For example, if you want to simulate 1000 cells, you can type other_prior = list(nCells = # 1000).
+# 
+# nGenes. You can directly set other_prior = list(nGenes = 5000) to simulate 5000 genes.
+# 
+# group.condition. You can input cell group information as an integer vector to specify which group that each cell belongs to. See Examples.
+# 
+# de.prob. You can directly set other_prior = list(de.prob = 0.2) to simulate DEGs that account for 20 percent of all genes.
+# 
+# fc.group. You can directly set other_prior = list(fc.group = 2) to specify the minimum fold change of DEGs.
+# 
+# batch.condition. You can input cell batch information as an integer vector to specify which batch that each cell belongs to. See Examples.
+```
+
+#### Example D: Default Parameters
+We only provide the default parameters for some of the methods:
+
+- Splat, SplatPop, Kersplat
+- Simple
+- SCRIP
+- Lun, Lun2,
+- zinbwave
+- BASiCS
+- ESCO
+
+If we want to get the default parameter of SCRIP, input:
+```{r default_parameters}
+SCRIP_param <- simutils::default_parameters("SCRIP")
+```
+
+The object of default parameters can be directly used for simulation step.
+
+
+## Estimate Parameters From Docker in R
+
+Estimating parameters by a Docker container in R is not challenging since all manipulations are the same as those that have been demonstrated above, except for the function and R package used.
+
+First, start Docker service and check:
+
+```{r load_simpipe2docker}
+library(simpipe2docker)
+```
+
+```{r check_docker}
+simpipe2docker::test_docker_installation(detailed = TRUE)
+```
+
+Next, prepare your data and prior information:
+```{r prepare_simpipe2docker}
+data <- simmethods::data
+group_condition <- as.numeric(simmethods::group_condition)
+```
+
+Estimate parameters by Splat method:
+
+```{r Splat_simpipe2docker}
+estimation_result <- simpipe2docker::estimate_parameters_container(
+  ref_data = data,
+  method = "Splat", 
+  other_prior = list(group.condition = group_condition),
+  seed = 111,
+  verbose = TRUE
+)
+```
+
+Users can also input the list of multiple datasets and use more than one method to performe the estimation step. In this case, you can refer to the next topic `Estimate Parameters By Simpipe Package` and **just change the function name** that located in the **simpipe2docker** package.
+
+
+## Estimate Parameters By Simpipe Package
+
+In addition to calling functions from **simmethods** package, users can also use `estimate_parameters` function in **simpipe** package. There are some advantages:
+
+- One dataset can be estimated by multiple methods
+- Multiple datasets can be estimated by multiple methods
+
+### One dataset ▶️ Multiple Methods
+
+If you want to estimate parameters from one dataset by many other simulation methods, please make sure that you have already know the requirements of prior information of every method. For example, if we want to estimate the parameters using three methods: Splat, zingR and powsimR, we should browse the vignettes of these three methods.
+
+After checking the vignettes, we list the necessary prior information and optional cutomed parameters here:
+
+- Splat: none (just a gene matrix)
+- zingR: prior information (a numeric vector of cell groups)
+- powsimR: optional parameters (RNA-seq, Protocol and Normalisation)
+
+Then we write these parameters in a list:
+
+```{r list_parameters}
+other_prior = list(group.condition = as.numeric(group_condition),
+                   RNAseq = "singlecell",
+                   Protocol = "UMI",
+                   Normalisation = "scran")
+```
+
+
+```{r run_three_methods, warning=FALSE}
+estimation_result <- simpipe::estimate_parameters(
+  method = c("Splat", "zingeR", "powsimR"),
+  ref_data = ref_data,
+  other_prior = other_prior)
+```
+
+{{% notice note %}}
+If the necessary information is not input, the error message will turn out. You must also make sure that the names of methods are right spelled.
+{{% /notice %}}
+
+You can see a list of three elements in the result and that means the estimation is done:
+
+```{r see_result}
+names(estimation_result)
+```
+
+### Multiple datasets ▶️ Multiple Methods
+
+Multiple datasets can also be estimated by many methods using `estimate_parameters` function. Besides the prior information and optional parameters, the `ref_data` parameter in `estimate_parameters` function should be a named list when multiple datasets are involved.
+
+Here, we can first create a data list with customed names (data1 and data2):
+
+```{r data_list}
+data_list <- list(data1 = ref_data,
+                  data2 = ref_data)
+```
+
+Then, set the prior information:
+
+```{r list_parameters2}
+other_prior = list(group.condition = as.numeric(group_condition),
+                   RNAseq = "singlecell",
+                   Protocol = "UMI",
+                   Normalisation = "scran")
+```
+
+Execute the procedure:
+
+```{r more_to_more, warning=FALSE}
+estimation_result <- simpipe::estimate_parameters(
+  method = c("Splat", "zingeR", "powsimR"),
+  ref_data = data_list,
+  other_prior = other_prior)
+```
+
+We will see a list of six elements in the result:
+```{r mm_result}
+names(estimation_result)
+```
+
+{{% notice note %}}
+All of above manipulations can be done by Docker container and only the function name should be changed into `estimate_parameters_container` in **simpipe2docker** package
+{{% /notice %}}

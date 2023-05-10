@@ -6,19 +6,20 @@ output:
 weight: 1
 ---
 
-There are two ways to install dependencies and set programming environment:
+There are two ways to configure programming environment and execute simulation procedure:
 
 * install multiple R packages and dependencies from github, it may take 5-30 mins.
 
-* install [Docker](https://www.docker.com/) first and download [simpipe Docker image](https://hub.docker.com/r/duohongrui/simpipe) from DockerHub. All manipulations in R can be done by [simpipeDoker](https://github.com/duohongrui/simpipe_Docker) package.
+* install [Docker](https://www.docker.com/) first and download [simpipe Docker image](https://hub.docker.com/r/duohongrui/simpipe) from DockerHub. All manipulations in R can be done by a lightweight [simpipe2doker](https://github.com/duohongrui/simpipe2docker) package.
 
-## Installation from Github 
+## Choice1: Installation from Github 
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE, collapse = TRUE, comment = "")
 ```
+The first way to configure your programming environment is to install all of the packages and necessary dependencies 
 
-You can install the development version of simutils, simmethods and simpipe from GitHub with:
+You can install the development version of **simutils**, **simmethods** and **simpipe** from GitHub by:
 ```{r eval=FALSE}
 # install.packages("devtools")
 devtools::install_github("duohongrui/simutils")
@@ -31,8 +32,9 @@ If you want to use simpipe to simulate datasets with **trajectory information**,
 devtools::install_github("dynverse/ti_slingshot/package/")
 ```
 
-## Download Docker Image
 
+## Choice2: Download Docker Image
+We provide another way for users to configure your environment by Docker. To achieve the interaction between Docker and R environment, we build a lightweight R package [simpipe2docker](https://github.com/duohongrui/simpipe2docker) which is used for calling commands in terminal to link Docker and R. It is more easier to manipulate and suitable for different operation systems and R versions, avoiding complex configurations in various environments.
 
 ### Install Docker Desktop
 
@@ -47,9 +49,6 @@ dynwrap::test_docker_installation(detailed = TRUE)
 ```
 If it is `TRUE` in the result, that means Docker is successfully installed.
 
-### Install simpipeDocker
-
-
 ### Download simpipe Docker Image
 
 Use `babelwhale::pull_container("duohongrui/simpipe")` command to pull simpipe Docker image in R (it will take 3-10 mins):
@@ -60,7 +59,19 @@ babelwhale::pull_container("duohongrui/simpipe")
 
 Once the image has been downloaded, check the image list:
 ```{r}
-babelwhale::list_docker_images("duohongrui/simutils_scgan")
+babelwhale::list_docker_images("duohongrui/simpipe")
 ```
 
-Until now, you have successfully established the programming environment 👍👍👍. Go to the [ next page](/programming_usage/2-estimation).👈️
+
+### Install simpipe2docker
+
+Get the simpipe2docker package from github by:
+```{r eval=FALSE}
+devtools::install_github("duhongrui/simpipe2docker")
+```
+
+Load the package and check whether it is installed successfully:
+```{r eval=FALSE}
+library(simpipe2docker)
+```
+Until now, you have successfully established the programming environment 👍👍👍. Go to the [ next page](/programming/2-estimation).👈️

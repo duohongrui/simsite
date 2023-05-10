@@ -9,25 +9,25 @@
 
     <link rel="shortcut icon" href="../../images/simsite_logo.png" type="image/x-icon" />
 
-    <title>Estimation Parameters - simsite</title>
+    <title>Estimation Parameters   simsite</title>
 
     
-    <link href="../../css/nucleus.css?1681201802" rel="stylesheet">
-    <link href="../../css/fontawesome-all.min.css?1681201802" rel="stylesheet">
-    <link href="../../css/hybrid.css?1681201802" rel="stylesheet">
-    <link href="../../css/featherlight.min.css?1681201802" rel="stylesheet">
-    <link href="../../css/perfect-scrollbar.min.css?1681201802" rel="stylesheet">
-    <link href="../../css/auto-complete.css?1681201802" rel="stylesheet">
-    <link href="../../css/atom-one-dark-reasonable.css?1681201802" rel="stylesheet">
-    <link href="../../css/theme.css?1681201802" rel="stylesheet">
-    <link href="../../css/tabs.css?1681201802" rel="stylesheet">
-    <link href="../../css/hugo-theme.css?1681201802" rel="stylesheet">
+    <link href="../../css/nucleus.css?1683703312" rel="stylesheet">
+    <link href="../../css/fontawesome-all.min.css?1683703312" rel="stylesheet">
+    <link href="../../css/hybrid.css?1683703312" rel="stylesheet">
+    <link href="../../css/featherlight.min.css?1683703312" rel="stylesheet">
+    <link href="../../css/perfect-scrollbar.min.css?1683703312" rel="stylesheet">
+    <link href="../../css/auto-complete.css?1683703312" rel="stylesheet">
+    <link href="../../css/atom-one-dark-reasonable.css?1683703312" rel="stylesheet">
+    <link href="../../css/theme.css?1683703312" rel="stylesheet">
+    <link href="../../css/tabs.css?1683703312" rel="stylesheet">
+    <link href="../../css/hugo-theme.css?1683703312" rel="stylesheet">
     
-    <link href="../../css/theme-mine.css?1681201802" rel="stylesheet">
+    <link href="../../css/theme-mine.css?1683703312" rel="stylesheet">
     
-    <link href="../../css/foo.css?1681201802" rel="stylesheet"><link href="../../css/bar.css?1681201802" rel="stylesheet">
+    <link href="../../css/foo.css?1683703312" rel="stylesheet"><link href="../../css/bar.css?1683703312" rel="stylesheet">
 
-    <script src="../../js/jquery-3.3.1.min.js?1681201802"></script>
+    <script src="../../js/jquery-3.3.1.min.js?1683703312"></script>
 
     <style>
       :root #header + #content > #left > #rlblock_left{
@@ -55,14 +55,14 @@
     <span data-search-clear=""><i class="fas fa-times"></i></span>
 </div>
 
-<script type="text/javascript" src="../../js/lunr.min.js?1681201802"></script>
-<script type="text/javascript" src="../../js/auto-complete.js?1681201802"></script>
+<script type="text/javascript" src="../../js/lunr.min.js?1683703312"></script>
+<script type="text/javascript" src="../../js/auto-complete.js?1683703312"></script>
 <script type="text/javascript">
     
         var baseurl = "\/";
     
 </script>
-<script type="text/javascript" src="../../js/search.js?1681201802"></script>
+<script type="text/javascript" src="../../js/search.js?1683703312"></script>
 
     
   </div>
@@ -1035,26 +1035,254 @@
 
 <div id="TOC">
 <ul>
-<li><a href="#estimation" id="toc-estimation">Estimation</a></li>
-<li><a href="#priors-for-estimation" id="toc-priors-for-estimation">Priors For Estimation</a></li>
+<li><a href="#estimate-parameters-from-local-r" id="toc-estimate-parameters-from-local-r">Estimate Parameters From Local R</a>
+<ul>
+<li><a href="#step1-load-packages" id="toc-step1-load-packages">Step1: Load Packages</a></li>
+<li><a href="#step2-prepare-your-data-and-prior-information" id="toc-step2-prepare-your-data-and-prior-information">Step2: Prepare Your Data and Prior Information</a></li>
+<li><a href="#step3-estimate-parameters" id="toc-step3-estimate-parameters">Step3: Estimate Parameters</a></li>
+</ul></li>
+<li><a href="#estimate-parameters-from-docker-in-r" id="toc-estimate-parameters-from-docker-in-r">Estimate Parameters From Docker in R</a></li>
+<li><a href="#estimate-parameters-by-simpipe-package" id="toc-estimate-parameters-by-simpipe-package">Estimate Parameters By Simpipe Package</a>
+<ul>
+<li><a href="#one-dataset-multiple-methods" id="toc-one-dataset-multiple-methods">One dataset ▶️ Multiple Methods</a></li>
+<li><a href="#multiple-datasets-multiple-methods" id="toc-multiple-datasets-multiple-methods">Multiple datasets ▶️ Multiple Methods</a></li>
+</ul></li>
 </ul>
 </div>
 
-<div id="estimation" class="section level2">
-<h2>Estimation</h2>
-<p>This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <a href="http://rmarkdown.rstudio.com" class="uri">http://rmarkdown.rstudio.com</a>.</p>
-<p>When you click the <strong>Knit</strong> button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:</p>
-<pre class="r"><code>summary(cars)</code></pre>
-<pre><code>##      speed           dist       
-##  Min.   : 4.0   Min.   :  2.00  
-##  1st Qu.:12.0   1st Qu.: 26.00  
-##  Median :15.0   Median : 36.00  
-##  Mean   :15.4   Mean   : 42.98  
-##  3rd Qu.:19.0   3rd Qu.: 56.00  
-##  Max.   :25.0   Max.   :120.00</code></pre>
+<p>Estimating essential parameters from the real datasets is a necessary step before simulating a new dataset. In this vignette, we demonstrate three ways of performing estimation step, including:</p>
+<ul>
+<li>Depend on local R environment</li>
+<li>Utilize Docker and link Docker and R</li>
+<li>Special estimation scenarios by Simpipe package</li>
+</ul>
+<div id="estimate-parameters-from-local-r" class="section level2">
+<h2>Estimate Parameters From Local R</h2>
+<p>Make sure that you have already installed three main packages (<strong>simutils</strong>, <strong>simmethods</strong> and <strong>simpipe</strong>) before doing estimation. If not, please refer to <a href="../../programming/1-installation">Installation</a>.</p>
+<div id="step1-load-packages" class="section level3">
+<h3>Step1: Load Packages</h3>
+<p>First, library our packages by:</p>
+<pre class="r"><code>library(simmethods)
+library(simpipe)</code></pre>
 </div>
-<div id="priors-for-estimation" class="section level2">
-<h2>Priors For Estimation</h2>
+<div id="step2-prepare-your-data-and-prior-information" class="section level3">
+<h3>Step2: Prepare Your Data and Prior Information</h3>
+<p>In the estimation, real dataset or the input dataset is necessary. You can load the example dataset in <strong>simmethods</strong> by:</p>
+<pre class="r"><code>ref_data &lt;- simmethods::data</code></pre>
+
+<div class="notices note" ><p>The gene expression profile should be a matrix, not the sparese one or a data frame.</p>
+</div>
+
+<p>The prior information of cell groups is also in the <strong>simmethods</strong> package, and we will demonstrate how to use it later.</p>
+<pre class="r"><code>group_information &lt;- simmethods::group_condition</code></pre>
+</div>
+<div id="step3-estimate-parameters" class="section level3">
+<h3>Step3: Estimate Parameters</h3>
+<div id="example-a-splat-only-need-gene-expression-matrix" class="section level4">
+<h4>Example A: Splat (Only need gene expression matrix)</h4>
+<p>Splat is one of the methods in <a href="https://bioconductor.org/packages/release/bioc/html/splatter.html">Splatter</a> package and only reference (real) data is needed to learn the useful parameters. We can directly call <code>Splat_estimation</code> function to do so.</p>
+<pre class="r"><code>estimation_result &lt;- simmethods::Splat_estimation(
+  ref_data = ref_data,
+  seed = 111)</code></pre>
+<p>The list of result contains two types of information:</p>
+<ul>
+<li><code>estimate_result</code>, the learned parameters by Splat</li>
+<li><code>estimate_detection</code>, the running time and memory usage detected by <a href="https://cran.r-project.org/web/packages/peakRAM/index.html">peakRAM</a> package.</li>
+</ul>
+</div>
+<div id="example-b-zinger-cell-group-information-is-needed" class="section level4">
+<h4>Example B: zingeR (Cell group information is needed)</h4>
+<p>In zingeR method, the information of cell groups is needed. We can prepare a numeric vector to specify the identity for every cell in the expression matrix.</p>
+<pre class="r"><code>group_information &lt;- as.numeric(simmethods::group_condition)</code></pre>
+<p>The <code>other_prior</code> parameter learns the list of other prior information, including:</p>
+<ul>
+<li><code>group.condition</code>, the numeric vector of cell group labels.</li>
+<li><code>batch.condition</code>, the numeric vector of cell batch labels.</li>
+<li>other names</li>
+</ul>
+<p>After preparing the dataset and prior information, we can use zingeR to estimate paramaters.</p>
+<pre class="r"><code>estimation_result &lt;- simmethods::zingeR_estimation(
+  ref_data = ref_data,
+  other_prior = list(group.condition = group_information),
+  seed = 111,
+  verbose = TRUE)
+# Estimating parameters using zingeR</code></pre>
+</div>
+<div id="example-c-parameter-and-prior-information" class="section level4">
+<h4>Example C: Parameter and Prior Information</h4>
+<p>Sometimes users may want to know what parameters are presented in a method and what kinds of prior information are needed. Usually, user can browse the <code>help</code> vignette by <code>help(function_name)</code> or <code>?function_name</code>.</p>
+<p>For example, if we want to know the parameters in the SPsimSeq method, we can call <code>help(SPsimSeq_simulation)</code>.</p>
+<pre class="r"><code>help(SPsimSeq_simulation)</code></pre>
+<p>We detailed the prior information and parameters that the method requires and users usually use.</p>
+<pre class="r"><code># Details
+# In addtion to simulate datasets with default parameters, users want to simulate other kinds of datasets, e.g. a counts matrix with 2 or more # cell groups. In SPsimSeq, you can set extra parameters to simulate datasets.
+# 
+# The customed parameters you can set are below:
+# 
+# nCells. In SPsimSeq, you can set nCells directly. For example, if you want to simulate 1000 cells, you can type other_prior = list(nCells = # 1000).
+# 
+# nGenes. You can directly set other_prior = list(nGenes = 5000) to simulate 5000 genes.
+# 
+# group.condition. You can input cell group information as an integer vector to specify which group that each cell belongs to. See Examples.
+# 
+# de.prob. You can directly set other_prior = list(de.prob = 0.2) to simulate DEGs that account for 20 percent of all genes.
+# 
+# fc.group. You can directly set other_prior = list(fc.group = 2) to specify the minimum fold change of DEGs.
+# 
+# batch.condition. You can input cell batch information as an integer vector to specify which batch that each cell belongs to. See Examples.</code></pre>
+</div>
+<div id="example-d-default-parameters" class="section level4">
+<h4>Example D: Default Parameters</h4>
+<p>We only provide the default parameters for some of the methods:</p>
+<ul>
+<li>Splat, SplatPop, Kersplat</li>
+<li>Simple</li>
+<li>SCRIP</li>
+<li>Lun, Lun2,</li>
+<li>zinbwave</li>
+<li>BASiCS</li>
+<li>ESCO</li>
+</ul>
+<p>If we want to get the default parameter of SCRIP, input:</p>
+<pre class="r"><code>SCRIP_param &lt;- simutils::default_parameters(&quot;SCRIP&quot;)</code></pre>
+<p>The object of default parameters can be directly used for simulation step.</p>
+</div>
+</div>
+</div>
+<div id="estimate-parameters-from-docker-in-r" class="section level2">
+<h2>Estimate Parameters From Docker in R</h2>
+<p>Estimating parameters by a Docker container in R is not challenging since all manipulations are the same as those that have been demonstrated above, except for the function and R package used.</p>
+<p>First, start Docker service and check:</p>
+<pre class="r"><code>library(simpipe2docker)</code></pre>
+<pre class="r"><code>simpipe2docker::test_docker_installation(detailed = TRUE)
+# ✔ Docker is installed
+# ✔ Docker daemon is running
+# ✔ Docker is at correct version (&gt;1.0): 1.41
+# ✔ Docker is in linux mode
+# ✔ Docker can pull images
+# ✔ Docker can run image
+# ✔ Docker can mount temporary volumes
+# ✔ Docker test successful -----------------------------------------------------------------
+# [1] TRUE</code></pre>
+<p>Next, prepare your data and prior information:</p>
+<pre class="r"><code>data &lt;- simmethods::data
+group_condition &lt;- as.numeric(simmethods::group_condition)</code></pre>
+<p>Estimate parameters by Splat method:</p>
+<pre class="r"><code>estimation_result &lt;- simpipe2docker::estimate_parameters_container(
+  ref_data = data,
+  method = &quot;Splat&quot;, 
+  other_prior = list(group.condition = group_condition),
+  seed = 111,
+  verbose = TRUE
+)
+# Learning parameters from data 1
+# Running /usr/local/bin/docker run --name \
+#   20230510_151550__container__wjYWE9mSHC -e &#39;TMPDIR=/tmp2&#39; --workdir \
+#   /home/admin/ -v \
+#   &#39;/var/folders/1l/xmc98tgx0m37wxtbtwnl6h7c0000gn/T//RtmpyDFvJI:/home/admin/docker_path&#39; \
+#   -v \
+#   &#39;/tmp/folders/1l/xmc98tgx0m37wxtbtwnl6h7c0000gn/T//RtmpyDFvJI/file414b397e13a0/tmp:/tmp2&#39; \
+#   duohongrui/simpipe
+# WARNING: The requested image&#39;s platform (linux/amd64) does not match the detected host platform (linux/arm64/v8) and no specific platform was requested
+# Estimating parameters using Splat
+# Output is saved to  /var/folders/1l/xmc98tgx0m37wxtbtwnl6h7c0000gn/T//RtmpyDFvJI 
+# Attempting to read output into R</code></pre>
+<p>Users can also input the list of multiple datasets and use more than one method to performe the estimation step. In this case, you can refer to the next topic <code>Estimate Parameters By Simpipe Package</code> and <strong>just change the function name</strong> that located in the <strong>simpipe2docker</strong> package.</p>
+</div>
+<div id="estimate-parameters-by-simpipe-package" class="section level2">
+<h2>Estimate Parameters By Simpipe Package</h2>
+<p>In addition to calling functions from <strong>simmethods</strong> package, users can also use <code>estimate_parameters</code> function in <strong>simpipe</strong> package. There are some advantages:</p>
+<ul>
+<li>One dataset can be estimated by multiple methods</li>
+<li>Multiple datasets can be estimated by multiple methods</li>
+</ul>
+<div id="one-dataset-multiple-methods" class="section level3">
+<h3>One dataset ▶️ Multiple Methods</h3>
+<p>If you want to estimate parameters from one dataset by many other simulation methods, please make sure that you have already know the requirements of prior information of every method. For example, if we want to estimate the parameters using three methods: Splat, zingR and powsimR, we should browse the vignettes of these three methods.</p>
+<p>After checking the vignettes, we list the necessary prior information and optional cutomed parameters here:</p>
+<ul>
+<li>Splat: none (just a gene matrix)</li>
+<li>zingR: prior information (a numeric vector of cell groups)</li>
+<li>powsimR: optional parameters (RNA-seq, Protocol and Normalisation)</li>
+</ul>
+<p>Then we write these parameters in a list:</p>
+<pre class="r"><code>other_prior = list(group.condition = as.numeric(group_condition),
+                   RNAseq = &quot;singlecell&quot;,
+                   Protocol = &quot;UMI&quot;,
+                   Normalisation = &quot;scran&quot;)</code></pre>
+<pre class="r"><code>estimation_result &lt;- simpipe::estimate_parameters(
+  method = c(&quot;Splat&quot;, &quot;zingeR&quot;, &quot;powsimR&quot;),
+  ref_data = ref_data,
+  other_prior = other_prior)
+# Registered S3 method overwritten by &#39;gdata&#39;:
+#   method         from  
+#   reorder.factor gplots
+# Estimating parameters using powsimR
+# Estimating parameters using estimateParam function
+# The provided count matrix has 160 out of 160 single cells and 4000 out of 4000 genes with at least 1 count.
+# 29 out of 160 single cells were determined to be outliers and removed prior to normalisation.
+# 3 genes out of 4000 were deemed unexpressed and removed prior to normalisation.
+# Using calculateSumFactors, i.e. deconvolution over all cells!
+# Estimating moments.
+# Fitting models.
+# For 3996 out of 4000 genes, mean, dispersion and dropout could be estimated. 131 out of 160 single cells were used for this.
+# Estimating parameters using Splat
+# Estimating parameters using zingeR</code></pre>
+
+<div class="notices note" ><p>If the necessary information is not input, the error message will turn out. You must also make sure that the names of methods are right spelled.</p>
+</div>
+
+<p>You can see a list of three elements in the result and that means the estimation is done:</p>
+<pre class="r"><code>names(estimation_result)
+# [1] &quot;refdata_powsimR&quot; &quot;refdata_Splat&quot;   &quot;refdata_zingeR&quot;</code></pre>
+</div>
+<div id="multiple-datasets-multiple-methods" class="section level3">
+<h3>Multiple datasets ▶️ Multiple Methods</h3>
+<p>Multiple datasets can also be estimated by many methods using <code>estimate_parameters</code> function. Besides the prior information and optional parameters, the <code>ref_data</code> parameter in <code>estimate_parameters</code> function should be a named list when multiple datasets are involved.</p>
+<p>Here, we can first create a data list with customed names (data1 and data2):</p>
+<pre class="r"><code>data_list &lt;- list(data1 = ref_data,
+                  data2 = ref_data)</code></pre>
+<p>Then, set the prior information:</p>
+<pre class="r"><code>other_prior = list(group.condition = as.numeric(group_condition),
+                   RNAseq = &quot;singlecell&quot;,
+                   Protocol = &quot;UMI&quot;,
+                   Normalisation = &quot;scran&quot;)</code></pre>
+<p>Execute the procedure:</p>
+<pre class="r"><code>estimation_result &lt;- simpipe::estimate_parameters(
+  method = c(&quot;Splat&quot;, &quot;zingeR&quot;, &quot;powsimR&quot;),
+  ref_data = data_list,
+  other_prior = other_prior)
+# Estimating parameters using powsimR
+# Estimating parameters using estimateParam function
+# The provided count matrix has 160 out of 160 single cells and 4000 out of 4000 genes with at least 1 count.
+# 29 out of 160 single cells were determined to be outliers and removed prior to normalisation.
+# 3 genes out of 4000 were deemed unexpressed and removed prior to normalisation.
+# Using calculateSumFactors, i.e. deconvolution over all cells!
+# Estimating moments.
+# Fitting models.
+# For 3996 out of 4000 genes, mean, dispersion and dropout could be estimated. 131 out of 160 single cells were used for this.
+# Estimating parameters using Splat
+# Estimating parameters using zingeR
+# Estimating parameters using powsimR
+# Estimating parameters using estimateParam function
+# The provided count matrix has 160 out of 160 single cells and 4000 out of 4000 genes with at least 1 count.
+# 29 out of 160 single cells were determined to be outliers and removed prior to normalisation.
+# 3 genes out of 4000 were deemed unexpressed and removed prior to normalisation.
+# Using calculateSumFactors, i.e. deconvolution over all cells!
+# Estimating moments.
+# Fitting models.
+# For 3996 out of 4000 genes, mean, dispersion and dropout could be estimated. 131 out of 160 single cells were used for this.
+# Estimating parameters using Splat
+# Estimating parameters using zingeR</code></pre>
+<p>We will see a list of six elements in the result:</p>
+<pre class="r"><code>names(estimation_result)
+# [1] &quot;data1_powsimR&quot; &quot;data1_Splat&quot;   &quot;data1_zingeR&quot;  &quot;data2_powsimR&quot;
+# [5] &quot;data2_Splat&quot;   &quot;data2_zingeR&quot;</code></pre>
+
+<div class="notices note" ><p>All of above manipulations can be done by Docker container and only the function name should be changed into <!-- raw HTML omitted -->estimate_parameters_container<!-- raw HTML omitted --> in <!-- raw HTML omitted -->simpipe2docker<!-- raw HTML omitted --> package</p>
+</div>
+
+</div>
 </div>
 
 
@@ -1744,16 +1972,16 @@
     <div style="left: -1000px; overflow: scroll; position: absolute; top: -1000px; border: none; box-sizing: content-box; height: 200px; margin: 0px; padding: 0px; width: 200px;">
       <div style="border: none; box-sizing: content-box; height: 200px; margin: 0px; padding: 0px; width: 200px;"></div>
     </div>
-    <script src="../../js/clipboard.min.js?1681201802"></script>
-    <script src="../../js/perfect-scrollbar.min.js?1681201802"></script>
-    <script src="../../js/perfect-scrollbar.jquery.min.js?1681201802"></script>
-    <script src="../../js/jquery.sticky.js?1681201802"></script>
-    <script src="../../js/featherlight.min.js?1681201802"></script>
-    <script src="../../js/highlight.pack.js?1681201802"></script>
+    <script src="../../js/clipboard.min.js?1683703312"></script>
+    <script src="../../js/perfect-scrollbar.min.js?1683703312"></script>
+    <script src="../../js/perfect-scrollbar.jquery.min.js?1683703312"></script>
+    <script src="../../js/jquery.sticky.js?1683703312"></script>
+    <script src="../../js/featherlight.min.js?1683703312"></script>
+    <script src="../../js/highlight.pack.js?1683703312"></script>
     <script>hljs.initHighlightingOnLoad();</script>
-    <script src="../../js/modernizr.custom-3.6.0.js?1681201802"></script>
-    <script src="../../js/learn.js?1681201802"></script>
-    <script src="../../js/hugo-learn.js?1681201802"></script>
+    <script src="../../js/modernizr.custom-3.6.0.js?1683703312"></script>
+    <script src="../../js/learn.js?1683703312"></script>
+    <script src="../../js/hugo-learn.js?1683703312"></script>
     
         
             <script src="https://unpkg.com/mermaid@8.8.0/dist/mermaid.min.js"></script>
