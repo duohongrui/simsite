@@ -9,27 +9,935 @@ weight: 3
 
 <div id="TOC">
 <ul>
-<li><a href="#r-markdown" id="toc-r-markdown">R Markdown</a></li>
-<li><a href="#including-plots" id="toc-including-plots">Including Plots</a></li>
+<li><a href="#simulate-datasets-from-local-r" id="toc-simulate-datasets-from-local-r">Simulate Datasets From Local R</a>
+<ul>
+<li><a href="#step1-prepare-estimation-results" id="toc-step1-prepare-estimation-results">Step1: Prepare Estimation Results</a></li>
+<li><a href="#step2-check-availabel-parameters" id="toc-step2-check-availabel-parameters">Step2: Check Availabel Parameters</a></li>
+<li><a href="#step3-simulation" id="toc-step3-simulation">Step3: Simulation</a></li>
+</ul></li>
+<li><a href="#simulate-datasets-from-docker-in-r" id="toc-simulate-datasets-from-docker-in-r">Simulate Datasets From Docker in R</a></li>
+<li><a href="#simulate-datasets-by-simpipe-package" id="toc-simulate-datasets-by-simpipe-package">Simulate Datasets By Simpipe Package</a>
+<ul>
+<li><a href="#generate-multiple-datasets-for-every-estimation-result" id="toc-generate-multiple-datasets-for-every-estimation-result">Generate Multiple Datasets For Every Estimation Result</a></li>
+</ul></li>
 </ul>
 </div>
 
-<div id="r-markdown" class="section level2">
-<h2>R Markdown</h2>
-<p>This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <a href="http://rmarkdown.rstudio.com" class="uri">http://rmarkdown.rstudio.com</a>.</p>
-<p>When you click the <strong>Knit</strong> button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:</p>
-<pre class="r"><code>summary(cars)</code></pre>
-<pre><code>##      speed           dist       
-##  Min.   : 4.0   Min.   :  2.00  
-##  1st Qu.:12.0   1st Qu.: 26.00  
-##  Median :15.0   Median : 36.00  
-##  Mean   :15.4   Mean   : 42.98  
-##  3rd Qu.:19.0   3rd Qu.: 56.00  
-##  Max.   :25.0   Max.   :120.00</code></pre>
+<p>We have already known how to estimate parameters from one or more real datasets and got the estimation results. In this chapter, we will demonstrate how to simulate single-cell transcriptomics data based on the previous estimation results, especially the useful parameters that are usually customized to satisfy the different application situations.</p>
+<p>For demonstrations, we use <strong>Splat</strong> method as it contains all functionalities and available parameters that we want to introduce.</p>
+<p>Library our packages first:</p>
+<pre class="r"><code>library(simmethods)
+library(simpipe)</code></pre>
+<div id="simulate-datasets-from-local-r" class="section level2">
+<h2>Simulate Datasets From Local R</h2>
+<div id="step1-prepare-estimation-results" class="section level3">
+<h3>Step1: Prepare Estimation Results</h3>
+<p>Load data and perform estimation:</p>
+<pre class="r"><code>ref_data &lt;- simmethods::data
+estimation_result &lt;- simmethods::Splat_estimation(
+  ref_data = ref_data,
+  verbose = TRUE,
+  seed = 666
+)
+# Estimating parameters using Splat</code></pre>
 </div>
-<div id="including-plots" class="section level2">
-<h2>Including Plots</h2>
-<p>You can also embed plots, for example:</p>
-<p><img src="/programming/3-Simulation_files/figure-html/pressure-1.png" width="672" /></p>
-<p>Note that the <code>echo = FALSE</code> parameter was added to the code chunk to prevent printing of the R code that generated the plot.</p>
+<div id="step2-check-availabel-parameters" class="section level3">
+<h3>Step2: Check Availabel Parameters</h3>
+<p>Next, check the optional parameters that control the size of the simulated datasets, the proportion of DEGs, the number of cell batches and datasets with cellular trajectory. In this way, you will know the essential parameters that may satisfy your simulation requirements.</p>
+<pre class="r"><code>help(SplatPop_simulation)</code></pre>
+<pre class="r"><code>## Details
+# In addtion to simulate datasets with default parameters, users want to simulate other kinds of datasets, e.g. a counts matrix with 2 or more cell groups. In Splat, you can set extra parameters to simulate datasets.
+# 
+# The customed parameters you can set are below:
+# 
+# nCells. In Splat, you can not set nCells directly and should set batchCells instead. For example, if you want to simulate 1000 cells, you can type other_prior = list(batchCells = 1000). If you type other_prior = list(batchCells = c(500, 500)), the simulated data will have two batches.
+# 
+# nGenes. You can directly set other_prior = list(nGenes = 5000) to simulate 5000 genes.
+# 
+# nGroups. You can not directly set other_prior = list(nGroups = 3) to simulate 3 groups. Instead, you should set other_prior = list(prob.group = c(0.2, 0.3, 0.5)) where the sum of group probabilities must equal to 1.
+# 
+# de.prob. You can directly set other_prior = list(de.prob = 0.2) to simulate DEGs that account for 20 percent of all genes.
+# 
+# prob.group. You can directly set other_prior = list(prob.group = c(0.2, 0.3, 0.5)) to assign three proportions of cell groups. Note that the number of groups always equals to the length of the vector.
+# 
+# nBatches. You can not directly set other_prior = list(nBatches = 3) to simulate 3 batches. Instead, you should set other_prior = list(batchCells = c(500, 500, 500)) to reach the goal and the total cells are 1500.
+# 
+# If users want to simulate datasets for trajectory inference, just set other_prior = list(paths = TRUE). Simulating trajectory datasets can also specify the parameters of group and batch. See Examples.</code></pre>
+<p>These parameters can be categorized into 4 classes and respectively represent the main four functionalities in Splat method:</p>
+<ul>
+<li><p>parameters for cell groups</p></li>
+<li><p>parameters for DEGs</p></li>
+<li><p>parameters for batches</p></li>
+<li><p>parameters for cellular differentiation trajectory</p></li>
+</ul>
+<p>In the next part of step3, we will describe these application situations in detail.</p>
+</div>
+<div id="step3-simulation" class="section level3">
+<h3>Step3: Simulation</h3>
+<div id="task1-the-number-of-cell-and-gene" class="section level4">
+<h4>Task1: The Number of Cell and Gene</h4>
+<p>The first application situation is generating datasets with different number of cells and genes. After browsing the vignettes of Splat method, we know that <code>batchCells</code> parameter controls the number of cells and <code>nGenes</code> controls the number of genes.</p>
+<p>Simulate <code>1000</code> cells and <code>5000</code> genes:</p>
+<pre class="r"><code>data_1000_5000 &lt;- simmethods::Splat_simulation(
+  parameters = estimation_result$estimate_result,
+  other_prior = list(batchCells = 1000,
+                     nGenes = 5000),
+  return_format = &quot;Seurat&quot;,
+  verbose = TRUE,
+  seed = 666
+)
+# nCells: 1000
+# nGenes: 5000
+# nGroups: 1
+# de.prob: 0.1
+# nBatches: 1
+# Simulating datasets using Splat
+# Getting parameters...
+# Creating simulation object...
+# Simulating library sizes...
+# Simulating gene means...
+# Simulating BCV...
+# Simulating counts...
+# Simulating dropout (if needed)...
+# Sparsifying assays...
+# Automatically converting to sparse matrices, threshold = 0.95
+# Skipping &#39;BatchCellMeans&#39;: estimated sparse size 1.5 * dense matrix
+# Skipping &#39;BaseCellMeans&#39;: estimated sparse size 1.5 * dense matrix
+# Skipping &#39;BCV&#39;: estimated sparse size 1.5 * dense matrix
+# Skipping &#39;CellMeans&#39;: estimated sparse size 1.49 * dense matrix
+# Skipping &#39;TrueCounts&#39;: estimated sparse size 1.6 * dense matrix
+# Skipping &#39;counts&#39;: estimated sparse size 1.6 * dense matrix
+# Done!</code></pre>
+<pre class="r"><code>data_1000_5000$simulate_result
+# An object of class Seurat 
+# 5000 features across 1000 samples within 1 assay 
+# Active assay: originalexp (5000 features, 0 variable features)</code></pre>
+<p>Simulate <code>10000</code> cells and <code>20000</code> genes:</p>
+<pre class="r"><code>data_10000_20000 &lt;- simmethods::Splat_simulation(
+  parameters = estimation_result$estimate_result,
+  other_prior = list(batchCells = 10000,
+                     nGenes = 20000),
+  return_format = &quot;Seurat&quot;,
+  verbose = TRUE,
+  seed = 666
+)
+# nCells: 10000
+# nGenes: 20000
+# nGroups: 1
+# de.prob: 0.1
+# nBatches: 1
+# Simulating datasets using Splat
+# Getting parameters...
+# Creating simulation object...
+# Simulating library sizes...
+# Simulating gene means...
+# Simulating BCV...
+# Simulating counts...
+# Simulating dropout (if needed)...
+# Sparsifying assays...
+# Automatically converting to sparse matrices, threshold = 0.95
+# Skipping &#39;BatchCellMeans&#39;: estimated sparse size 1.5 * dense matrix
+# Skipping &#39;BaseCellMeans&#39;: estimated sparse size 1.5 * dense matrix
+# Skipping &#39;BCV&#39;: estimated sparse size 1.5 * dense matrix
+# Skipping &#39;CellMeans&#39;: estimated sparse size 1.47 * dense matrix
+# Skipping &#39;TrueCounts&#39;: estimated sparse size 1.06 * dense matrix
+# Skipping &#39;counts&#39;: estimated sparse size 1.06 * dense matrix
+# Done!</code></pre>
+<p>See the number of cells and genes</p>
+<pre class="r"><code>data_10000_20000$simulate_result
+# An object of class Seurat 
+# 20000 features across 10000 samples within 1 assay 
+# Active assay: originalexp (20000 features, 0 variable features)</code></pre>
+<p>Check the execution time:</p>
+<pre class="r"><code>data_10000_20000$simulate_detection$Elapsed_Time_sec
+# [1] 45.764</code></pre>
+</div>
+<div id="task2-cell-groups" class="section level4">
+<h4>Task2: Cell Groups</h4>
+<p>If we want to simulate two groups of cells using Splat method, we can use <code>prob.group</code> parameter to specify the proportions of cells in two groups. The length of <code>prob.group</code> vector defines the number of groups.</p>
+<p>Simulate two groups (4:6):</p>
+<pre class="r"><code>data_4_6 &lt;- simmethods::Splat_simulation(
+  parameters = estimation_result$estimate_result,
+  other_prior = list(batchCells = 1000,
+                     nGenes = 5000,
+                     prob.group = c(0.4, 0.6)),
+  return_format = &quot;Seurat&quot;,
+  verbose = TRUE,
+  seed = 666
+)
+# nCells: 1000
+# nGenes: 5000
+# nGroups: 2
+# de.prob: 0.1
+# nBatches: 1
+# Simulating datasets using Splat
+# Getting parameters...
+# Creating simulation object...
+# Simulating library sizes...
+# Simulating gene means...
+# Simulating group DE...
+# Simulating cell means...
+# Simulating BCV...
+# Simulating counts...
+# Simulating dropout (if needed)...
+# Sparsifying assays...
+# Automatically converting to sparse matrices, threshold = 0.95
+# Skipping &#39;BatchCellMeans&#39;: estimated sparse size 1.5 * dense matrix
+# Skipping &#39;BaseCellMeans&#39;: estimated sparse size 1.5 * dense matrix
+# Skipping &#39;BCV&#39;: estimated sparse size 1.5 * dense matrix
+# Skipping &#39;CellMeans&#39;: estimated sparse size 1.49 * dense matrix
+# Skipping &#39;TrueCounts&#39;: estimated sparse size 1.6 * dense matrix
+# Skipping &#39;counts&#39;: estimated sparse size 1.6 * dense matrix
+# Done!</code></pre>
+<p>Check group labels of cells</p>
+<pre class="r"><code>table(data_4_6$simulate_result$group)
+# 
+# Group1 Group2 
+#    407    593</code></pre>
+<p>Simulate five groups (1:1:2:3:3):</p>
+<pre class="r"><code>data_11233 &lt;- simmethods::Splat_simulation(
+  parameters = estimation_result$estimate_result,
+  other_prior = list(batchCells = 1000,
+                     nGenes = 5000,
+                     prob.group = c(0.1, 0.1, 0.2, 0.3, 0.3)),
+  return_format = &quot;Seurat&quot;,
+  verbose = TRUE,
+  seed = 666
+)
+# nCells: 1000
+# nGenes: 5000
+# nGroups: 5
+# de.prob: 0.1
+# nBatches: 1
+# Simulating datasets using Splat
+# Getting parameters...
+# Creating simulation object...
+# Simulating library sizes...
+# Simulating gene means...
+# Simulating group DE...
+# Simulating cell means...
+# Simulating BCV...
+# Simulating counts...
+# Simulating dropout (if needed)...
+# Sparsifying assays...
+# Automatically converting to sparse matrices, threshold = 0.95
+# Skipping &#39;BatchCellMeans&#39;: estimated sparse size 1.5 * dense matrix
+# Skipping &#39;BaseCellMeans&#39;: estimated sparse size 1.5 * dense matrix
+# Skipping &#39;BCV&#39;: estimated sparse size 1.5 * dense matrix
+# Skipping &#39;CellMeans&#39;: estimated sparse size 1.49 * dense matrix
+# Skipping &#39;TrueCounts&#39;: estimated sparse size 1.6 * dense matrix
+# Skipping &#39;counts&#39;: estimated sparse size 1.6 * dense matrix
+# Done!</code></pre>
+<p>Check group labels of cells</p>
+<pre class="r"><code>table(data_11233$simulate_result$group)
+# 
+# Group1 Group2 Group3 Group4 Group5 
+#     95    106    206    290    303</code></pre>
+</div>
+<div id="task3-differential-expressed-genes" class="section level4">
+<h4>Task3: Differential Expressed Genes</h4>
+<p>Users can also set the proportion of DEGs in Splat method via <code>de.prob</code> parameter which ranges from 0 to 1.</p>
+<p>Here we set <code>de.prob</code> as 0.2 to simulate 20% DEGs in two cell groups.</p>
+<pre class="r"><code>simulated_data &lt;- simmethods::Splat_simulation(
+  parameters = estimation_result$estimate_result,
+  other_prior = list(batchCells = 1000,
+                     nGenes = 5000,
+                     prob.group = c(0.4, 0.6),
+                     de.prob = 0.2),
+  return_format = &quot;list&quot;,
+  verbose = TRUE,
+  seed = 666
+)
+# nCells: 1000
+# nGenes: 5000
+# nGroups: 2
+# de.prob: 0.2
+# nBatches: 1
+# Simulating datasets using Splat
+# Getting parameters...
+# Creating simulation object...
+# Simulating library sizes...
+# Simulating gene means...
+# Simulating group DE...
+# Simulating cell means...
+# Simulating BCV...
+# Simulating counts...
+# Simulating dropout (if needed)...
+# Sparsifying assays...
+# Automatically converting to sparse matrices, threshold = 0.95
+# Skipping &#39;BatchCellMeans&#39;: estimated sparse size 1.5 * dense matrix
+# Skipping &#39;BaseCellMeans&#39;: estimated sparse size 1.5 * dense matrix
+# Skipping &#39;BCV&#39;: estimated sparse size 1.5 * dense matrix
+# Skipping &#39;CellMeans&#39;: estimated sparse size 1.49 * dense matrix
+# Skipping &#39;TrueCounts&#39;: estimated sparse size 1.6 * dense matrix
+# Skipping &#39;counts&#39;: estimated sparse size 1.6 * dense matrix
+# Done!</code></pre>
+<p>Check group labels of cells</p>
+<pre class="r"><code>table(simulated_data$simulate_result$col_meta$group)
+# 
+# Group1 Group2 
+#    407    593</code></pre>
+<p>Check the proportion of DEGs</p>
+<pre class="r"><code>row_meta &lt;- simulated_data$simulate_result$row_meta
+table(row_meta$de_gene == &quot;yes&quot;)/length(row_meta$de_gene)
+# 
+#  FALSE   TRUE 
+# 0.8068 0.1932</code></pre>
+<p>We then simulate another dataset which contains more than 2 groups (4 groups and 40% DEGs):</p>
+<pre class="r"><code>simulated_data &lt;- simmethods::Splat_simulation(
+  parameters = estimation_result$estimate_result,
+  other_prior = list(batchCells = 1000,
+                     nGenes = 5000,
+                     prob.group = c(0.2, 0.2, 0.3, 0.3),
+                     de.prob = 0.4),
+  return_format = &quot;list&quot;,
+  verbose = TRUE,
+  seed = 666
+)
+# nCells: 1000
+# nGenes: 5000
+# nGroups: 4
+# de.prob: 0.4
+# nBatches: 1
+# Simulating datasets using Splat
+# Getting parameters...
+# Creating simulation object...
+# Simulating library sizes...
+# Simulating gene means...
+# Simulating group DE...
+# Simulating cell means...
+# Simulating BCV...
+# Simulating counts...
+# Simulating dropout (if needed)...
+# Sparsifying assays...
+# Automatically converting to sparse matrices, threshold = 0.95
+# Skipping &#39;BatchCellMeans&#39;: estimated sparse size 1.5 * dense matrix
+# Skipping &#39;BaseCellMeans&#39;: estimated sparse size 1.5 * dense matrix
+# Skipping &#39;BCV&#39;: estimated sparse size 1.5 * dense matrix
+# Skipping &#39;CellMeans&#39;: estimated sparse size 1.49 * dense matrix
+# Skipping &#39;TrueCounts&#39;: estimated sparse size 1.6 * dense matrix
+# Skipping &#39;counts&#39;: estimated sparse size 1.6 * dense matrix
+# Done!</code></pre>
+<p>Check group labels of cells</p>
+<pre class="r"><code>table(simulated_data$simulate_result$col_meta$group)
+# 
+# Group1 Group2 Group3 Group4 
+#    201    206    290    303</code></pre>
+<p>Check the proportion of DEGs</p>
+<pre class="r"><code>row_meta &lt;- simulated_data$simulate_result$row_meta
+table(row_meta$de_gene == &quot;yes&quot;)/length(row_meta$de_gene)
+# 
+#  FALSE   TRUE 
+# 0.6568 0.3432</code></pre>
+<p>Note that we can know the DEGs between any pair of two groups in Splat method (except for <strong>scDesign</strong> and <strong>SPARSim</strong>). For example, if we want to
+get the DEGs between the group1 and group2, we should extract the <code>DEFactor</code> in gene metadata:</p>
+<pre class="r"><code>gene_meta &lt;- simulated_data$simulate_result$row_meta
+DEFactor1 &lt;- gene_meta$DEFacGroup1
+DEFactor2 &lt;- gene_meta$DEFacGroup2</code></pre>
+<p>Then we do the division:</p>
+<pre class="r"><code>DEFactor &lt;- DEFactor1/DEFactor2</code></pre>
+<p>Check the gene that whose DEFactor is not equal to 1 and they are defined as the DEGs between group1 and group2:</p>
+<pre class="r"><code>table(DEFactor != 1)
+# 
+# FALSE  TRUE 
+#  4034   966
+DEGs_group1_group2 &lt;- rownames(gene_meta)[DEFactor != 1]
+DEGs_group1_group2[1:10]
+#  [1] &quot;Gene1&quot;  &quot;Gene4&quot;  &quot;Gene7&quot;  &quot;Gene11&quot; &quot;Gene12&quot; &quot;Gene15&quot; &quot;Gene16&quot; &quot;Gene17&quot;
+#  [9] &quot;Gene36&quot; &quot;Gene45&quot;</code></pre>
+<p>{{% notice warning %}}
+scDesign and SPARSim can not return the DEGs between any pair of groups when the number of cell groups is higher than 2. But when there are only two groups in a simulated data, the DEGs are valid.
+{{% /notice %}}</p>
+</div>
+<div id="task4-cell-batches" class="section level4">
+<h4>Task4: Cell Batches</h4>
+<p>Simulating different cell batches is also an important application situation in many researches related to benchmarking and method development.</p>
+<p>In Splat and many other methods, users can specify the number of cell batches and the cell numbers in every batch via <code>batchCells</code> parameter. Here, we will simulate 3 batches with cell numbers of 1000, 2000 and 3000, respectively.</p>
+<pre class="r"><code>simulated_data &lt;- simmethods::Splat_simulation(
+  parameters = estimation_result$estimate_result,
+  other_prior = list(batchCells = c(1000, 2000, 3000),
+                     nGenes = 5000),
+  return_format = &quot;list&quot;,
+  verbose = TRUE,
+  seed = 666
+)
+# nCells: 6000
+# nGenes: 5000
+# nGroups: 1
+# de.prob: 0.1
+# nBatches: 3
+# Simulating datasets using Splat
+# Getting parameters...
+# Creating simulation object...
+# Simulating library sizes...
+# Simulating gene means...
+# Simulating batch effects...
+# Simulating BCV...
+# Simulating counts...
+# Simulating dropout (if needed)...
+# Sparsifying assays...
+# Automatically converting to sparse matrices, threshold = 0.95
+# Skipping &#39;BatchCellMeans&#39;: estimated sparse size 1.5 * dense matrix
+# Skipping &#39;BaseCellMeans&#39;: estimated sparse size 1.5 * dense matrix
+# Skipping &#39;BCV&#39;: estimated sparse size 1.5 * dense matrix
+# Skipping &#39;CellMeans&#39;: estimated sparse size 1.49 * dense matrix
+# Skipping &#39;TrueCounts&#39;: estimated sparse size 1.59 * dense matrix
+# Skipping &#39;counts&#39;: estimated sparse size 1.59 * dense matrix
+# Done!</code></pre>
+<p>Check the batches:</p>
+<pre class="r"><code>table(simulated_data$simulate_result$col_meta$batch)
+# 
+# Batch1 Batch2 Batch3 
+#   1000   2000   3000</code></pre>
+</div>
+<div id="task5-cellular-trajectory" class="section level4">
+<h4>Task5: Cellular Trajectory</h4>
+<p>Using Splat method to simulate the data with cellular differentiation trajectory is another application situation of data simulation. Simply, we can set <code>paths</code> parameter as <code>TRUE</code>.</p>
+<pre class="r"><code>simulated_data &lt;- simmethods::Splat_simulation(
+  parameters = estimation_result$estimate_result,
+  other_prior = list(batchCells = 1000,
+                     prob.group = c(0.3, 0.2, 0.5),
+                     nGenes = 5000,
+                     paths = TRUE),
+  return_format = &quot;SingleCellExperiment&quot;,
+  verbose = TRUE,
+  seed = 666
+)
+# nCells: 1000
+# nGenes: 5000
+# nGroups: 3
+# de.prob: 0.1
+# nBatches: 1
+# Simulating datasets using Splat
+# Simulating trajectory datasets by Splat
+# Getting parameters...
+# Creating simulation object...
+# Simulating library sizes...
+# Simulating gene means...
+# Simulating path endpoints...
+# Simulating path steps...
+# Simulating BCV...
+# Simulating counts...
+# Simulating dropout (if needed)...
+# Sparsifying assays...
+# Automatically converting to sparse matrices, threshold = 0.95
+# Skipping &#39;BatchCellMeans&#39;: estimated sparse size 1.5 * dense matrix
+# Skipping &#39;BaseCellMeans&#39;: estimated sparse size 1.5 * dense matrix
+# Skipping &#39;BCV&#39;: estimated sparse size 1.5 * dense matrix
+# Skipping &#39;CellMeans&#39;: estimated sparse size 1.49 * dense matrix
+# Skipping &#39;TrueCounts&#39;: estimated sparse size 1.6 * dense matrix
+# Skipping &#39;counts&#39;: estimated sparse size 1.6 * dense matrix
+# Done!</code></pre>
+<pre class="r"><code>library(scater)
+# Loading required package: scuttle
+# Loading required package: ggplot2
+sim.paths &lt;- logNormCounts(simulated_data$simulate_result)
+sim.paths &lt;- runPCA(sim.paths)
+plotPCA(sim.paths, colour_by = &quot;group&quot;)</code></pre>
+<p><img src="/programming/3-Simulation_files/figure-html/plot_path-1.png" width="672" /></p>
+<p>If you want to set other parameters related to the trajectory in Splat method, you can browse the official vignettes represented in <code>Splatter</code> package and the <a href="https://www.bioconductor.org/packages/release/bioc/vignettes/splatter/inst/doc/splat_params.html">website</a>.</p>
+<pre class="r"><code>help(splatSimulate, package = &quot;splatter&quot;)</code></pre>
+<p>Here, we only add extra two parameters <code>path.nSteps</code> and <code>path.skew</code>:</p>
+<pre class="r"><code>simulated_data &lt;- simmethods::Splat_simulation(
+  parameters = estimation_result$estimate_result,
+  other_prior = list(batchCells = 1000,
+                     prob.group = c(0.3, 0.2, 0.5),
+                     nGenes = 5000,
+                     paths = TRUE,
+                     path.nSteps = 20,
+                     path.skew = 0.1),
+  return_format = &quot;SingleCellExperiment&quot;,
+  verbose = TRUE,
+  seed = 666
+)
+# nCells: 1000
+# nGenes: 5000
+# nGroups: 3
+# de.prob: 0.1
+# nBatches: 1
+# Simulating datasets using Splat
+# Simulating trajectory datasets by Splat
+# Getting parameters...
+# Creating simulation object...
+# Simulating library sizes...
+# Simulating gene means...
+# Simulating path endpoints...
+# Simulating path steps...
+# Simulating BCV...
+# Simulating counts...
+# Simulating dropout (if needed)...
+# Sparsifying assays...
+# Automatically converting to sparse matrices, threshold = 0.95
+# Skipping &#39;BatchCellMeans&#39;: estimated sparse size 1.5 * dense matrix
+# Skipping &#39;BaseCellMeans&#39;: estimated sparse size 1.5 * dense matrix
+# Skipping &#39;BCV&#39;: estimated sparse size 1.5 * dense matrix
+# Skipping &#39;CellMeans&#39;: estimated sparse size 1.49 * dense matrix
+# Skipping &#39;TrueCounts&#39;: estimated sparse size 1.6 * dense matrix
+# Skipping &#39;counts&#39;: estimated sparse size 1.6 * dense matrix
+# Done!</code></pre>
+<pre class="r"><code>library(scater)
+sim.paths &lt;- logNormCounts(simulated_data$simulate_result)
+sim.paths &lt;- runPCA(sim.paths)
+plotPCA(sim.paths, colour_by = &quot;group&quot;)</code></pre>
+<p><img src="/programming/3-Simulation_files/figure-html/plot_path2-1.png" width="672" /></p>
+</div>
+</div>
+</div>
+<div id="simulate-datasets-from-docker-in-r" class="section level2">
+<h2>Simulate Datasets From Docker in R</h2>
+<p>This part we will demonstrate how to simulate datasets by using Docker in R and users should make sure that <a href="https://www.docker.com/">Docker</a> has been installed on your device.</p>
+<p>First, start Docker and check:</p>
+<pre class="r"><code>library(simpipe2docker)
+test_docker_installation(detailed = TRUE)
+# ✔ Docker is installed
+# ✔ Docker daemon is running
+# ✔ Docker is at correct version (&gt;1.0): 1.41
+# ✔ Docker is in linux mode
+# ✔ Docker can pull images
+# ✔ Docker can run image
+# ✔ Docker can mount temporary volumes
+# ✔ Docker test successful -----------------------------------------------------------------
+# [1] TRUE</code></pre>
+<p>Estimation parameters from Docker:</p>
+<pre class="r"><code>estimation_result &lt;- simpipe2docker::estimate_parameters_container(
+  ref_data = ref_data,
+  method = &quot;Splat&quot;,
+  verbose = TRUE,
+  seed = 666
+)
+# Learning parameters from data 1
+# Running /usr/local/bin/docker run --name \
+#   20230527_100216__container__uxBxg1JNLM -e &#39;TMPDIR=/tmp2&#39; --workdir \
+#   /home/admin/ -v \
+#   &#39;/var/folders/1l/xmc98tgx0m37wxtbtwnl6h7c0000gn/T//RtmpG1lxF9:/home/admin/docker_path&#39; \
+#   -v \
+#   &#39;/tmp/folders/1l/xmc98tgx0m37wxtbtwnl6h7c0000gn/T//RtmpG1lxF9/file1172cf5b656/tmp:/tmp2&#39; \
+#   duohongrui/simpipe
+# WARNING: The requested image&#39;s platform (linux/amd64) does not match the detected host platform (linux/arm64/v8) and no specific platform was requested
+# Estimating parameters using Splat
+# Output is saved to  /var/folders/1l/xmc98tgx0m37wxtbtwnl6h7c0000gn/T//RtmpG1lxF9 
+# Attempting to read output into R</code></pre>
+<p>Simulate new datasets from Docker:</p>
+<pre class="r"><code>## simulate 1000 cells and 1000 genes
+simulated_data &lt;- simpipe2docker::simulate_datasets_container(
+  parameters = estimation_result,
+  other_prior = list(batchCells = 1000,
+                     nGenes = 1000),
+  return_format = &quot;SingleCellExperiment&quot;,
+  verbose = TRUE,
+  seed = 666
+)
+# Simulating dataset 1
+# Running /usr/local/bin/docker run --name \
+#   20230527_100404__container__NigapuTAlX -e &#39;TMPDIR=/tmp2&#39; --workdir \
+#   /home/admin/ -v \
+#   &#39;/var/folders/1l/xmc98tgx0m37wxtbtwnl6h7c0000gn/T//RtmpG1lxF9:/home/admin/docker_path&#39; \
+#   -v \
+#   &#39;/tmp/folders/1l/xmc98tgx0m37wxtbtwnl6h7c0000gn/T//RtmpG1lxF9/file11726ee3671/tmp:/tmp2&#39; \
+#   duohongrui/simpipe
+# WARNING: The requested image&#39;s platform (linux/amd64) does not match the detected host platform (linux/arm64/v8) and no specific platform was requested
+# Registered S3 method overwritten by &#39;SeuratDisk&#39;:
+#   method            from  
+#   as.sparse.H5Group Seurat
+# nCells: 1000 
+# nGenes: 1000 
+# nGroups: 1 
+# de.prob: 0.1 
+# nBatches: 1 
+# Simulating datasets using Splat
+# Getting parameters...
+# Creating simulation object...
+# Simulating library sizes...
+# Simulating gene means...
+# Simulating BCV...
+# Simulating counts...
+# Simulating dropout (if needed)...
+# Sparsifying assays...
+# Automatically converting to sparse matrices, threshold = 0.95
+# Skipping &#39;BatchCellMeans&#39;: estimated sparse size 1.5 * dense matrix
+# Skipping &#39;BaseCellMeans&#39;: estimated sparse size 1.5 * dense matrix
+# Skipping &#39;BCV&#39;: estimated sparse size 1.5 * dense matrix
+# Skipping &#39;CellMeans&#39;: estimated sparse size 1.5 * dense matrix
+# Skipping &#39;TrueCounts&#39;: estimated sparse size 2.21 * dense matrix
+# Skipping &#39;counts&#39;: estimated sparse size 2.21 * dense matrix
+# Done!
+# Output is saved to  /var/folders/1l/xmc98tgx0m37wxtbtwnl6h7c0000gn/T//RtmpG1lxF9 
+# Attempting to read output into R
+simulated_data$refdata_Splat_1$simulate_result
+# class: SingleCellExperiment 
+# dim: 1000 1000 
+# metadata(1): Params
+# assays(6): BatchCellMeans BaseCellMeans ... TrueCounts counts
+# rownames(1000): Gene1 Gene2 ... Gene999 Gene1000
+# rowData names(4): Gene BaseGeneMean OutlierFactor GeneMean
+# colnames(1000): Cell1 Cell2 ... Cell999 Cell1000
+# colData names(3): Cell Batch ExpLibSize
+# reducedDimNames(0):
+# mainExpName: NULL
+# altExpNames(0):</code></pre>
+<pre class="r"><code>## simulate 1000 cells and 1000 genes (two groups and 40% DEGs)
+simulated_data &lt;- simpipe2docker::simulate_datasets_container(
+  parameters = estimation_result,
+  other_prior = list(batchCells = 1000,
+                     nGenes = 1000,
+                     prob.group = c(0.4, 0.6),
+                     de.prob = 0.4),
+  return_format = &quot;list&quot;,
+  verbose = TRUE,
+  seed = 666
+)
+# Simulating dataset 1
+# Running /usr/local/bin/docker run --name \
+#   20230527_100508__container__4YsDYtfOI7 -e &#39;TMPDIR=/tmp2&#39; --workdir \
+#   /home/admin/ -v \
+#   &#39;/var/folders/1l/xmc98tgx0m37wxtbtwnl6h7c0000gn/T//RtmpG1lxF9:/home/admin/docker_path&#39; \
+#   -v \
+#   &#39;/tmp/folders/1l/xmc98tgx0m37wxtbtwnl6h7c0000gn/T//RtmpG1lxF9/file11726e0d7069/tmp:/tmp2&#39; \
+#   duohongrui/simpipe
+# WARNING: The requested image&#39;s platform (linux/amd64) does not match the detected host platform (linux/arm64/v8) and no specific platform was requested
+# Registered S3 method overwritten by &#39;SeuratDisk&#39;:
+#   method            from  
+#   as.sparse.H5Group Seurat
+# nCells: 1000 
+# nGenes: 1000 
+# nGroups: 1 
+# de.prob: 0.4 
+# nBatches: 1 
+# Simulating datasets using Splat
+# Getting parameters...
+# Creating simulation object...
+# Simulating library sizes...
+# Simulating gene means...
+# Simulating BCV...
+# Simulating counts...
+# Simulating dropout (if needed)...
+# Sparsifying assays...
+# Automatically converting to sparse matrices, threshold = 0.95
+# Skipping &#39;BatchCellMeans&#39;: estimated sparse size 1.5 * dense matrix
+# Skipping &#39;BaseCellMeans&#39;: estimated sparse size 1.5 * dense matrix
+# Skipping &#39;BCV&#39;: estimated sparse size 1.5 * dense matrix
+# Skipping &#39;CellMeans&#39;: estimated sparse size 1.5 * dense matrix
+# Skipping &#39;TrueCounts&#39;: estimated sparse size 2.21 * dense matrix
+# Skipping &#39;counts&#39;: estimated sparse size 2.21 * dense matrix
+# Done!
+# Output is saved to  /var/folders/1l/xmc98tgx0m37wxtbtwnl6h7c0000gn/T//RtmpG1lxF9 
+# Attempting to read output into R</code></pre>
+</div>
+<div id="simulate-datasets-by-simpipe-package" class="section level2">
+<h2>Simulate Datasets By Simpipe Package</h2>
+<p>Based on <strong>simmethods</strong> package, <strong>simpipe</strong> package provides the other useful functions. Users can estimate parameters from multiple real datasets by using multiple methods. Meanwhile, users can also simulate multiple new datasets at once. In this part, we introduce some helpful functions in <strong>simpipe</strong> package.</p>
+<p>First, we should use simpipe to estimate parameters from two real datasets:</p>
+<pre class="r"><code>## prepare a list of data
+data &lt;- list(data1 = ref_data,
+             data2 = ref_data)
+
+estimation_result &lt;- simpipe::estimate_parameters(
+  ref_data = data,
+  method = &quot;Splat&quot;,
+  verbose = TRUE,
+  seed = 666
+)
+# Estimating parameters using Splat
+# Estimating parameters using Splat</code></pre>
+<div id="generate-multiple-datasets-for-every-estimation-result" class="section level3">
+<h3>Generate Multiple Datasets For Every Estimation Result</h3>
+<p>For every estimation result, we can generate multiple datasets by setting <code>n</code> parameter in <code>simulate_datasets</code> function:</p>
+<pre class="r"><code>simulated_data &lt;- simpipe::simulate_datasets(
+  parameters = estimation_result,
+  other_prior = list(batchCells = 1000,
+                     nGenes = 1000),
+  n = 3,
+  return_format = &quot;list&quot;,
+  verbose = TRUE,
+  seed = 666
+)
+# The length of seeds is not identical to the time(s) that every method will be executed 
+# The seed will be set as: 100 200 300 when performing every method
+# Simulating dataset 1
+# nCells: 1000
+# nGenes: 1000
+# nGroups: 1
+# de.prob: 0.1
+# nBatches: 1
+# Simulating datasets using Splat
+# Getting parameters...
+# Creating simulation object...
+# Simulating library sizes...
+# Simulating gene means...
+# Simulating BCV...
+# Simulating counts...
+# Simulating dropout (if needed)...
+# Sparsifying assays...
+# Automatically converting to sparse matrices, threshold = 0.95
+# Skipping &#39;BatchCellMeans&#39;: estimated sparse size 1.5 * dense matrix
+# Skipping &#39;BaseCellMeans&#39;: estimated sparse size 1.5 * dense matrix
+# Skipping &#39;BCV&#39;: estimated sparse size 1.5 * dense matrix
+# Skipping &#39;CellMeans&#39;: estimated sparse size 1.5 * dense matrix
+# Skipping &#39;TrueCounts&#39;: estimated sparse size 2.23 * dense matrix
+# Skipping &#39;counts&#39;: estimated sparse size 2.23 * dense matrix
+# Done!
+# Simulating dataset 2
+# nCells: 1000
+# nGenes: 1000
+# nGroups: 1
+# de.prob: 0.1
+# nBatches: 1
+# Simulating datasets using Splat
+# Getting parameters...
+# Creating simulation object...
+# Simulating library sizes...
+# Simulating gene means...
+# Simulating BCV...
+# Simulating counts...
+# Simulating dropout (if needed)...
+# Sparsifying assays...
+# Automatically converting to sparse matrices, threshold = 0.95
+# Skipping &#39;BatchCellMeans&#39;: estimated sparse size 1.5 * dense matrix
+# Skipping &#39;BaseCellMeans&#39;: estimated sparse size 1.5 * dense matrix
+# Skipping &#39;BCV&#39;: estimated sparse size 1.5 * dense matrix
+# Skipping &#39;CellMeans&#39;: estimated sparse size 1.5 * dense matrix
+# Skipping &#39;TrueCounts&#39;: estimated sparse size 2.25 * dense matrix
+# Skipping &#39;counts&#39;: estimated sparse size 2.25 * dense matrix
+# Done!
+# Simulating dataset 3
+# nCells: 1000
+# nGenes: 1000
+# nGroups: 1
+# de.prob: 0.1
+# nBatches: 1
+# Simulating datasets using Splat
+# Getting parameters...
+# Creating simulation object...
+# Simulating library sizes...
+# Simulating gene means...
+# Simulating BCV...
+# Simulating counts...
+# Simulating dropout (if needed)...
+# Sparsifying assays...
+# Automatically converting to sparse matrices, threshold = 0.95
+# Skipping &#39;BatchCellMeans&#39;: estimated sparse size 1.5 * dense matrix
+# Skipping &#39;BaseCellMeans&#39;: estimated sparse size 1.5 * dense matrix
+# Skipping &#39;BCV&#39;: estimated sparse size 1.5 * dense matrix
+# Skipping &#39;CellMeans&#39;: estimated sparse size 1.5 * dense matrix
+# Skipping &#39;TrueCounts&#39;: estimated sparse size 2.21 * dense matrix
+# Skipping &#39;counts&#39;: estimated sparse size 2.21 * dense matrix
+# Done!
+# Simulating dataset 4
+# nCells: 1000
+# nGenes: 1000
+# nGroups: 1
+# de.prob: 0.1
+# nBatches: 1
+# Simulating datasets using Splat
+# Getting parameters...
+# Creating simulation object...
+# Simulating library sizes...
+# Simulating gene means...
+# Simulating BCV...
+# Simulating counts...
+# Simulating dropout (if needed)...
+# Sparsifying assays...
+# Automatically converting to sparse matrices, threshold = 0.95
+# Skipping &#39;BatchCellMeans&#39;: estimated sparse size 1.5 * dense matrix
+# Skipping &#39;BaseCellMeans&#39;: estimated sparse size 1.5 * dense matrix
+# Skipping &#39;BCV&#39;: estimated sparse size 1.5 * dense matrix
+# Skipping &#39;CellMeans&#39;: estimated sparse size 1.5 * dense matrix
+# Skipping &#39;TrueCounts&#39;: estimated sparse size 2.23 * dense matrix
+# Skipping &#39;counts&#39;: estimated sparse size 2.23 * dense matrix
+# Done!
+# Simulating dataset 5
+# nCells: 1000
+# nGenes: 1000
+# nGroups: 1
+# de.prob: 0.1
+# nBatches: 1
+# Simulating datasets using Splat
+# Getting parameters...
+# Creating simulation object...
+# Simulating library sizes...
+# Simulating gene means...
+# Simulating BCV...
+# Simulating counts...
+# Simulating dropout (if needed)...
+# Sparsifying assays...
+# Automatically converting to sparse matrices, threshold = 0.95
+# Skipping &#39;BatchCellMeans&#39;: estimated sparse size 1.5 * dense matrix
+# Skipping &#39;BaseCellMeans&#39;: estimated sparse size 1.5 * dense matrix
+# Skipping &#39;BCV&#39;: estimated sparse size 1.5 * dense matrix
+# Skipping &#39;CellMeans&#39;: estimated sparse size 1.5 * dense matrix
+# Skipping &#39;TrueCounts&#39;: estimated sparse size 2.25 * dense matrix
+# Skipping &#39;counts&#39;: estimated sparse size 2.25 * dense matrix
+# Done!
+# Simulating dataset 6
+# nCells: 1000
+# nGenes: 1000
+# nGroups: 1
+# de.prob: 0.1
+# nBatches: 1
+# Simulating datasets using Splat
+# Getting parameters...
+# Creating simulation object...
+# Simulating library sizes...
+# Simulating gene means...
+# Simulating BCV...
+# Simulating counts...
+# Simulating dropout (if needed)...
+# Sparsifying assays...
+# Automatically converting to sparse matrices, threshold = 0.95
+# Skipping &#39;BatchCellMeans&#39;: estimated sparse size 1.5 * dense matrix
+# Skipping &#39;BaseCellMeans&#39;: estimated sparse size 1.5 * dense matrix
+# Skipping &#39;BCV&#39;: estimated sparse size 1.5 * dense matrix
+# Skipping &#39;CellMeans&#39;: estimated sparse size 1.5 * dense matrix
+# Skipping &#39;TrueCounts&#39;: estimated sparse size 2.21 * dense matrix
+# Skipping &#39;counts&#39;: estimated sparse size 2.21 * dense matrix
+# Done!</code></pre>
+<p>We can also set <code>seed</code> parameter whose length is equal to the number of <code>n</code>:</p>
+<pre class="r"><code>simulated_data &lt;- simpipe::simulate_datasets(
+  parameters = estimation_result,
+  other_prior = list(batchCells = 1000,
+                     nGenes = 1000),
+  n = 3,
+  return_format = &quot;list&quot;,
+  verbose = TRUE,
+  seed = c(666, 888, 999)
+)
+# Simulating dataset 1
+# nCells: 1000
+# nGenes: 1000
+# nGroups: 1
+# de.prob: 0.1
+# nBatches: 1
+# Simulating datasets using Splat
+# Getting parameters...
+# Creating simulation object...
+# Simulating library sizes...
+# Simulating gene means...
+# Simulating BCV...
+# Simulating counts...
+# Simulating dropout (if needed)...
+# Sparsifying assays...
+# Automatically converting to sparse matrices, threshold = 0.95
+# Skipping &#39;BatchCellMeans&#39;: estimated sparse size 1.5 * dense matrix
+# Skipping &#39;BaseCellMeans&#39;: estimated sparse size 1.5 * dense matrix
+# Skipping &#39;BCV&#39;: estimated sparse size 1.5 * dense matrix
+# Skipping &#39;CellMeans&#39;: estimated sparse size 1.5 * dense matrix
+# Skipping &#39;TrueCounts&#39;: estimated sparse size 2.21 * dense matrix
+# Skipping &#39;counts&#39;: estimated sparse size 2.21 * dense matrix
+# Done!
+# Simulating dataset 2
+# nCells: 1000
+# nGenes: 1000
+# nGroups: 1
+# de.prob: 0.1
+# nBatches: 1
+# Simulating datasets using Splat
+# Getting parameters...
+# Creating simulation object...
+# Simulating library sizes...
+# Simulating gene means...
+# Simulating BCV...
+# Simulating counts...
+# Simulating dropout (if needed)...
+# Sparsifying assays...
+# Automatically converting to sparse matrices, threshold = 0.95
+# Skipping &#39;BatchCellMeans&#39;: estimated sparse size 1.5 * dense matrix
+# Skipping &#39;BaseCellMeans&#39;: estimated sparse size 1.5 * dense matrix
+# Skipping &#39;BCV&#39;: estimated sparse size 1.5 * dense matrix
+# Skipping &#39;CellMeans&#39;: estimated sparse size 1.5 * dense matrix
+# Skipping &#39;TrueCounts&#39;: estimated sparse size 2.21 * dense matrix
+# Skipping &#39;counts&#39;: estimated sparse size 2.21 * dense matrix
+# Done!
+# Simulating dataset 3
+# nCells: 1000
+# nGenes: 1000
+# nGroups: 1
+# de.prob: 0.1
+# nBatches: 1
+# Simulating datasets using Splat
+# Getting parameters...
+# Creating simulation object...
+# Simulating library sizes...
+# Simulating gene means...
+# Simulating BCV...
+# Simulating counts...
+# Simulating dropout (if needed)...
+# Sparsifying assays...
+# Automatically converting to sparse matrices, threshold = 0.95
+# Skipping &#39;BatchCellMeans&#39;: estimated sparse size 1.5 * dense matrix
+# Skipping &#39;BaseCellMeans&#39;: estimated sparse size 1.5 * dense matrix
+# Skipping &#39;BCV&#39;: estimated sparse size 1.5 * dense matrix
+# Skipping &#39;CellMeans&#39;: estimated sparse size 1.5 * dense matrix
+# Skipping &#39;TrueCounts&#39;: estimated sparse size 2.17 * dense matrix
+# Skipping &#39;counts&#39;: estimated sparse size 2.17 * dense matrix
+# Done!
+# Simulating dataset 4
+# nCells: 1000
+# nGenes: 1000
+# nGroups: 1
+# de.prob: 0.1
+# nBatches: 1
+# Simulating datasets using Splat
+# Getting parameters...
+# Creating simulation object...
+# Simulating library sizes...
+# Simulating gene means...
+# Simulating BCV...
+# Simulating counts...
+# Simulating dropout (if needed)...
+# Sparsifying assays...
+# Automatically converting to sparse matrices, threshold = 0.95
+# Skipping &#39;BatchCellMeans&#39;: estimated sparse size 1.5 * dense matrix
+# Skipping &#39;BaseCellMeans&#39;: estimated sparse size 1.5 * dense matrix
+# Skipping &#39;BCV&#39;: estimated sparse size 1.5 * dense matrix
+# Skipping &#39;CellMeans&#39;: estimated sparse size 1.5 * dense matrix
+# Skipping &#39;TrueCounts&#39;: estimated sparse size 2.21 * dense matrix
+# Skipping &#39;counts&#39;: estimated sparse size 2.21 * dense matrix
+# Done!
+# Simulating dataset 5
+# nCells: 1000
+# nGenes: 1000
+# nGroups: 1
+# de.prob: 0.1
+# nBatches: 1
+# Simulating datasets using Splat
+# Getting parameters...
+# Creating simulation object...
+# Simulating library sizes...
+# Simulating gene means...
+# Simulating BCV...
+# Simulating counts...
+# Simulating dropout (if needed)...
+# Sparsifying assays...
+# Automatically converting to sparse matrices, threshold = 0.95
+# Skipping &#39;BatchCellMeans&#39;: estimated sparse size 1.5 * dense matrix
+# Skipping &#39;BaseCellMeans&#39;: estimated sparse size 1.5 * dense matrix
+# Skipping &#39;BCV&#39;: estimated sparse size 1.5 * dense matrix
+# Skipping &#39;CellMeans&#39;: estimated sparse size 1.5 * dense matrix
+# Skipping &#39;TrueCounts&#39;: estimated sparse size 2.21 * dense matrix
+# Skipping &#39;counts&#39;: estimated sparse size 2.21 * dense matrix
+# Done!
+# Simulating dataset 6
+# nCells: 1000
+# nGenes: 1000
+# nGroups: 1
+# de.prob: 0.1
+# nBatches: 1
+# Simulating datasets using Splat
+# Getting parameters...
+# Creating simulation object...
+# Simulating library sizes...
+# Simulating gene means...
+# Simulating BCV...
+# Simulating counts...
+# Simulating dropout (if needed)...
+# Sparsifying assays...
+# Automatically converting to sparse matrices, threshold = 0.95
+# Skipping &#39;BatchCellMeans&#39;: estimated sparse size 1.5 * dense matrix
+# Skipping &#39;BaseCellMeans&#39;: estimated sparse size 1.5 * dense matrix
+# Skipping &#39;BCV&#39;: estimated sparse size 1.5 * dense matrix
+# Skipping &#39;CellMeans&#39;: estimated sparse size 1.5 * dense matrix
+# Skipping &#39;TrueCounts&#39;: estimated sparse size 2.17 * dense matrix
+# Skipping &#39;counts&#39;: estimated sparse size 2.17 * dense matrix
+# Done!</code></pre>
+</div>
 </div>
