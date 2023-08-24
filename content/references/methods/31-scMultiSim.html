@@ -1,0 +1,224 @@
+---
+title: "scMultiSim"
+output:
+  blogdown::html_page:
+    toc: yes
+weight: 31
+---
+
+
+<div id="TOC">
+<ul>
+<li><a href="#estimating-parameters-from-a-real-dataset" id="toc-estimating-parameters-from-a-real-dataset">Estimating parameters from a real dataset</a></li>
+<li><a href="#simulating-datasets-using-scmultisim" id="toc-simulating-datasets-using-scmultisim">Simulating datasets using scMultiSim</a>
+<ul>
+<li><a href="#datasets-with-default-parameters" id="toc-datasets-with-default-parameters">Datasets with default parameters</a></li>
+<li><a href="#determin-the-number-of-cells-and-genes" id="toc-determin-the-number-of-cells-and-genes">Determin the number of cells and genes</a></li>
+<li><a href="#simulate-groups" id="toc-simulate-groups">Simulate groups</a></li>
+<li><a href="#simulate-batches" id="toc-simulate-batches">Simulate batches</a></li>
+<li><a href="#simulate-cellular-differential-trajectory" id="toc-simulate-cellular-differential-trajectory">Simulate cellular differential trajectory</a></li>
+</ul></li>
+</ul>
+</div>
+
+<!-- github markdown built using 
+rmarkdown::render("vignettes/scMultiSim.Rmd", output_format = rmarkdown::github_document())
+-->
+<p>Here SymSim method will be demonstrated clearly and hope that this document can help you.</p>
+<div id="estimating-parameters-from-a-real-dataset" class="section level2">
+<h2>Estimating parameters from a real dataset</h2>
+<p>Before simulating datasets, it is important to estimate some essential parameters from a real dataset in order to make the simulated data more real.</p>
+<pre class="r"><code>library(simmethods)
+library(SingleCellExperiment)
+# Load data
+ref_data &lt;- simmethods::data</code></pre>
+<pre class="r"><code>estimate_result &lt;- simmethods::scMultiSim_estimation(
+  ref_data = ref_data,
+  verbose = T,
+  seed = 10
+)
+# Estimating parameters using scMultiSim
+# Loading required package: amap
+# Computing nearest neighbor graph
+# Computing SNN
+# Your data has 3 groups</code></pre>
+<p>Users can also input the group information of cells:</p>
+<pre class="r"><code>group &lt;- as.numeric(simmethods::group_condition)
+estimate_result &lt;- simmethods::scMultiSim_estimation(
+  ref_data = ref_data,
+  other_prior = list(group.condition = group),
+  verbose = T,
+  seed = 10
+)
+# Estimating parameters using scMultiSim</code></pre>
+<p>The estimation result contains an object with <code>phylo</code> data structure:</p>
+<pre class="r"><code>plot(estimate_result[[&quot;estimate_result&quot;]][[&quot;phylo&quot;]])</code></pre>
+<p><img src="/references/methods/31-scMultiSim_files/figure-html/unnamed-chunk-3-1.png" width="480" style="display: block; margin: auto;" /></p>
+</div>
+<div id="simulating-datasets-using-scmultisim" class="section level2">
+<h2>Simulating datasets using scMultiSim</h2>
+<ol style="list-style-type: decimal">
+<li>Datasets with default parameters</li>
+<li>Determin the number of cells and genes</li>
+<li>Simulate groups</li>
+<li>Simulate batches</li>
+<li>Simulate cellular differential trajectory</li>
+</ol>
+<div id="datasets-with-default-parameters" class="section level3">
+<h3>Datasets with default parameters</h3>
+<p>The reference data contains 160 cells and 4000 genes, if we simulate datasets with default parameters and then we will obtain a new data which has the same size as the reference data.</p>
+<pre class="r"><code>simulate_result &lt;- simmethods::scMultiSim_simulation(
+  parameters = estimate_result$estimate_result,
+  other_prior = NULL,
+  return_format = &quot;SCE&quot;,
+  seed = 111
+)
+# nCells: 160
+# nGenes: 4000
+# nGroups: 2
+# nBatches: 1
+# Time spent: 0.17 mins
+# Adding experimental noise...
+# 50..100..150..Using atac_counts
+# Time spent: 0.52 mins</code></pre>
+<pre class="r"><code>SCE_result &lt;- simulate_result[[&quot;simulate_result&quot;]]
+dim(SCE_result)
+# [1] 4000  160</code></pre>
+<pre class="r"><code>head(colData(SCE_result))
+# DataFrame with 6 rows and 2 columns
+#         cell_name       group
+#       &lt;character&gt; &lt;character&gt;
+# cell1       cell1      group1
+# cell2       cell2      group1
+# cell3       cell3      group1
+# cell4       cell4      group2
+# cell5       cell5      group2
+# cell6       cell6      group2</code></pre>
+</div>
+<div id="determin-the-number-of-cells-and-genes" class="section level3">
+<h3>Determin the number of cells and genes</h3>
+<pre class="r"><code>simulate_result &lt;- simmethods::scMultiSim_simulation(
+  parameters = estimate_result$estimate_result,
+  other_prior = list(nCells = 500,
+                     nGenes = 1000),
+  return_format = &quot;SCE&quot;,
+  seed = 111
+)
+# nCells: 500
+# nGenes: 1000
+# nGroups: 2
+# nBatches: 1
+# Time spent: 0.15 mins
+# Adding experimental noise...
+# 50..100..150..200..250..300..350..400..450..500..Using atac_counts
+# Time spent: 0.44 mins</code></pre>
+<pre class="r"><code>SCE_result &lt;- simulate_result[[&quot;simulate_result&quot;]]
+dim(SCE_result)
+# [1] 1000  500</code></pre>
+</div>
+<div id="simulate-groups" class="section level3">
+<h3>Simulate groups</h3>
+<p>In scMultiSim, we can not set <code>nGroups</code> directly and should set <code>prob.group</code> instead. For example, if we want to simulate 2 groups, we can type <code>other_prior = list(prob.group = c(0.5, 0.5))</code>. Note that the sum of <code>prob.group</code> numeric vector must equal to 1, so we can also set <code>prob.group = c(0.3, 0.7)</code>.</p>
+<p>{{% notice note %}}
+The group number should be equal to that used or detected in the estimation step, otherwise the error may occur.
+{{% /notice %}}</p>
+<p>In addtion, if we want to simulate three or more groups, we should obey the rules:</p>
+<ul>
+<li>The length of <code>prob.group</code> vector must always equal to the number of groups.</li>
+<li>The sum of <code>prob.group</code> numeric vector must equal to 1.</li>
+</ul>
+<p>For demonstration, we will simulate two groups using the learned parameters.</p>
+<pre class="r"><code>simulate_result &lt;- simmethods::scMultiSim_simulation(
+  parameters = estimate_result$estimate_result,
+  other_prior = list(prob.group = c(0.4, 0.6)),
+  return_format = &quot;list&quot;,
+  seed = 111
+)
+# nCells: 160
+# nGenes: 4000
+# nGroups: 2
+# nBatches: 1
+# Time spent: 0.17 mins
+# Adding experimental noise...
+# 50..100..150..Using atac_counts
+# Time spent: 0.53 mins</code></pre>
+<pre class="r"><code>col_data &lt;- simulate_result[[&quot;simulate_result&quot;]][[&quot;col_meta&quot;]]
+table(col_data$group)
+# 
+# group1 group2 
+#     64     96</code></pre>
+</div>
+<div id="simulate-batches" class="section level3">
+<h3>Simulate batches</h3>
+<p>In scMultiSim, we can set <code>nBatches</code> directly to simulate cell batches.</p>
+<p>For demonstration, we will simulate two batches.</p>
+<pre class="r"><code>simulate_result &lt;- simmethods::scMultiSim_simulation(
+  parameters = estimate_result$estimate_result,
+  other_prior = list(nBatches = 2),
+  return_format = &quot;list&quot;,
+  seed = 111
+)
+# nCells: 160
+# nGenes: 4000
+# nGroups: 2
+# nBatches: 2
+# Time spent: 0.16 mins
+# Adding experimental noise...
+# 50..100..150..Using atac_counts
+# Time spent: 0.51 mins
+# Adding batch effects...</code></pre>
+<pre class="r"><code>## cell information
+col_data &lt;- simulate_result[[&quot;simulate_result&quot;]][[&quot;col_meta&quot;]]</code></pre>
+<pre class="r"><code>table(col_data$batch)
+# 
+# Batch1 Batch2 
+#     82     78</code></pre>
+</div>
+<div id="simulate-cellular-differential-trajectory" class="section level3">
+<h3>Simulate cellular differential trajectory</h3>
+<p>The parameter estimation step is the same as that demonstrated above. If you want to simulate datasets with trajectory, you should specify the parameter <code>traj</code> in <code>other_prior</code> to <code>TRUE</code>.</p>
+<pre class="r"><code>simulate_result &lt;- simmethods::scMultiSim_simulation(
+  parameters = estimate_result$estimate_result,
+  other_prior = list(traj = TRUE),
+  return_format = &quot;list&quot;,
+  seed = 111
+)
+# Simulating datasets with trajectory.../n
+# nCells: 160
+# nGenes: 4000
+# nGroups: 2
+# nBatches: 1
+# Time spent: 0.16 mins
+# Adding experimental noise...
+# 50..100..150..Using atac_counts
+# Time spent: 0.95 mins</code></pre>
+<p>Before visualization, Make sure that you have already installed several R packages:</p>
+<pre class="r"><code>if(!requireNamespace(&quot;dynwrap&quot;, quietly = TRUE)){install.packages(&quot;dynwrap&quot;)}
+if(!requireNamespace(&quot;dyndimred&quot;, quietly = TRUE)){install.packages(&quot;dyndimred&quot;)}
+if(!requireNamespace(&quot;dynplot&quot;, quietly = TRUE)){install.packages(&quot;dynplot&quot;)}
+if(!requireNamespace(&quot;tislingshot&quot;, quietly = TRUE)){devtools::install_github(&quot;dynverse/ti_slingshot/package/&quot;)}</code></pre>
+<p>First we should wrap the data into a standard object:</p>
+<pre class="r"><code>data &lt;- simulate_result$simulate_result$count_data
+dyn_object &lt;- dynwrap::wrap_expression(counts = t(data),
+                                       expression = log2(t(data) + 1))</code></pre>
+<p>Next, we infer the trajectory using SlingShot which has been proved to be the most best method to do this:</p>
+<pre class="r"><code>model &lt;- dynwrap::infer_trajectory(dataset = dyn_object,
+                                   method = tislingshot::ti_slingshot(),
+                                   parameters = NULL,
+                                   give_priors = NULL,
+                                   seed = 111,
+                                   verbose = TRUE)
+# Executing &#39;slingshot&#39; on &#39;20230807_111904__data_wrapper__Wad2hj4sH8&#39;
+# With parameters: list(cluster_method = &quot;pam&quot;, ndim = 20L, shrink = 1L, reweight = TRUE,     reassign = TRUE, thresh = 0.001, maxit = 10L, stretch = 2L,     smoother = &quot;smooth.spline&quot;, shrink.method = &quot;cosine&quot;)
+# inputs: expression
+# priors :
+# Using full covariance matrix</code></pre>
+<p>Finally, we can plot the trajectory after performing dimensionality reduction:</p>
+<pre class="r"><code>dimred &lt;- dyndimred::dimred_umap(dyn_object$expression)
+dynplot::plot_dimred(model, dimred = dimred)
+# Coloring by milestone
+# Using milestone_percentages from trajectory</code></pre>
+<p><img src="/references/methods/31-scMultiSim_files/figure-html/unnamed-chunk-16-1.png" width="960" style="display: block; margin: auto;" /></p>
+<p>For more details about trajectory inference and visualization, please check <a href="https://dynverse.org/">dynverse</a>.</p>
+</div>
+</div>

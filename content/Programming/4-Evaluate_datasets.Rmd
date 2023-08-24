@@ -1,5 +1,5 @@
 ---
-title: "Evaluation Datasets"
+title: "Data Assessment"
 output:
   blogdown::html_page:
     toc: true
@@ -7,25 +7,373 @@ weight: 4
 ---
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
+knitr::opts_chunk$set(echo = TRUE, comment = "#", collapse = TRUE)
 ```
 
-## R Markdown
+After obtaining the simulated datasets and corresponding information of cells and genes, we can assess the simulation output with the cell or gene information. For example, if we want to know how reliable the simulated groups of cells are, or how accurate the differential expressed genes between cell groups are, we can adopt the evaluation procedure implemented in the **simpipe** R package.
 
-This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
+There are four aspects related to the simulation output that can be assessed:
 
-When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
+1. Cell groups
+2. DEGs between cell groups
+3. Cell batches
+4. Cellular differentiation trajectory
 
-```{r cars}
-summary(cars)
+In this chapter, we will demonstrate how to assess a simulated gene expression data on these four aspects using the **simpipe** R package.
+
+
+Load the reference data, and perform the parameter estimation.
+```{r load_data, message=FALSE, warning=FALSE, error=FALSE}
+library(simmethods)
+library(SingleCellExperiment)
+# Load data
+ref_data <- simmethods::data
 ```
 
-## Including Plots
-
-You can also embed plots, for example:
-
-```{r pressure, echo=FALSE}
-plot(pressure)
+```{r estimate, warning=FALSE}
+estimate_result <- simmethods::Splat_estimation(ref_data = ref_data,
+                                                verbose = T,
+                                                seed = 10)
 ```
 
-Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
+## Evaluate the simulated cell groups
+
+
+### Simulate the dataset with cell groups
+Initially, we should simulate a dataset with four cell groups using Splat method:
+```{r four_group_simulate}
+simulate_result <- simmethods::Splat_simulation(
+  parameters = estimate_result[["estimate_result"]],
+  return_format = "list",
+  other_prior = list(batchCells = 1000,
+                     nGenes = 1000,
+                     prob.group = c(0.2, 0.3, 0.1, 0.4)),
+  seed = 111
+)
+```
+
+
+### Prepare the labels of cell groups
+
+```{r prepare_groups}
+### cell metadata
+cell_metadata <- simulate_result$simulate_result$col_meta
+cell_groups <- cell_metadata$group
+```
+
+
+### Assess the simulated cell groups
+
+```{r assess_groups}
+cell_group_assess <- simpipe::data_functionality_summary(
+  data = simulate_result$simulate_result$count_data,
+  group = cell_groups
+)
+```
+
+```{r str_group_result}
+str(cell_group_assess)
+```
+
+
+Extract the evaluation result of cell groups:
+```{r group_result}
+assess_group_result <- cell_group_assess$group_evaluation
+assess_group_result
+```
+
+As you see, there are six metrics used for assessing the quality of cell groups:
+
+**CDI**: [Clustering Deviation Index](https://github.com/jichunxie/CDI). If the CDI score is small, the simulated label set is close to the true label set and more reliable.
+
+**ROUGE**: [ROUGE](https://github.com/PaulingLiu/ROGUE) is an entropy-based metric, enabling accurate, sensitive and robust assessment of cell cluster purity with the concept of quantifying the randomness of gene expression in cells. A cell population with higher purity will receive a value close to 1 and reversely close to 0.
+
+**silhouette**: Average silouette width (ASW). The silouette width is a common internal metric to measure the extent of within-cluster distances of a cell and between-cluster distances of that cell to the closest cluster. The average silouette width (ASW) ranges from -1 to1.
+
+**dunn**: Dunn Index. Dunn Index is a clustering validity index by calculating the ratio of the smallest distance between cells which are not in the same cluster to the largest distance of cells in the same cluster. The higher the index, the better the clustering.
+
+**connectivity**: The connectivity metric is designed to measure the connectedness degree of the partitioning clusters, which can be also used to assess the clustering performance.
+
+**DB_index**: Davies-Bouldin Index (DBI). DBI is a measurement of similarity between intra-cluster dispersion and separation of inter-clusters. The smaller the DBI is, the better the clustering.
+
+## Evaluate the simulated DEGs
+
+### Simulate the dataset with specified proportion of DEGs
+Firstly, we will simulate a dataset with two cell groups with 40% DEGs:
+```{r DEGs_0.4_simulate}
+simulate_result <- simmethods::Splat_simulation(
+  parameters = estimate_result[["estimate_result"]],
+  return_format = "list",
+  other_prior = list(batchCells = 1000,
+                     nGenes = 1000,
+                     prob.group = c(0.4, 0.6),
+                     de.prob = 0.4),
+  seed = 111
+)
+```
+
+Then, check the information of simulated DEGs
+```{r check_DEGs}
+gene_metadata <- simulate_result$simulate_result$row_meta
+table(gene_metadata$de_gene)/length(gene_metadata$de_gene)
+```
+
+
+### Prepare the information of DEGs
+
+There are some essential information related to the DEGs to prepare:
+
+1. DEGs: A list of DEGs with the names of `xxxvsxxx`. Note that the names of DEGs are in the rownames of the matrix or the dataframe and the names of `xxx` is in the `group` characters. Needed if a matrix or a dataframe is input.
+
+2. DEA_method: The DEA method to get the DEGs. Choices: `edgeRQLF`, `edgeRQLFDetRate`, `MASTcpmDetRate`, `MASTtpmDetRate`, `MASTcpm`, `MASTtpm`, `limmatrend`, `limmavoom`, `ttest` and `wilcox.` Default is `edgeRQLFDetRate`.
+
+3. model_method: The method to establish the model using DEGs. `SVM`, `Decision tree` or `RF` (Random Forest). Default is `SVM`.
+
+
+Now we prepare the list of DEGs between two cell groups:
+
+```{r echo=FALSE}
+prepare_DEGs_list <- function(col_meta, row_meta){
+  ### Check groups and DEGs
+  if(length(unique(col_meta$group)) >= 2 & "de_gene" %in% colnames(row_meta) |
+     length(unique(col_meta$plate)) >= 2 & "de_gene" %in% colnames(row_meta) |
+     length(unique(col_meta$group)) >= 2 & "DEstatus" %in% colnames(row_meta)){
+    
+    ### group information
+    group <- as.character(col_meta$group)
+    
+    ### group combination
+    group_combn <- utils::combn(unique(group), 2)
+    
+    ### special situation in scDD
+    if("DEstatus" %in% colnames(row_meta)){
+      de_genes_index <- stringr::str_starts(row_meta$"DEstatus", pattern = "^D")
+      de_genes <- row_meta$gene_name[de_genes_index]
+    }else{
+      de_genes <- row_meta$gene_name[which(row_meta$"de_gene" == "yes")]
+    }
+    
+    ### the list of DEGs
+    sim_DEGs <- list()
+    for(conb in 1:ncol(group_combn)){
+      conb1 <- group_combn[1, conb]
+      conb2 <- group_combn[2, conb]
+      conb_name <- paste0(group_combn[, conb], collapse = "vs")
+      message(conb_name)
+      ### Splat, SCRIP, Lun, ESCO (every pair of groups has its own DEGs)
+      if(any(stringr::str_detect(colnames(row_meta), "DEF"))){
+        fac1 <- row_meta[, stringr::str_ends(colnames(row_meta), pattern = conb1)]
+        fac2 <- row_meta[, stringr::str_ends(colnames(row_meta), pattern = conb2)]
+        index <- fac1 != fac2
+        DEGs <- row_meta$gene_name[index]
+      }else if("DEstatus" %in% colnames(row_meta)){
+        ### scDD
+        DEGs <- de_genes
+        index <- row_meta$gene_name %in% de_genes
+      }else{
+        ### powsimR, muscat, scDesign, SPARSim, SPsimSeq, Lun2 (every pair of groups dose not have its own DEGs)
+        if(ncol(group_combn) == 1){
+          DEGs <- de_genes
+          index <- row_meta$gene_name %in% de_genes
+        }else{
+          DEGs <- de_genes
+          index <- rep(FALSE, nrow(sim_data))
+        }
+      }
+      sim_DEGs[[conb_name]] <- DEGs
+    }
+    return(sim_DEGs)
+  }else{
+    stop("There are no DEGs in the metadata of simulated genes or no cell groups in the metadata of simulated cells")
+  }
+}
+```
+
+
+```{r prepare_DEGs_list}
+col_meta <- simulate_result$simulate_result$col_meta
+row_meta <- simulate_result$simulate_result$row_meta
+DEGs_list <- simpipe::prepare_DEGs_list(col_meta, row_meta)
+str(DEGs_list)
+```
+
+Then, we can chose the method for differential expression analysis and the machine learning method for modeling:
+```{r chose_method}
+DEA_method <- "edgeRQLFDetRate"
+model_method <- "SVM"
+```
+
+### Assess the validity of the simulated DEGs
+
+```{r evaluate_DEGs}
+assess_DEGs <- simpipe::data_functionality_summary(
+  data = simulate_result$simulate_result$count_data,
+  group = col_meta$group,
+  DEGs = DEGs_list,
+  DEA_method = DEA_method,
+  model_method = model_method
+)
+```
+
+Show the structure of the result:
+```{r structure_DEGs}
+str(assess_DEGs$DEGs_evaluation)
+```
+
+We determine three approaches to evaluate the validity of the simulated DEGs:
+```{r three_approaches}
+names(assess_DEGs$DEGs_evaluation$data)
+```
+
+**distribution_score**: We hypothesized that if there are no DEGs between two samples, the false positive rate of detected DEGs should be close to 0.05 and P values should follow a uniform distribution. We directly removed them from the gene expression matrix and then DEA was performed using edgeRQLFDetRate to obtain the P values. Next, we defined the null hypothesis that the P values follows a uniform distribution. The Pearson Chi-Squared test was then used to determine whether to reject the null hypothesis under the threshold (P≤0.05). If the null hypothesis is accepted for the dataset with only two cell groups, the distribution score is assigned to 1.
+
+**true_proportions**: We chosed the most optimal algorithm (edgeRQLFDetRate, edgeR QLF model including the cellular detection rate) that performed best in a previous benchmarking study to identify DEGs on the simulated data. All identified DEGs were considered as the ground truth. Then, the ratio of candidate DEGs (returned by the given simulation method) to the true DEGs was calculated. For three or more groups, it was weighted by the proportion of DEGs from pairwise groups to all of them.
+
+**SVM_result**: The third approach is to construct models using the simulated gene expression matrices with only DEGs. Accuracy, precision, recall, F1 score and area under ROC curve (AUC) were applied to assess the model performance. For multi-class classification, macro-averaged precision, recall and F1 score were computed.
+
+
+### The situation where more than two groups are simulated
+
+Splat, SCRIP, Lun and ESCO can return the DEGs from each pair of cell groups, but other methods (powsimR, muscat, scDesign, SPARSim, SPsimSeq, Lun2) only return the total DEGs of all pairs of groups when the number of simulated cell groups is higher than 2. **In this special case, we can only assess their validity through the performance of the prediction models using the simulated DEGs.**
+
+
+## Evaluate the simulated cell batches
+
+### Simulate the dataset with cell batches
+
+Firstly, we will simulate three batches:
+```{r three_batches_simulate}
+simulate_result <- simmethods::Splat_simulation(
+  parameters = estimate_result[["estimate_result"]],
+  return_format = "list",
+  other_prior = list(batchCells = c(200, 300, 500),
+                     nGenes = 2000),
+  seed = 111
+)
+```
+
+Then, check the batch information of cells:
+```{r check_batches}
+cell_metadata <- simulate_result$simulate_result$col_meta
+table(cell_metadata$batch)
+```
+
+
+### Prepare the information of cell batches
+
+Some necessary parameters and information related to the cell batches are needed:
+
+1. batch: The characters of batch names which cells belong to.
+2. k: k-nearest neighborhoods of cells.
+
+```{r batch_lables}
+batch_labels <- cell_metadata$batch
+```
+
+We can set `k` value as the square root of the cell number:
+```{r determine_k}
+k <- round(sqrt(length(batch_labels)))
+```
+
+### Assess the simulated cell batches
+
+```{r assess_batch}
+assess_batches <- simpipe::data_functionality_summary(
+  data = simulate_result$simulate_result$count_data,
+  batch = batch_labels,
+  k = k
+)
+```
+
+List the assessment results of cell batches:
+```{r batch_result}
+str(assess_batches$batch_evaluation)
+```
+
+Eight metrics are used for assessing the quality of cell batches:
+
+**cms**: [Cell-specific mixing score](https://github.com/almutlue/CellMixS). CMS is an innovative measurement to determine whether the batch-wise distances in a KNN graph follow the same distribution using the Andersion-Darling test. Ideally, the method yields a lower CMS, indicating it can simulate more reliable data with different batches.
+
+**ISI**: Inverse Simpson’s Index. ISI is an interpretable metric used to measure diversity within each neighborhood. A lower ISI score indicates the stronger batch effects. Otherwise, a higher ISI score suggests cells are well-mixed across different batches.
+
+**LISI**: Local Inverse Simpson’s Index.
+
+**mm**: Mixing metric. The mixing metric utilizes the median position of the k-th cell in the KNN graphs from each batch to determine the degree of batch effects. The lower value of this score, the better mixed the cells from different batches are.
+
+**shannon_entropy**: Shannon entropy quantifies the randomness and complexity of scRNA-seq datasets containing cells from different sources of batches.
+
+**kBET**: k-nearest neighbor batch effect test. kBET assesses the batch mixing by comparing the batch distribution within KNNs of a cell with the global one.
+
+**AWS_batch**: Average silhouette width for batch. ASW can also be used for batch evaluation, where the batch effect is more pronounced when the AWS closes to 1 or -1.
+
+**pcr**: Principal component regression. The PCR score represents the total contribution of the batch variable to the variance of a dataset.
+
+
+## Evaluate the simulated trajectories
+
+### Simulate the dataset with cellular trajectory
+
+Firstly, we will simulate a trajectory dataset with five cell groups:
+```{r traj_simulate}
+simulate_result <- simmethods::Splat_simulation(
+  parameters = estimate_result[["estimate_result"]],
+  return_format = "list",
+  other_prior = list(nGenes = 1000,
+                     prob.group = rep(0.2, 5),
+                     paths = TRUE),
+  seed = 111
+)
+```
+
+{{% notice note %}}
+The cell numbers of the real and simulated data should be the same.
+{{% /notice %}}
+
+### Assess the simulated trajectory
+
+Before assessing the similarity of the reference and the simulated trajectory, we should prepare the reference data and simulated data (the information of cell groups in the real or simulated data is optionally input).
+
+```{r prepare_data}
+ref_data <- ref_data
+ref_data_grouping <- simmethods::group_condition
+sim_data <- simulate_result$simulate_result$count_data
+sim_data_grouping <- simulate_result$simulate_result$col_meta$group
+```
+
+Calculate the metrics for quantifying the similarity of two trajectories (if the information of simulated cell groups is provided, the simulated groups are also evaluated):
+```{r assess_traj}
+assess_traj <- simpipe::data_functionality_summary(
+  data = sim_data,
+  group = sim_data_grouping,
+  ref_data = ref_data,
+  ref_data_grouping = ref_data_grouping,
+  algorithm = "Hungarian",
+  seed = 666
+)
+```
+
+
+Display the result:
+```{r traj_result}
+traj_result <- assess_traj$trajectory_evaluation
+names(traj_result$data)
+```
+
+
+```{r traj_structure}
+str(traj_result$data)
+```
+
+Four metrics are used in the assessment of two cellular trajectories:
+
+**HIM**: Hamming–Ipsen–Mikhailov. The HIM metric is a distance function quantifying the difference between two milestone networks, which linearly combines a local Hamming distance and a global Ipsen-Mikhailov distance.
+
+**F1_branches**: F1 score for branches. F1branches score is used to measure the accuracy of branch assignment to cells.
+
+**F1_milestones**: F1 score for milestones. F1milestones is for comparing the arrangements of cells belonging to different milestones.
+
+**Cor_dist**: Correlation between geodesic distances. A cell located at the same position in the real and simulated trajectories should have equal relative distances to all other cells. Correlation between geodesic distance measures the correlation between the two relative distances of a cell from the real and simulated trajectory. To match the real and simulated cells within two trajectories, the Hungarian algorithm implemented in [RcppHungarian](https://cran.r-project.org/web/packages/RcppHungarian/index.html) R package was adopted.
+
+
+## Evaluate the functionalities of a method
+

@@ -7,10 +7,10 @@ chapter = true
 
 # References
 
-[simmethods](https://github.com/duohongrui/simmethods) is the core package in the project. It contains 42+ simulation methods for single-cell RNA sequencing data. 📚📚📚
+[simmethods](https://github.com/duohongrui/simmethods) is the core package in the project. It contains 45+ simulation methods for single-cell or spatial transcriptome data. 📚📚📚
 
-- [Methods List:](/references/1-methods_list) overview of all simulation methods and available parameters for every method
-- [Vignettes:](/references/methods) detailed descriptional usage for every method
+- [Methods Overview:](/references/1-methods_list) overview of all simulation methods and available parameters for every method
+- [Vignettes:](/references/methods) detailed descriptional usage for each method
 
 
 [![simmethods](/images/simmethods_logo.png?width=300px&height=360px&classes=zoom)](https://github.com/duohongrui/simmethods)

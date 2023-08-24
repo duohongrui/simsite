@@ -1,0 +1,79 @@
+---
+title: "dropsim"
+output:
+  blogdown::html_page:
+    toc: yes
+weight: 27
+---
+
+
+<div id="TOC">
+<ul>
+<li><a href="#estimating-parameters-from-a-real-dataset" id="toc-estimating-parameters-from-a-real-dataset">Estimating parameters from a real dataset</a></li>
+<li><a href="#simulating-datasets-using-dropsim" id="toc-simulating-datasets-using-dropsim">Simulating datasets using dropsim</a>
+<ul>
+<li><a href="#datasets-with-default-parameters" id="toc-datasets-with-default-parameters">Datasets with default parameters</a></li>
+<li><a href="#determin-the-number-of-cells-and-genes" id="toc-determin-the-number-of-cells-and-genes">Determin the number of cells and genes</a></li>
+</ul></li>
+</ul>
+</div>
+
+<!-- github markdown built using 
+rmarkdown::render("vignettes/dropsim.Rmd", output_format = rmarkdown::github_document())
+-->
+<p>Here dropsim method will be demonstrated clearly and hope that this document can help you.</p>
+<div id="estimating-parameters-from-a-real-dataset" class="section level2">
+<h2>Estimating parameters from a real dataset</h2>
+<p>Before simulating datasets, it is important to estimate some essential parameters from a real dataset in order to make the simulated data more real.</p>
+<pre class="r"><code>library(simmethods)
+library(SingleCellExperiment)
+# Load data
+ref_data &lt;- simmethods::data</code></pre>
+<pre class="r"><code>estimate_result &lt;- simmethods::dropsim_estimation(
+  ref_data = ref_data,
+  verbose = T,
+  seed = 10
+)
+# Estimating parameters using dropsim</code></pre>
+<p><img src="/references/methods/27-dropsim_files/figure-html/unnamed-chunk-1-1.png" width="672" /><img src="/references/methods/27-dropsim_files/figure-html/unnamed-chunk-1-2.png" width="672" /></p>
+</div>
+<div id="simulating-datasets-using-dropsim" class="section level2">
+<h2>Simulating datasets using dropsim</h2>
+<p>After estimating parameter from a real dataset, we will simulate a dataset based on the learned parameters with different scenarios.</p>
+<ol style="list-style-type: decimal">
+<li>Datasets with default parameters</li>
+<li>Determin the number of cells and genes</li>
+</ol>
+<div id="datasets-with-default-parameters" class="section level3">
+<h3>Datasets with default parameters</h3>
+<p>The reference data contains 160 cells and 4000 genes, if we simulate datasets with default parameters and then we will obtain a new data which has the same size as the reference data. In addtion, the simulated dataset will have one group of cells.</p>
+<pre class="r"><code>simulate_result &lt;- simmethods::dropsim_simulation(
+  parameters = estimate_result[[&quot;estimate_result&quot;]],
+  other_prior = NULL,
+  return_format = &quot;SCE&quot;,
+  seed = 111
+)
+# nCells: 160
+# nGenes: 4000</code></pre>
+<pre class="r"><code>SCE_result &lt;- simulate_result[[&quot;simulate_result&quot;]]
+dim(SCE_result)
+# [1] 4000  160</code></pre>
+</div>
+<div id="determin-the-number-of-cells-and-genes" class="section level3">
+<h3>Determin the number of cells and genes</h3>
+<p>In dropsim, we can set <code>nCells</code> and <code>nGenes</code> to specify the number of cells and genes.</p>
+<p>Here, we simulate a new dataset with 1000 cells and 1000 genes:</p>
+<pre class="r"><code>simulate_result &lt;- simmethods::dropsim_simulation(
+  parameters = estimate_result[[&quot;estimate_result&quot;]],
+  return_format = &quot;list&quot;,
+  other_prior = list(nCells = 1000,
+                     nGenes = 1000),
+  seed = 111
+)
+# nCells: 1000
+# nGenes: 1000</code></pre>
+<pre class="r"><code>result &lt;- simulate_result[[&quot;simulate_result&quot;]][[&quot;count_data&quot;]]
+dim(result)
+# [1] 1000 1000</code></pre>
+</div>
+</div>

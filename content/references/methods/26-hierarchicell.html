@@ -1,0 +1,149 @@
+---
+title: "hierarchicell"
+output:
+  blogdown::html_page:
+    toc: yes
+weight: 26
+---
+
+
+<div id="TOC">
+<ul>
+<li><a href="#estimating-parameters-from-a-real-dataset" id="toc-estimating-parameters-from-a-real-dataset">Estimating parameters from a real dataset</a></li>
+<li><a href="#simulating-datasets-using-hierarchicell" id="toc-simulating-datasets-using-hierarchicell">Simulating datasets using hierarchicell</a>
+<ul>
+<li><a href="#datasets-with-default-parameters" id="toc-datasets-with-default-parameters">Datasets with default parameters</a></li>
+<li><a href="#determin-the-number-of-cells-and-genes" id="toc-determin-the-number-of-cells-and-genes">Determin the number of cells and genes</a></li>
+</ul></li>
+</ul>
+</div>
+
+<!-- github markdown built using 
+rmarkdown::render("vignettes/hierarchicell.Rmd", output_format = rmarkdown::github_document())
+-->
+<p>Here hierarchicell method will be demonstrated clearly and hope that this document can help you.</p>
+<div id="estimating-parameters-from-a-real-dataset" class="section level2">
+<h2>Estimating parameters from a real dataset</h2>
+<p>Before simulating datasets, it is important to estimate some essential parameters from a real dataset in order to make the simulated data more real.</p>
+<pre class="r"><code>library(simmethods)
+library(SingleCellExperiment)
+# Load data
+set.seed(111)
+ref_data &lt;- SingleCellExperiment::counts(scater::mockSCE())</code></pre>
+<pre class="r"><code>estimate_result &lt;- simmethods::hierarchicell_estimation(
+  ref_data = ref_data,
+  other_prior = NULL,
+  verbose = T,
+  seed = 10
+)
+# Filtering user input
+# Genes and cells have been filtered, ready for estimating parameters
+# You do not set the type of the data (Raw or Norm), we will set &#39;Raw&#39; by default
+# Estimating parameters using hierarchicell
+# Normalizing ...
+# Removing highly correlated genes
+# Computing sample means, dropout rates, and dispersion ...
+# Computing final data summaries ...</code></pre>
+</div>
+<div id="simulating-datasets-using-hierarchicell" class="section level2">
+<h2>Simulating datasets using hierarchicell</h2>
+<p>After estimating parameter from a real dataset, we will simulate a dataset based on the learned parameters with different scenarios.</p>
+<ol style="list-style-type: decimal">
+<li>Datasets with default parameters</li>
+<li>Determin the number of cells and genes</li>
+</ol>
+<div id="datasets-with-default-parameters" class="section level3">
+<h3>Datasets with default parameters</h3>
+<p>The reference data contains 200 cells and 2000 genes, if we simulate datasets with default parameters and then we will obtain a new data which has the same size as the reference data.</p>
+<p>{{% notice note %}}
+hierarchicell can only simulate <strong>two</strong> groups of cells.
+{{% /notice %}}</p>
+<pre class="r"><code>simulate_result &lt;- simmethods::hierarchicell_simulation(
+  parameters = estimate_result[[&quot;estimate_result&quot;]],
+  other_prior = NULL,
+  return_format = &quot;SCE&quot;,
+  seed = 111
+)
+# nCells: 200
+# nGenes: 2000
+# nGroups: 2
+# fc.group: 2
+# Computing simulation parameters ...
+# -------------------------------------------------------
+# Distribution of grand means is a gamma
+# with shape: 783 and rate: 0.15
+# -------------------------------------------------------
+# Distribution for gene-wise dropout is a gamma 
+#  with shape: 45767.5 and rate: 48102.92
+# -------------------------------------------------------
+# Function for dropout SD is:
+# DropoutStD = 0.07 + 0.78*DropOut + 15.41*(DropOut**2)
+# -------------------------------------------------------
+# Function for inter-individual SD is:
+# InterStDev = 0 + 0.86*GrandMean)
+# -------------------------------------------------------
+# Function for dispersion is:
+#  exp(-10.58 + 2103.53/IntraMean)
+# -------------------------------------------------------
+# Simulating cells ...
+# -------------------------------------------------------
+# Simulating expression values ...
+# -------------------------------------------------------
+# All done!</code></pre>
+<pre class="r"><code>SCE_result &lt;- simulate_result[[&quot;simulate_result&quot;]]
+dim(SCE_result)
+# [1] 2000  200</code></pre>
+<p>{{% notice note %}}
+Some cells in the result may contain NA values across all genes due to the failing of GLM fitting.
+{{% /notice %}}</p>
+<pre class="r"><code>col_data &lt;- as.data.frame(SingleCellExperiment::colData(SCE_result))
+table(col_data$group)
+# 
+# Group1 Group2 
+#    102     96</code></pre>
+<p>{{% notice warning %}}
+The hierarchicell method is not stable and usually causes failed simulation
+{{% /notice %}}</p>
+</div>
+<div id="determin-the-number-of-cells-and-genes" class="section level3">
+<h3>Determin the number of cells and genes</h3>
+<p>In hierarchicell, we can set <code>nCells</code> and <code>nGenes</code> to specify the number of cells and genes.</p>
+<p>Here, we simulate a new dataset with 1000 cells and 1000 genes:</p>
+<pre class="r"><code>simulate_result &lt;- simmethods::hierarchicell_simulation(
+  parameters = estimate_result[[&quot;estimate_result&quot;]],
+  return_format = &quot;list&quot;,
+  other_prior = list(nCells = 1000,
+                     nGenes = 1000),
+  seed = 111
+)
+# nCells: 1000
+# nGenes: 1000
+# nGroups: 2
+# fc.group: 2
+# Computing simulation parameters ...
+# -------------------------------------------------------
+# Distribution of grand means is a gamma
+# with shape: 783 and rate: 0.15
+# -------------------------------------------------------
+# Distribution for gene-wise dropout is a gamma 
+#  with shape: 45767.5 and rate: 48102.92
+# -------------------------------------------------------
+# Function for dropout SD is:
+# DropoutStD = 0.07 + 0.78*DropOut + 15.41*(DropOut**2)
+# -------------------------------------------------------
+# Function for inter-individual SD is:
+# InterStDev = 0 + 0.86*GrandMean)
+# -------------------------------------------------------
+# Function for dispersion is:
+#  exp(-10.58 + 2103.53/IntraMean)
+# -------------------------------------------------------
+# Simulating cells ...
+# -------------------------------------------------------
+# Simulating expression values ...
+# -------------------------------------------------------
+# All done!</code></pre>
+<pre class="r"><code>result &lt;- simulate_result[[&quot;simulate_result&quot;]][[&quot;count_data&quot;]]
+dim(result)
+# [1] 1000 1000</code></pre>
+</div>
+</div>

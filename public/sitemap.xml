@@ -16,6 +16,9 @@
     <loc>/online/</loc>
     <lastmod>2022-09-01T20:22:45+08:00</lastmod>
   </url><url>
+    <loc>/references/methods/</loc>
+    <lastmod>2022-09-01T20:22:45+08:00</lastmod>
+  </url><url>
     <loc>/programming/2-estimation/</loc>
   </url><url>
     <loc>/references/methods/simple/</loc>
@@ -25,9 +28,9 @@
     <loc>/references/</loc>
     <lastmod>2022-09-02T17:53:43+08:00</lastmod>
   </url><url>
-    <loc>/references/methods/kersplat/</loc>
-  </url><url>
     <loc>/programming/3-simulation/</loc>
+  </url><url>
+    <loc>/references/methods/kersplat/</loc>
   </url><url>
     <loc>/programming/4-evaluate_datasets/</loc>
   </url><url>
@@ -46,6 +49,8 @@
     <loc>/references/methods/11-scdesign/</loc>
   </url><url>
     <loc>/references/methods/12-scdesign2/</loc>
+  </url><url>
+    <loc>/references/methods/13-scdesign3/</loc>
   </url><url>
     <loc>/references/methods/13-zinbwave/</loc>
   </url><url>
@@ -67,13 +72,19 @@
   </url><url>
     <loc>/references/methods/24-dropsim/</loc>
   </url><url>
+    <loc>/references/methods/24-simbpdd/</loc>
+  </url><url>
     <loc>/references/methods/26-prosstt/</loc>
   </url><url>
     <loc>/references/methods/27-tedsim/</loc>
   </url><url>
     <loc>/references/methods/28-dyntoy/</loc>
   </url><url>
+    <loc>/references/methods/28-srtsim/</loc>
+  </url><url>
     <loc>/references/methods/30-symsim/</loc>
+  </url><url>
+    <loc>/references/methods/31-scmultisim/</loc>
   </url><url>
     <loc>/references/methods/31-velosim/</loc>
   </url><url>
@@ -82,11 +93,8 @@
     <loc>/references/methods/33-phenopath/</loc>
   </url><url>
     <loc>/</loc>
-    <lastmod>2022-09-02T18:49:42+08:00</lastmod>
+    <lastmod>2022-09-02T17:53:43+08:00</lastmod>
     <priority>0</priority>
-  </url><url>
-    <loc>/references/methods/</loc>
-    <lastmod>2022-09-02T18:49:42+08:00</lastmod>
   </url><url>
     <loc>/categories/</loc>
   </url><url>

@@ -1,11 +1,10 @@
-+++
-title = "Vignettes"
-date = 2022-09-02T18:49:42+08:00
-chapter = false
-+++
+---
+title: "Vignettes"
+date: 2022-09-01T20:22:45+08:00
+chapter: true
+weight: 2
+---
 
-### Chapter X
+# Vignettes
 
-# Some Chapter title
-
-Lorem Ipsum.
+In this chapter, we will demonstrate the usage of each simulation method in detail. 📋📋📋

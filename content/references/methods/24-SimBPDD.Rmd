@@ -1,0 +1,103 @@
+---
+title: "SimBPDD"
+output:
+  blogdown::html_page:
+    toc: yes
+weight: 24
+---
+
+<!-- github markdown built using 
+rmarkdown::render("vignettes/Splat.Rmd", output_format = rmarkdown::github_document())
+-->
+
+```{r setup, include=FALSE, echo=FALSE}
+knitr::opts_chunk$set(echo = TRUE, comment = "#", collapse = TRUE)
+```
+Here SimBPDD method will be demonstrated clearly and hope that this document can help you.
+
+```{r load_data, message=FALSE, warning=FALSE, error=FALSE}
+library(simmethods)
+library(SingleCellExperiment)
+# Load data
+ref_data <- simmethods::data
+
+# SimBPDD takes a long time to simulate datasets, so we subset the reference data
+ref_data <- ref_data[1:100, ]
+```
+
+
+## Simulating datasets using SimBPDD
+
+There is no individual estimation step using SimBPDD as the estimation is combined with simulation step.
+
+1. Datasets with default parameters
+2. Determin the number of cells
+3. Simulate two groups of cells
+
+### Datasets with default parameters
+
+The reference data contains 160 cells and 4000 genes, if we simulate datasets with default parameters and then we will obtain a new data which has the same size as the reference data.
+
+```{r default_params}
+simulate_result <- simmethods::SimBPDD_simulation(
+  ref_data = ref_data,
+  return_format = "list",
+  seed = 111
+)
+```
+Check the dimension of the simulated data:
+```{r}
+count_data <- simulate_result$simulate_result$count_data
+dim(count_data)
+```
+
+Check the group labels of the simulated cells:
+```{r}
+col_data <- simulate_result$simulate_result$col_meta
+table(col_data$group)
+```
+
+
+### Determin the number of cells
+
+```{r cell_number}
+simulate_result <- simmethods::SimBPDD_simulation(
+  ref_data = ref_data,
+  other_prior = list(nCells = 100),
+  return_format = "list",
+  seed = 111
+)
+```
+
+Check the dimension of the simulated data:
+```{r}
+count_data <- simulate_result$simulate_result$count_data
+dim(count_data)
+```
+
+{{% notice note %}}
+The number of simulated genes is not equal to the original one, as the genes with zero counts across all cells are removed.
+{{% /notice %}}
+
+### Simulate two groups of cells
+
+In SimBPDD, we can directly set `other_prior = list(prob.group = c(0.4, 0.6))` to assign two proportions of cell groups.
+
+```{r two_groups, warning=FALSE}
+simulate_result <- simmethods::SimBPDD_simulation(
+  ref_data = ref_data,
+  other_prior = list(nCells = 100,
+                     prob.group = c(0.4, 0.6)),
+  return_format = "list",
+  seed = 111
+)
+```
+
+Check cell groups:
+```{r check_groups}
+table(simulate_result$simulate_result$col_meta$group)
+```
+
+{{% notice note %}}
+SimBPDD can only simulate two cell groups.
+{{% /notice %}}

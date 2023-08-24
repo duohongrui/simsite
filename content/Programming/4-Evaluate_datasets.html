@@ -1,5 +1,5 @@
 ---
-title: "Evaluation Datasets"
+title: "Data Assessment"
 output:
   blogdown::html_page:
     toc: true
@@ -9,27 +9,557 @@ weight: 4
 
 <div id="TOC">
 <ul>
-<li><a href="#r-markdown" id="toc-r-markdown">R Markdown</a></li>
-<li><a href="#including-plots" id="toc-including-plots">Including Plots</a></li>
+<li><a href="#evaluate-the-simulated-cell-groups" id="toc-evaluate-the-simulated-cell-groups">Evaluate the simulated cell groups</a>
+<ul>
+<li><a href="#simulate-the-dataset-with-cell-groups" id="toc-simulate-the-dataset-with-cell-groups">Simulate the dataset with cell groups</a></li>
+<li><a href="#prepare-the-labels-of-cell-groups" id="toc-prepare-the-labels-of-cell-groups">Prepare the labels of cell groups</a></li>
+<li><a href="#assess-the-simulated-cell-groups" id="toc-assess-the-simulated-cell-groups">Assess the simulated cell groups</a></li>
+</ul></li>
+<li><a href="#evaluate-the-simulated-degs" id="toc-evaluate-the-simulated-degs">Evaluate the simulated DEGs</a>
+<ul>
+<li><a href="#simulate-the-dataset-with-specified-proportion-of-degs" id="toc-simulate-the-dataset-with-specified-proportion-of-degs">Simulate the dataset with specified proportion of DEGs</a></li>
+<li><a href="#prepare-the-information-of-degs" id="toc-prepare-the-information-of-degs">Prepare the information of DEGs</a></li>
+<li><a href="#assess-the-validity-of-the-simulated-degs" id="toc-assess-the-validity-of-the-simulated-degs">Assess the validity of the simulated DEGs</a></li>
+<li><a href="#the-situation-where-more-than-two-groups-are-simulated" id="toc-the-situation-where-more-than-two-groups-are-simulated">The situation where more than two groups are simulated</a></li>
+</ul></li>
+<li><a href="#evaluate-the-simulated-cell-batches" id="toc-evaluate-the-simulated-cell-batches">Evaluate the simulated cell batches</a>
+<ul>
+<li><a href="#simulate-the-dataset-with-cell-batches" id="toc-simulate-the-dataset-with-cell-batches">Simulate the dataset with cell batches</a></li>
+<li><a href="#prepare-the-information-of-cell-batches" id="toc-prepare-the-information-of-cell-batches">Prepare the information of cell batches</a></li>
+<li><a href="#assess-the-simulated-cell-batches" id="toc-assess-the-simulated-cell-batches">Assess the simulated cell batches</a></li>
+</ul></li>
+<li><a href="#evaluate-the-simulated-trajectories" id="toc-evaluate-the-simulated-trajectories">Evaluate the simulated trajectories</a>
+<ul>
+<li><a href="#simulate-the-dataset-with-cellular-trajectory" id="toc-simulate-the-dataset-with-cellular-trajectory">Simulate the dataset with cellular trajectory</a></li>
+<li><a href="#assess-the-simulated-trajectory" id="toc-assess-the-simulated-trajectory">Assess the simulated trajectory</a></li>
+</ul></li>
+<li><a href="#evaluate-the-functionalities-of-a-method" id="toc-evaluate-the-functionalities-of-a-method">Evaluate the functionalities of a method</a></li>
 </ul>
 </div>
 
-<div id="r-markdown" class="section level2">
-<h2>R Markdown</h2>
-<p>This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <a href="http://rmarkdown.rstudio.com" class="uri">http://rmarkdown.rstudio.com</a>.</p>
-<p>When you click the <strong>Knit</strong> button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:</p>
-<pre class="r"><code>summary(cars)</code></pre>
-<pre><code>##      speed           dist       
-##  Min.   : 4.0   Min.   :  2.00  
-##  1st Qu.:12.0   1st Qu.: 26.00  
-##  Median :15.0   Median : 36.00  
-##  Mean   :15.4   Mean   : 42.98  
-##  3rd Qu.:19.0   3rd Qu.: 56.00  
-##  Max.   :25.0   Max.   :120.00</code></pre>
+<p>After obtaining the simulated datasets and corresponding information of cells and genes, we can assess the simulation output with the cell or gene information. For example, if we want to know how reliable the simulated groups of cells are, or how accurate the differential expressed genes between cell groups are, we can adopt the evaluation procedure implemented in the <strong>simpipe</strong> R package.</p>
+<p>There are four aspects related to the simulation output that can be assessed:</p>
+<ol style="list-style-type: decimal">
+<li>Cell groups</li>
+<li>DEGs between cell groups</li>
+<li>Cell batches</li>
+<li>Cellular differentiation trajectory</li>
+</ol>
+<p>In this chapter, we will demonstrate how to assess a simulated gene expression data on these four aspects using the <strong>simpipe</strong> R package.</p>
+<p>Load the reference data, and perform the parameter estimation.</p>
+<pre class="r"><code>library(simmethods)
+library(SingleCellExperiment)
+# Load data
+ref_data &lt;- simmethods::data</code></pre>
+<pre class="r"><code>estimate_result &lt;- simmethods::Splat_estimation(ref_data = ref_data,
+                                                verbose = T,
+                                                seed = 10)
+# Estimating parameters using Splat</code></pre>
+<div id="evaluate-the-simulated-cell-groups" class="section level2">
+<h2>Evaluate the simulated cell groups</h2>
+<div id="simulate-the-dataset-with-cell-groups" class="section level3">
+<h3>Simulate the dataset with cell groups</h3>
+<p>Initially, we should simulate a dataset with four cell groups using Splat method:</p>
+<pre class="r"><code>simulate_result &lt;- simmethods::Splat_simulation(
+  parameters = estimate_result[[&quot;estimate_result&quot;]],
+  return_format = &quot;list&quot;,
+  other_prior = list(batchCells = 1000,
+                     nGenes = 1000,
+                     prob.group = c(0.2, 0.3, 0.1, 0.4)),
+  seed = 111
+)
+# nCells: 1000
+# nGenes: 1000
+# nGroups: 4
+# de.prob: 0.1
+# nBatches: 1</code></pre>
 </div>
-<div id="including-plots" class="section level2">
-<h2>Including Plots</h2>
-<p>You can also embed plots, for example:</p>
-<p><img src="/Programming_Usage/4-Evaluate_datasets_files/figure-html/pressure-1.png" width="672" /></p>
-<p>Note that the <code>echo = FALSE</code> parameter was added to the code chunk to prevent printing of the R code that generated the plot.</p>
+<div id="prepare-the-labels-of-cell-groups" class="section level3">
+<h3>Prepare the labels of cell groups</h3>
+<pre class="r"><code>### cell metadata
+cell_metadata &lt;- simulate_result$simulate_result$col_meta
+cell_groups &lt;- cell_metadata$group</code></pre>
+</div>
+<div id="assess-the-simulated-cell-groups" class="section level3">
+<h3>Assess the simulated cell groups</h3>
+<pre class="r"><code>cell_group_assess &lt;- simpipe::data_functionality_summary(
+  data = simulate_result$simulate_result$count_data,
+  group = cell_groups
+)
+# The group information is input...
+# -------------------------------------------------
+#              Evaluating cell groups
+# -------------------------------------------------
+# 1-Calculating CDI...
+# 2-Calculating ROUGE...
+# Warning in simutils::calculate_cluster_properties(data = group_data, dist = NULL, : The ROUGE calculation failed
+# 3-Calculating silhouette...
+# 4-Calculating dunn...
+# 5-Calculating connectivity...
+# 6-Calculating DB index...</code></pre>
+<pre class="r"><code>str(cell_group_assess)
+# List of 4
+#  $ group_evaluation     :List of 1
+#   ..$ data:List of 6
+#   .. ..$ CDI         : num 5788015
+#   .. ..$ ROUGE       : logi NA
+#   .. ..$ silhouette  : num -0.212
+#   .. ..$ dunn        : num 4.41e-07
+#   .. ..$ connectivity: num 1055
+#   .. ..$ DB_index    : num 35.1
+#  $ batch_evaluation     : NULL
+#  $ DEGs_evaluation      : NULL
+#  $ trajectory_evaluation: NULL</code></pre>
+<p>Extract the evaluation result of cell groups:</p>
+<pre class="r"><code>assess_group_result &lt;- cell_group_assess$group_evaluation
+assess_group_result
+# $data
+# $data$CDI
+# [1] 5788015
+# 
+# $data$ROUGE
+# [1] NA
+# 
+# $data$silhouette
+# [1] -0.2119363
+# 
+# $data$dunn
+# [1] 4.413479e-07
+# 
+# $data$connectivity
+# [1] 1055.473
+# 
+# $data$DB_index
+# [1] 35.06495</code></pre>
+<p>As you see, there are six metrics used for assessing the quality of cell groups:</p>
+<p><strong>CDI</strong>: <a href="https://github.com/jichunxie/CDI">Clustering Deviation Index</a>. If the CDI score is small, the simulated label set is close to the true label set and more reliable.</p>
+<p><strong>ROUGE</strong>: <a href="https://github.com/PaulingLiu/ROGUE">ROUGE</a> is an entropy-based metric, enabling accurate, sensitive and robust assessment of cell cluster purity with the concept of quantifying the randomness of gene expression in cells. A cell population with higher purity will receive a value close to 1 and reversely close to 0.</p>
+<p><strong>silhouette</strong>: Average silouette width (ASW). The silouette width is a common internal metric to measure the extent of within-cluster distances of a cell and between-cluster distances of that cell to the closest cluster. The average silouette width (ASW) ranges from -1 to1.</p>
+<p><strong>dunn</strong>: Dunn Index. Dunn Index is a clustering validity index by calculating the ratio of the smallest distance between cells which are not in the same cluster to the largest distance of cells in the same cluster. The higher the index, the better the clustering.</p>
+<p><strong>connectivity</strong>: The connectivity metric is designed to measure the connectedness degree of the partitioning clusters, which can be also used to assess the clustering performance.</p>
+<p><strong>DB_index</strong>: Davies-Bouldin Index (DBI). DBI is a measurement of similarity between intra-cluster dispersion and separation of inter-clusters. The smaller the DBI is, the better the clustering.</p>
+</div>
+</div>
+<div id="evaluate-the-simulated-degs" class="section level2">
+<h2>Evaluate the simulated DEGs</h2>
+<div id="simulate-the-dataset-with-specified-proportion-of-degs" class="section level3">
+<h3>Simulate the dataset with specified proportion of DEGs</h3>
+<p>Firstly, we will simulate a dataset with two cell groups with 40% DEGs:</p>
+<pre class="r"><code>simulate_result &lt;- simmethods::Splat_simulation(
+  parameters = estimate_result[[&quot;estimate_result&quot;]],
+  return_format = &quot;list&quot;,
+  other_prior = list(batchCells = 1000,
+                     nGenes = 1000,
+                     prob.group = c(0.4, 0.6),
+                     de.prob = 0.4),
+  seed = 111
+)
+# nCells: 1000
+# nGenes: 1000
+# nGroups: 2
+# de.prob: 0.4
+# nBatches: 1</code></pre>
+<p>Then, check the information of simulated DEGs</p>
+<pre class="r"><code>gene_metadata &lt;- simulate_result$simulate_result$row_meta
+table(gene_metadata$de_gene)/length(gene_metadata$de_gene)
+# 
+#    no   yes 
+# 0.646 0.354</code></pre>
+</div>
+<div id="prepare-the-information-of-degs" class="section level3">
+<h3>Prepare the information of DEGs</h3>
+<p>There are some essential information related to the DEGs to prepare:</p>
+<ol style="list-style-type: decimal">
+<li><p>DEGs: A list of DEGs with the names of <code>xxxvsxxx</code>. Note that the names of DEGs are in the rownames of the matrix or the dataframe and the names of <code>xxx</code> is in the <code>group</code> characters. Needed if a matrix or a dataframe is input.</p></li>
+<li><p>DEA_method: The DEA method to get the DEGs. Choices: <code>edgeRQLF</code>, <code>edgeRQLFDetRate</code>, <code>MASTcpmDetRate</code>, <code>MASTtpmDetRate</code>, <code>MASTcpm</code>, <code>MASTtpm</code>, <code>limmatrend</code>, <code>limmavoom</code>, <code>ttest</code> and <code>wilcox.</code> Default is <code>edgeRQLFDetRate</code>.</p></li>
+<li><p>model_method: The method to establish the model using DEGs. <code>SVM</code>, <code>Decision tree</code> or <code>RF</code> (Random Forest). Default is <code>SVM</code>.</p></li>
+</ol>
+<p>Now we prepare the list of DEGs between two cell groups:</p>
+<pre class="r"><code>col_meta &lt;- simulate_result$simulate_result$col_meta
+row_meta &lt;- simulate_result$simulate_result$row_meta
+DEGs_list &lt;- simpipe::prepare_DEGs_list(col_meta, row_meta)
+# Group2vsGroup1
+str(DEGs_list)
+# List of 1
+#  $ Group2vsGroup1: chr [1:354] &quot;Gene3&quot; &quot;Gene5&quot; &quot;Gene11&quot; &quot;Gene14&quot; ...</code></pre>
+<p>Then, we can chose the method for differential expression analysis and the machine learning method for modeling:</p>
+<pre class="r"><code>DEA_method &lt;- &quot;edgeRQLFDetRate&quot;
+model_method &lt;- &quot;SVM&quot;</code></pre>
+</div>
+<div id="assess-the-validity-of-the-simulated-degs" class="section level3">
+<h3>Assess the validity of the simulated DEGs</h3>
+<pre class="r"><code>assess_DEGs &lt;- simpipe::data_functionality_summary(
+  data = simulate_result$simulate_result$count_data,
+  group = col_meta$group,
+  DEGs = DEGs_list,
+  DEA_method = DEA_method,
+  model_method = model_method
+)
+# The DEGs information is input...
+# The group information is input...
+# -------------------------------------------------
+#                   Evaluating DEGs
+# -------------------------------------------------
+# 1--Distribution of null data...
+# 0 genes are removed when filtering
+# --------------------------------------------------
+# Performing DEA with the 1/1 paired of groups.
+# Performing DEA using edgeR QLF model including the cellular detection rate
+# 2--True proportions of DEGs...
+# 0 genes are removed when filtering
+# --------------------------------------------------
+# Performing DEA with the 1/1 paired of groups.
+# Performing DEA using edgeR QLF model including the cellular detection rate
+# 3--Modeling using DEGs...
+# Preprocessing data...
+# Modeling by SVM...
+# Predicting...
+# Setting levels: control = Group1, case = Group2
+# Setting direction: controls &lt; cases
+# -------------------------------------------------
+#              Evaluating cell groups
+# -------------------------------------------------
+# 1-Calculating CDI...
+# 2-Calculating ROUGE...
+# Warning in simutils::calculate_cluster_properties(data = group_data, dist = NULL, : The ROUGE calculation failed
+# 3-Calculating silhouette...
+# 4-Calculating dunn...
+# 5-Calculating connectivity...
+# 6-Calculating DB index...</code></pre>
+<p>Show the structure of the result:</p>
+<pre class="r"><code>str(assess_DEGs$DEGs_evaluation)
+# List of 1
+#  $ data:List of 3
+#   ..$ distribution_score:List of 2
+#   .. ..$ DEA_result_combinations:List of 1
+#   .. .. ..$ Group2vsGroup1:&#39;data.frame&#39;:  646 obs. of  5 variables:
+#   .. .. .. ..$ logFC : num [1:646] -0.223 -0.199 0.21 -0.138 0.134 ...
+#   .. .. .. ..$ logCPM: num [1:646] 8.17 8.31 7.88 9.6 9.58 ...
+#   .. .. .. ..$ F     : num [1:646] 10.9 9.08 8.66 7.35 6.1 ...
+#   .. .. .. ..$ PValue: num [1:646] 0.000995 0.002641 0.003324 0.006807 0.013677 ...
+#   .. .. .. ..$ FDR   : num [1:646] 0.643 0.716 0.716 0.998 0.998 ...
+#   .. ..$ distribution_score     : num 1
+#   ..$ true_proportions  :List of 2
+#   .. ..$ DEA_result_combinations:List of 5
+#   .. .. ..$ true_prop         :List of 1
+#   .. .. .. ..$ Group2vsGroup1: num 0.853
+#   .. .. ..$ DEA               :List of 1
+#   .. .. .. ..$ Group2vsGroup1:List of 1
+#   .. .. .. .. ..$ edgeRQLFDetRate:List of 2
+#   .. .. .. .. .. ..$ de_genes  : chr [1:330] &quot;Gene529&quot; &quot;Gene552&quot; &quot;Gene758&quot; &quot;Gene569&quot; ...
+#   .. .. .. .. .. ..$ DEA_result:&#39;data.frame&#39;: 1000 obs. of  5 variables:
+#   .. .. .. .. .. .. ..$ logFC : num [1:1000] 1.32 -1.91 1.67 0.97 1.48 ...
+#   .. .. .. .. .. .. ..$ logCPM: num [1:1000] 13.79 10.93 9.92 13.93 10.26 ...
+#   .. .. .. .. .. .. ..$ F     : num [1:1000] 2451 2095 1061 1037 1007 ...
+#   .. .. .. .. .. .. ..$ PValue: num [1:1000] 7.38e-282 1.11e-256 2.44e-163 1.03e-160 2.46e-157 ...
+#   .. .. .. .. .. .. ..$ FDR   : num [1:1000] 7.38e-279 5.53e-254 8.14e-161 2.57e-158 4.92e-155 ...
+#   .. .. ..$ DEGs_num          : int 354
+#   .. .. ..$ DEGs_total        : int 354
+#   .. .. ..$ weighted_true_prop: num 0.853
+#   .. ..$ true_proportion        : num 0.853
+#   ..$ SVM_result        :List of 6
+#   .. ..$ SVM_result:List of 2
+#   .. .. ..$ conf_matrix:List of 6
+#   .. .. .. ..$ positive: chr &quot;Group1&quot;
+#   .. .. .. ..$ table   : &#39;table&#39; int [1:2, 1:2] 78 1 1 120
+#   .. .. .. .. ..- attr(*, &quot;dimnames&quot;)=List of 2
+#   .. .. .. .. .. ..$ Prediction: chr [1:2] &quot;Group1&quot; &quot;Group2&quot;
+#   .. .. .. .. .. ..$ Reference : chr [1:2] &quot;Group1&quot; &quot;Group2&quot;
+#   .. .. .. ..$ overall : Named num [1:7] 0.99 0.979 0.964 0.999 0.605 ...
+#   .. .. .. .. ..- attr(*, &quot;names&quot;)= chr [1:7] &quot;Accuracy&quot; &quot;Kappa&quot; &quot;AccuracyLower&quot; &quot;AccuracyUpper&quot; ...
+#   .. .. .. ..$ byClass : Named num [1:11] 0.987 0.992 0.987 0.992 0.987 ...
+#   .. .. .. .. ..- attr(*, &quot;names&quot;)= chr [1:11] &quot;Sensitivity&quot; &quot;Specificity&quot; &quot;Pos Pred Value&quot; &quot;Neg Pred Value&quot; ...
+#   .. .. .. ..$ mode    : chr &quot;everything&quot;
+#   .. .. .. ..$ dots    : list()
+#   .. .. .. ..- attr(*, &quot;class&quot;)= chr &quot;confusionMatrix&quot;
+#   .. .. ..$ roc        :List of 15
+#   .. .. .. ..$ percent           : logi FALSE
+#   .. .. .. ..$ sensitivities     : num [1:201] 1 1 1 1 1 1 1 1 1 1 ...
+#   .. .. .. ..$ specificities     : num [1:201] 0 0.0127 0.0253 0.038 0.0506 ...
+#   .. .. .. ..$ thresholds        : num [1:201] -Inf 5.54e-05 8.97e-05 1.07e-04 1.18e-04 ...
+#   .. .. .. ..$ direction         : chr &quot;&lt;&quot;
+#   .. .. .. ..$ cases             : Named num [1:121] 0.999 0.994 0.999 1 0.999 ...
+#   .. .. .. .. ..- attr(*, &quot;names&quot;)= chr [1:121] &quot;Cell7&quot; &quot;Cell8&quot; &quot;Cell26&quot; &quot;Cell31&quot; ...
+#   .. .. .. ..$ controls          : Named num [1:79] 0.011249 0.000637 0.002514 0.003981 0.000594 ...
+#   .. .. .. .. ..- attr(*, &quot;names&quot;)= chr [1:79] &quot;Cell29&quot; &quot;Cell36&quot; &quot;Cell43&quot; &quot;Cell49&quot; ...
+#   .. .. .. ..$ fun.sesp          :function (thresholds, controls, cases, direction)  
+#   .. .. .. ..$ auc               : &#39;auc&#39; num 0.999
+#   .. .. .. .. ..- attr(*, &quot;partial.auc&quot;)= logi FALSE
+#   .. .. .. .. ..- attr(*, &quot;percent&quot;)= logi FALSE
+#   .. .. .. .. ..- attr(*, &quot;roc&quot;)=List of 15
+#   .. .. .. .. .. ..$ percent           : logi FALSE
+#   .. .. .. .. .. ..$ sensitivities     : num [1:201] 1 1 1 1 1 1 1 1 1 1 ...
+#   .. .. .. .. .. ..$ specificities     : num [1:201] 0 0.0127 0.0253 0.038 0.0506 ...
+#   .. .. .. .. .. ..$ thresholds        : num [1:201] -Inf 5.54e-05 8.97e-05 1.07e-04 1.18e-04 ...
+#   .. .. .. .. .. ..$ direction         : chr &quot;&lt;&quot;
+#   .. .. .. .. .. ..$ cases             : Named num [1:121] 0.999 0.994 0.999 1 0.999 ...
+#   .. .. .. .. .. .. ..- attr(*, &quot;names&quot;)= chr [1:121] &quot;Cell7&quot; &quot;Cell8&quot; &quot;Cell26&quot; &quot;Cell31&quot; ...
+#   .. .. .. .. .. ..$ controls          : Named num [1:79] 0.011249 0.000637 0.002514 0.003981 0.000594 ...
+#   .. .. .. .. .. .. ..- attr(*, &quot;names&quot;)= chr [1:79] &quot;Cell29&quot; &quot;Cell36&quot; &quot;Cell43&quot; &quot;Cell49&quot; ...
+#   .. .. .. .. .. ..$ fun.sesp          :function (thresholds, controls, cases, direction)  
+#   .. .. .. .. .. ..$ auc               : &#39;auc&#39; num 0.999
+#   .. .. .. .. .. .. ..- attr(*, &quot;partial.auc&quot;)= logi FALSE
+#   .. .. .. .. .. .. ..- attr(*, &quot;percent&quot;)= logi FALSE
+#   .. .. .. .. .. .. ..- attr(*, &quot;roc&quot;)=List of 8
+#   .. .. .. .. .. .. .. ..$ percent      : logi FALSE
+#   .. .. .. .. .. .. .. ..$ sensitivities: num [1:201] 1 1 1 1 1 1 1 1 1 1 ...
+#   .. .. .. .. .. .. .. ..$ specificities: num [1:201] 0 0.0127 0.0253 0.038 0.0506 ...
+#   .. .. .. .. .. .. .. ..$ thresholds   : num [1:201] -Inf 5.54e-05 8.97e-05 1.07e-04 1.18e-04 ...
+#   .. .. .. .. .. .. .. ..$ direction    : chr &quot;&lt;&quot;
+#   .. .. .. .. .. .. .. ..$ cases        : Named num [1:121] 0.999 0.994 0.999 1 0.999 ...
+#   .. .. .. .. .. .. .. .. ..- attr(*, &quot;names&quot;)= chr [1:121] &quot;Cell7&quot; &quot;Cell8&quot; &quot;Cell26&quot; &quot;Cell31&quot; ...
+#   .. .. .. .. .. .. .. ..$ controls     : Named num [1:79] 0.011249 0.000637 0.002514 0.003981 0.000594 ...
+#   .. .. .. .. .. .. .. .. ..- attr(*, &quot;names&quot;)= chr [1:79] &quot;Cell29&quot; &quot;Cell36&quot; &quot;Cell43&quot; &quot;Cell49&quot; ...
+#   .. .. .. .. .. .. .. ..$ fun.sesp     :function (thresholds, controls, cases, direction)  
+#   .. .. .. .. .. .. .. ..- attr(*, &quot;class&quot;)= chr &quot;roc&quot;
+#   .. .. .. .. .. ..$ call              : language roc.default(response = test_group, predictor = attr(predict_prob, &quot;probabilities&quot;)[,      1])
+#   .. .. .. .. .. ..$ original.predictor: Named num [1:200] 0.9991 0.9937 0.999 0.0112 0.9998 ...
+#   .. .. .. .. .. .. ..- attr(*, &quot;names&quot;)= chr [1:200] &quot;Cell7&quot; &quot;Cell8&quot; &quot;Cell26&quot; &quot;Cell29&quot; ...
+#   .. .. .. .. .. ..$ original.response : Factor w/ 2 levels &quot;Group1&quot;,&quot;Group2&quot;: 2 2 2 1 2 2 1 1 1 2 ...
+#   .. .. .. .. .. ..$ predictor         : Named num [1:200] 0.9991 0.9937 0.999 0.0112 0.9998 ...
+#   .. .. .. .. .. .. ..- attr(*, &quot;names&quot;)= chr [1:200] &quot;Cell7&quot; &quot;Cell8&quot; &quot;Cell26&quot; &quot;Cell29&quot; ...
+#   .. .. .. .. .. ..$ response          : Factor w/ 2 levels &quot;Group1&quot;,&quot;Group2&quot;: 2 2 2 1 2 2 1 1 1 2 ...
+#   .. .. .. .. .. ..$ levels            : chr [1:2] &quot;Group1&quot; &quot;Group2&quot;
+#   .. .. .. .. .. ..- attr(*, &quot;class&quot;)= chr &quot;roc&quot;
+#   .. .. .. ..$ call              : language roc.default(response = test_group, predictor = attr(predict_prob, &quot;probabilities&quot;)[,      1])
+#   .. .. .. ..$ original.predictor: Named num [1:200] 0.9991 0.9937 0.999 0.0112 0.9998 ...
+#   .. .. .. .. ..- attr(*, &quot;names&quot;)= chr [1:200] &quot;Cell7&quot; &quot;Cell8&quot; &quot;Cell26&quot; &quot;Cell29&quot; ...
+#   .. .. .. ..$ original.response : Factor w/ 2 levels &quot;Group1&quot;,&quot;Group2&quot;: 2 2 2 1 2 2 1 1 1 2 ...
+#   .. .. .. ..$ predictor         : Named num [1:200] 0.9991 0.9937 0.999 0.0112 0.9998 ...
+#   .. .. .. .. ..- attr(*, &quot;names&quot;)= chr [1:200] &quot;Cell7&quot; &quot;Cell8&quot; &quot;Cell26&quot; &quot;Cell29&quot; ...
+#   .. .. .. ..$ response          : Factor w/ 2 levels &quot;Group1&quot;,&quot;Group2&quot;: 2 2 2 1 2 2 1 1 1 2 ...
+#   .. .. .. ..$ levels            : chr [1:2] &quot;Group1&quot; &quot;Group2&quot;
+#   .. .. .. ..- attr(*, &quot;class&quot;)= chr &quot;roc&quot;
+#   .. ..$ AUC       : num 0.999
+#   .. ..$ Accuracy  : num 0.99
+#   .. ..$ Precision : num 0.987
+#   .. ..$ Recall    : num 0.987
+#   .. ..$ F1        : num 0.987</code></pre>
+<p>We determine three approaches to evaluate the validity of the simulated DEGs:</p>
+<pre class="r"><code>names(assess_DEGs$DEGs_evaluation$data)
+# [1] &quot;distribution_score&quot; &quot;true_proportions&quot;   &quot;SVM_result&quot;</code></pre>
+<p><strong>distribution_score</strong>: We hypothesized that if there are no DEGs between two samples, the false positive rate of detected DEGs should be close to 0.05 and P values should follow a uniform distribution. We directly removed them from the gene expression matrix and then DEA was performed using edgeRQLFDetRate to obtain the P values. Next, we defined the null hypothesis that the P values follows a uniform distribution. The Pearson Chi-Squared test was then used to determine whether to reject the null hypothesis under the threshold (P≤0.05). If the null hypothesis is accepted for the dataset with only two cell groups, the distribution score is assigned to 1.</p>
+<p><strong>true_proportions</strong>: We chosed the most optimal algorithm (edgeRQLFDetRate, edgeR QLF model including the cellular detection rate) that performed best in a previous benchmarking study to identify DEGs on the simulated data. All identified DEGs were considered as the ground truth. Then, the ratio of candidate DEGs (returned by the given simulation method) to the true DEGs was calculated. For three or more groups, it was weighted by the proportion of DEGs from pairwise groups to all of them.</p>
+<p><strong>SVM_result</strong>: The third approach is to construct models using the simulated gene expression matrices with only DEGs. Accuracy, precision, recall, F1 score and area under ROC curve (AUC) were applied to assess the model performance. For multi-class classification, macro-averaged precision, recall and F1 score were computed.</p>
+</div>
+<div id="the-situation-where-more-than-two-groups-are-simulated" class="section level3">
+<h3>The situation where more than two groups are simulated</h3>
+<p>Splat, SCRIP, Lun and ESCO can return the DEGs from each pair of cell groups, but other methods (powsimR, muscat, scDesign, SPARSim, SPsimSeq, Lun2) only return the total DEGs of all pairs of groups when the number of simulated cell groups is higher than 2. <strong>In this special case, we can only assess their validity through the performance of the prediction models using the simulated DEGs.</strong></p>
+</div>
+</div>
+<div id="evaluate-the-simulated-cell-batches" class="section level2">
+<h2>Evaluate the simulated cell batches</h2>
+<div id="simulate-the-dataset-with-cell-batches" class="section level3">
+<h3>Simulate the dataset with cell batches</h3>
+<p>Firstly, we will simulate three batches:</p>
+<pre class="r"><code>simulate_result &lt;- simmethods::Splat_simulation(
+  parameters = estimate_result[[&quot;estimate_result&quot;]],
+  return_format = &quot;list&quot;,
+  other_prior = list(batchCells = c(200, 300, 500),
+                     nGenes = 2000),
+  seed = 111
+)
+# nCells: 1000
+# nGenes: 2000
+# nGroups: 1
+# de.prob: 0.1
+# nBatches: 3</code></pre>
+<p>Then, check the batch information of cells:</p>
+<pre class="r"><code>cell_metadata &lt;- simulate_result$simulate_result$col_meta
+table(cell_metadata$batch)
+# 
+# Batch1 Batch2 Batch3 
+#    200    300    500</code></pre>
+</div>
+<div id="prepare-the-information-of-cell-batches" class="section level3">
+<h3>Prepare the information of cell batches</h3>
+<p>Some necessary parameters and information related to the cell batches are needed:</p>
+<ol style="list-style-type: decimal">
+<li>batch: The characters of batch names which cells belong to.</li>
+<li>k: k-nearest neighborhoods of cells.</li>
+</ol>
+<pre class="r"><code>batch_labels &lt;- cell_metadata$batch</code></pre>
+<p>We can set <code>k</code> value as the square root of the cell number:</p>
+<pre class="r"><code>k &lt;- round(sqrt(length(batch_labels)))</code></pre>
+</div>
+<div id="assess-the-simulated-cell-batches" class="section level3">
+<h3>Assess the simulated cell batches</h3>
+<pre class="r"><code>assess_batches &lt;- simpipe::data_functionality_summary(
+  data = simulate_result$simulate_result$count_data,
+  batch = batch_labels,
+  k = k
+)
+# The batch information is input...
+# -------------------------------------------------
+#              Evaluating cell batches
+# -------------------------------------------------
+# Calculate cms, ILSI, Mixing Metric and Shannon entropy...
+# Calculate kBET...
+# Calculate Average Silouette Width for batch..
+# Calculate principal component regression...</code></pre>
+<p>List the assessment results of cell batches:</p>
+<pre class="r"><code>str(assess_batches$batch_evaluation)
+# List of 1
+#  $ data:List of 8
+#   ..$ cms            : num [1:1000] 0 0.00321 0 0 0 ...
+#   ..$ ISI            : num [1:1000] 0.441 2.01 1.719 2.582 1.36 ...
+#   ..$ LISI           : num 1.59
+#   ..$ mm             : num [1:1000] 32 16 23 15 28 27 15 16 12 12 ...
+#   ..$ shannon_entropy: num [1:1000] 0.213 0.734 0.756 0.932 0.734 ...
+#   ..$ kBET           : num [1:1000] 1 1 1 1 1 1 1 1 1 1 ...
+#   ..$ AWS_batch      : num 0.0199
+#   ..$ pcr            : num 0.0107</code></pre>
+<p>Eight metrics are used for assessing the quality of cell batches:</p>
+<p><strong>cms</strong>: <a href="https://github.com/almutlue/CellMixS">Cell-specific mixing score</a>. CMS is an innovative measurement to determine whether the batch-wise distances in a KNN graph follow the same distribution using the Andersion-Darling test. Ideally, the method yields a lower CMS, indicating it can simulate more reliable data with different batches.</p>
+<p><strong>ISI</strong>: Inverse Simpson’s Index. ISI is an interpretable metric used to measure diversity within each neighborhood. A lower ISI score indicates the stronger batch effects. Otherwise, a higher ISI score suggests cells are well-mixed across different batches.</p>
+<p><strong>LISI</strong>: Local Inverse Simpson’s Index.</p>
+<p><strong>mm</strong>: Mixing metric. The mixing metric utilizes the median position of the k-th cell in the KNN graphs from each batch to determine the degree of batch effects. The lower value of this score, the better mixed the cells from different batches are.</p>
+<p><strong>shannon_entropy</strong>: Shannon entropy quantifies the randomness and complexity of scRNA-seq datasets containing cells from different sources of batches.</p>
+<p><strong>kBET</strong>: k-nearest neighbor batch effect test. kBET assesses the batch mixing by comparing the batch distribution within KNNs of a cell with the global one.</p>
+<p><strong>AWS_batch</strong>: Average silhouette width for batch. ASW can also be used for batch evaluation, where the batch effect is more pronounced when the AWS closes to 1 or -1.</p>
+<p><strong>pcr</strong>: Principal component regression. The PCR score represents the total contribution of the batch variable to the variance of a dataset.</p>
+</div>
+</div>
+<div id="evaluate-the-simulated-trajectories" class="section level2">
+<h2>Evaluate the simulated trajectories</h2>
+<div id="simulate-the-dataset-with-cellular-trajectory" class="section level3">
+<h3>Simulate the dataset with cellular trajectory</h3>
+<p>Firstly, we will simulate a trajectory dataset with five cell groups:</p>
+<pre class="r"><code>simulate_result &lt;- simmethods::Splat_simulation(
+  parameters = estimate_result[[&quot;estimate_result&quot;]],
+  return_format = &quot;list&quot;,
+  other_prior = list(nGenes = 1000,
+                     prob.group = rep(0.2, 5),
+                     paths = TRUE),
+  seed = 111
+)
+# nCells: 160
+# nGenes: 1000
+# nGroups: 5
+# de.prob: 0.1
+# nBatches: 1
+# Simulating trajectory datasets by Splat</code></pre>
+<p>{{% notice note %}}
+The cell numbers of the real and simulated data should be the same.
+{{% /notice %}}</p>
+</div>
+<div id="assess-the-simulated-trajectory" class="section level3">
+<h3>Assess the simulated trajectory</h3>
+<p>Before assessing the similarity of the reference and the simulated trajectory, we should prepare the reference data and simulated data (the information of cell groups in the real or simulated data is optionally input).</p>
+<pre class="r"><code>ref_data &lt;- ref_data
+ref_data_grouping &lt;- simmethods::group_condition
+sim_data &lt;- simulate_result$simulate_result$count_data
+sim_data_grouping &lt;- simulate_result$simulate_result$col_meta$group</code></pre>
+<p>Calculate the metrics for quantifying the similarity of two trajectories (if the information of simulated cell groups is provided, the simulated groups are also evaluated):</p>
+<pre class="r"><code>assess_traj &lt;- simpipe::data_functionality_summary(
+  data = sim_data,
+  group = sim_data_grouping,
+  ref_data = ref_data,
+  ref_data_grouping = ref_data_grouping,
+  algorithm = &quot;Hungarian&quot;,
+  seed = 666
+)
+# The group information is input...
+# -------------------------------------------------
+#              Evaluating cell groups
+# -------------------------------------------------
+# 1-Calculating CDI...
+# 2-Calculating ROUGE...
+# Warning in simutils::calculate_cluster_properties(data = group_data, dist = NULL, : The ROUGE calculation failed
+# 3-Calculating silhouette...
+# 4-Calculating dunn...
+# 5-Calculating connectivity...
+# 6-Calculating DB index...
+# -------------------------------------------------
+#              Evaluating trajectories
+# -------------------------------------------------
+# The group information of reference data is input...
+# Performing trajectory inference by Slingshot for reference data...
+# Executing &#39;slingshot&#39; on &#39;20230807_224814__data_wrapper__o90IhR6HPl&#39;
+# With parameters: list(cluster_method = &quot;pam&quot;, ndim = 20L, shrink = 1L, reweight = TRUE,     reassign = TRUE, thresh = 0.001, maxit = 10L, stretch = 2L,     smoother = &quot;smooth.spline&quot;, shrink.method = &quot;cosine&quot;)
+# inputs: expression
+# priors :
+# Using full covariance matrix
+# Performing trajectory inference by Slingshot for simulated data...
+# Executing &#39;slingshot&#39; on &#39;20230807_224814__data_wrapper__0KawbKxpqj&#39;
+# With parameters: list(cluster_method = &quot;pam&quot;, ndim = 20L, shrink = 1L, reweight = TRUE,     reassign = TRUE, thresh = 0.001, maxit = 10L, stretch = 2L,     smoother = &quot;smooth.spline&quot;, shrink.method = &quot;cosine&quot;)
+# inputs: expression
+# priors :
+# Using full covariance matrix
+# Match cells in simulated and real data...
+# Performing PCA...
+# Performing Harmony...
+# Calculate correlation matrix...
+# 
+# Match simulated and real cells using Hungarian...
+#     reference simulation match_value
+# 1 SC_serum_45      Cell1   0.3906363
+# 2  SC_serum_3      Cell2   0.2300600
+# 3    SC_2i_12      Cell3   0.3109244
+# 4    SC_2i_39      Cell4   0.2567587
+# 5 SC_serum_64      Cell5   0.3596158
+# 6 SC_serum_16      Cell6   0.3042017
+# Calculating correlation of distances...
+# Waypoints of 9
+# Waypoints of 17
+# Waypoints of 25
+# Waypoints of 33
+# Waypoints of 41
+# Waypoints of 49
+# Waypoints of 57
+# Waypoints of 65
+# Waypoints of 73
+# Waypoints of 80
+# Change information in reference data...
+# Calculating HIM...
+# Warning: `data_frame()` was deprecated in tibble 1.1.0.
+# ℹ Please use `tibble()` instead.
+# ℹ The deprecated feature was likely used in the dyneval package.
+#   Please report the issue to the authors.
+# This warning is displayed once every 8 hours.
+# Call `lifecycle::last_lifecycle_warnings()` to see where this warning was
+# generated.
+# Calculating F1 branches...
+# Calculating F1 milestones...
+# Done...</code></pre>
+<p>Display the result:</p>
+<pre class="r"><code>traj_result &lt;- assess_traj$trajectory_evaluation
+names(traj_result$data)
+# [1] &quot;HIM&quot;           &quot;F1_branches&quot;   &quot;F1_milestones&quot; &quot;Cor_dist&quot;</code></pre>
+<pre class="r"><code>str(traj_result$data)
+# List of 4
+#  $ HIM          : num 0.509
+#  $ F1_branches  : num 0.364
+#  $ F1_milestones: num 0.269
+#  $ Cor_dist     :List of 2
+#   ..$ cor_dist    :List of 2
+#   .. ..$ cor_dist    : num 0.0167
+#   .. ..$ every_result: num [1:10] 0.0394 0.033 0.0339 0.0341 0.0199 ...
+#   ..$ match_result:List of 5
+#   .. ..$ PCA_raw           : num [1:320, 1:50] -13.74 -8.76 -46.39 -36.64 9.81 ...
+#   .. .. ..- attr(*, &quot;dimnames&quot;)=List of 2
+#   .. .. .. ..$ : chr [1:320] &quot;SC_2i_1&quot; &quot;SC_2i_2&quot; &quot;SC_2i_3&quot; &quot;SC_2i_4&quot; ...
+#   .. .. .. ..$ : chr [1:50] &quot;PC1&quot; &quot;PC2&quot; &quot;PC3&quot; &quot;PC4&quot; ...
+#   .. ..$ cor_result        : num [1:160, 1:160] -0.0854 0.1298 -0.1354 0.0151 0.231 ...
+#   .. .. ..- attr(*, &quot;dimnames&quot;)=List of 2
+#   .. .. .. ..$ : chr [1:160] &quot;Cell1&quot; &quot;Cell2&quot; &quot;Cell3&quot; &quot;Cell4&quot; ...
+#   .. .. .. ..$ : chr [1:160] &quot;SC_2i_1&quot; &quot;SC_2i_2&quot; &quot;SC_2i_3&quot; &quot;SC_2i_4&quot; ...
+#   .. ..$ harmony_embeddings: num [1:320, 1:50] -18.22 -8.57 -52.81 -40.82 6.8 ...
+#   .. .. ..- attr(*, &quot;dimnames&quot;)=List of 2
+#   .. .. .. ..$ : chr [1:320] &quot;SC_2i_1&quot; &quot;SC_2i_2&quot; &quot;SC_2i_3&quot; &quot;SC_2i_4&quot; ...
+#   .. .. .. ..$ : chr [1:50] &quot;PC1&quot; &quot;PC2&quot; &quot;PC3&quot; &quot;PC4&quot; ...
+#   .. ..$ cell_pair         :&#39;data.frame&#39;: 160 obs. of  3 variables:
+#   .. .. ..$ reference  : chr [1:160] &quot;SC_serum_45&quot; &quot;SC_serum_3&quot; &quot;SC_2i_12&quot; &quot;SC_2i_39&quot; ...
+#   .. .. ..$ simulation : chr [1:160] &quot;Cell1&quot; &quot;Cell2&quot; &quot;Cell3&quot; &quot;Cell4&quot; ...
+#   .. .. ..$ match_value: num [1:160] 0.391 0.23 0.311 0.257 0.36 ...
+#   .. ..$ cost              : num -56.2</code></pre>
+<p>Four metrics are used in the assessment of two cellular trajectories:</p>
+<p><strong>HIM</strong>: Hamming–Ipsen–Mikhailov. The HIM metric is a distance function quantifying the difference between two milestone networks, which linearly combines a local Hamming distance and a global Ipsen-Mikhailov distance.</p>
+<p><strong>F1_branches</strong>: F1 score for branches. F1branches score is used to measure the accuracy of branch assignment to cells.</p>
+<p><strong>F1_milestones</strong>: F1 score for milestones. F1milestones is for comparing the arrangements of cells belonging to different milestones.</p>
+<p><strong>Cor_dist</strong>: Correlation between geodesic distances. A cell located at the same position in the real and simulated trajectories should have equal relative distances to all other cells. Correlation between geodesic distance measures the correlation between the two relative distances of a cell from the real and simulated trajectory. To match the real and simulated cells within two trajectories, the Hungarian algorithm implemented in <a href="https://cran.r-project.org/web/packages/RcppHungarian/index.html">RcppHungarian</a> R package was adopted.</p>
+</div>
+</div>
+<div id="evaluate-the-functionalities-of-a-method" class="section level2">
+<h2>Evaluate the functionalities of a method</h2>
 </div>

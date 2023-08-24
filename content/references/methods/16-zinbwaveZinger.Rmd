@@ -1,0 +1,136 @@
+---
+title: "zinbwaveZinger"
+output:
+  blogdown::html_page:
+    toc: yes
+weight: 16
+---
+
+<!-- github markdown built using 
+rmarkdown::render("vignettes/zinbwaveZinger.Rmd", output_format = rmarkdown::github_document())
+-->
+
+```{r setup, include=FALSE, echo=FALSE}
+knitr::opts_chunk$set(echo = TRUE, comment = "#", collapse = TRUE)
+```
+Here zinbwaveZinger method will be demonstrated clearly and hope that this document can help you.
+
+## Estimating parameters from a real dataset
+
+Before simulating datasets, it is important to estimate some essential parameters from a real dataset in order to make the simulated data more real. If you do not have a single-cell transcriptomics count matrix now, you can use the data collected in simmethods package by `simmethods:data` command.
+
+When you use zinbwaveZinger to estimate parameters from a real dataset, you must input a numeric vector to specify the groups or plates that each cell comes from, like `other_prior = list(group.condition = the numeric vector)`.
+
+```{r load_data, message=FALSE, warning=FALSE, error=FALSE}
+library(simmethods)
+library(SingleCellExperiment)
+# Load data
+ref_data <- simmethods::data
+group_condition <- simmethods::group_condition
+## group_condition can must be a numeric vector.
+other_prior <- list(group.condition = as.numeric(group_condition))
+```
+
+Using `simmethods::zinbwaveZinger_estimation` command to execute the estimation step.
+
+```{r estimate, warning=FALSE}
+estimate_result <- simmethods::zinbwaveZinger_estimation(ref_data = ref_data,
+                                                         other_prior = other_prior,
+                                                         verbose = T,
+                                                         seed = 10)
+```
+
+## Simulating datasets using zinbwaveZinger
+
+After estimating parameter from a real dataset, we will simulate a dataset based on the learned parameters with different scenarios.
+
+1. Datasets with default parameters
+2. Determin the number of cells and genes
+3. Simulate two groups
+
+### Datasets with default parameters
+
+The reference data contains 160 cells and 4000 genes, if we simulate datasets with default parameters and then we will obtain a new data which has the same size as the reference data. In addtion, the simulated dataset will have one group of cells.
+
+```{r default_params}
+simulate_result <- simmethods::zinbwaveZinger_simulation(
+  ref_data = ref_data,
+  other_prior = other_prior,
+  parameters = estimate_result[["estimate_result"]],
+  return_format = "SCE",
+  seed = 111
+)
+```
+
+```{r}
+SCE_result <- simulate_result[["simulate_result"]]
+dim(SCE_result)
+```
+
+```{r}
+head(colData(SCE_result))
+```
+
+```{r}
+head(rowData(SCE_result))
+```
+
+
+### Determin the number of cells and genes
+
+In zinbwaveZinger, users can only set the number of cells and genes which is higher than the reference data.
+Here, we simulate a new dataset with 1000 cells and 5000 genes:
+```{r customed cell and gene number}
+simulate_result <- simmethods::zinbwaveZinger_simulation(
+  ref_data = ref_data,
+  other_prior = list(group.condition = as.numeric(group_condition),
+                     nCells = 1000,
+                     nGenes = 5000),
+  parameters = estimate_result[["estimate_result"]],
+  return_format = "list",
+  seed = 111
+)
+```
+
+
+```{r}
+result <- simulate_result[["simulate_result"]][["count_data"]]
+dim(result)
+```
+
+
+### Simulate two groups
+
+In zinbwaveZinger, we can only simulate **two groups** and note that zinbwaveZinger dose not return cell group information.
+
+For demonstration, we will simulate two groups using the learned parameters. We can set `de.prob = 0.2` to simulate 20% genes as DEGs.
+```{r groups}
+simulate_result <- simmethods::zinbwaveZinger_simulation(
+  ref_data = ref_data,
+  other_prior = list(group.condition = as.numeric(group_condition),
+                     nCells = 1000,
+                     nGenes = 5000,
+                     de.prob = 0.2,
+                     fc.group = 4),
+  parameters = estimate_result[["estimate_result"]],
+  return_format = "list",
+  seed = 111
+)
+```
+
+
+{{% notice note %}}
+zinbwaveZinger dose not return cell group information.
+{{% /notice %}}
+
+```{r}
+result <- simulate_result[["simulate_result"]][["count_data"]]
+dim(result)
+```
+
+```{r}
+## gene information
+gene_info <- simulate_result[["simulate_result"]][["row_meta"]]
+### the proportion of DEGs
+table(gene_info$de_gene)[2]/nrow(result) ## de.prob = 0.2
+```

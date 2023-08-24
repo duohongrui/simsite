@@ -6,7 +6,7 @@
     <description>Recent content on simsite</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Fri, 02 Sep 2022 18:49:42 +0800</lastBuildDate><atom:link href="/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Fri, 02 Sep 2022 17:53:43 +0800</lastBuildDate><atom:link href="/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>Choose Methods</title>
       <link>/online/1-choose_methods/</link>
@@ -31,13 +31,13 @@ Choice1: Installation from Github The first way to configure your programming en
     </item>
     
     <item>
-      <title>Methods List</title>
+      <title>Method Overview</title>
       <link>/references/1-methods_list/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
       <guid>/references/1-methods_list/</guid>
-      <description>R Markdown Including Plots Methods R Markdown This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see http://rmarkdown.rstudio.com.
-When you click the Knit button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:</description>
+      <description> Here, we show all of collected simulation methods, their basic information and the links of usage documentation. We hope it will help you to learn the usage of the method that satisfies your simulation requirements and benefit for your research.
+The Table of Simulation Methods ID Method Vignette Language URL DOI Journal 1 BASiCS link PLoS Computational Biology 2 BEARscc link Nature Communications 3 CancerInSilico link PLoS Computational Biology 4 dropsim link 5 dyngen link Nature Communications 6 dyntoy link 7 ESCO link Bioinformatics 8 ESCO-traj link Bioinformatics 9 ESCO-tree link Bioinformatics 10 hierarchicell link BMC Genomics 11 Kersplat link Genome Biology 12 Lun link Genome Biology 13 Lun2 link Genome Biology 14 MFA link Wellcome Open Research 15 muscat link Nature Communications 16 phenopath link bioRxiv 17 POWSC link Bioinformatics 18 powsimR link Bioinformatics 19 PROSSTT link Bioinformatics 20 scDD link Genome Biology 21 scDesign link Bioinformatics 22 scDesign2 link Genome Biology 23 scDesign3 link Nature Biotechnology 24 scDesign3-tree link Nature Biotechnology 25 scGAN link Nature Communications 26 scMultiSim link bioRxiv 27 scMultiSim-tree link bioRxiv 28 SCRIP-BGP-commonBCV link Bioinformatics 29 SCRIP-BGP-trendedBCV link Bioinformatics 30 SCRIP-BP link Bioinformatics 31 SCRIP-GP-commonBCV link Bioinformatics 32 SCRIP-GP-trendedBCV link Bioinformatics 33 SCRIP-paths link Bioinformatics 34 SimBPDD link Annales Mathematicae et Informaticae 35 Simple link Genome Biology 36 SparseDC link Nucleic Acids Research 37 SPARSim link Bioinformatics 38 Splat link Genome Biology 39 Splat-paths link Genome Biology 40 SplatPop link Genome Biology 41 SplatPop-paths link Genome Biology 42 SPsimSeq link Bioinformatics 43 SRTsim link Genome Bilogy 44 SymSim link Nature Communications 45 TedSim link Nucleic Acids Research 46 VeloSim link bioRxiv 47 zinbwave link Nature Communications 48 zinbwaveZinger link Genome Biology 49 zingeR link Genome Biology </description>
     </item>
     
     <item>
@@ -81,6 +81,15 @@ When you click the Knit button a document will be generated that includes both c
     </item>
     
     <item>
+      <title>Data Simulation</title>
+      <link>/programming/3-simulation/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>/programming/3-simulation/</guid>
+      <description>Simulate Datasets From Local R Step1: Prepare Estimation Results Step2: Check Availabel Parameters Step3: Simulation Simulate Datasets From Docker in R Simulate Datasets By Simpipe Package Generate Multiple Datasets For Every Estimation Result We have already known how to estimate parameters from one or more real datasets and got the estimation results. In this chapter, we will demonstrate how to simulate single-cell transcriptomics data based on the previous estimation results, especially the useful parameters that are usually customized to satisfy the different application situations.</description>
+    </item>
+    
+    <item>
       <title>Kersplat</title>
       <link>/references/methods/kersplat/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
@@ -91,22 +100,12 @@ Estimating parameters from a real dataset Before simulating datasets, it is impo
     </item>
     
     <item>
-      <title>Simulation Datasets</title>
-      <link>/programming/3-simulation/</link>
-      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      
-      <guid>/programming/3-simulation/</guid>
-      <description>Simulate Datasets From Local R Step1: Prepare Estimation Results Step2: Check Availabel Parameters Step3: Simulation Simulate Datasets From Docker in R Simulate Datasets By Simpipe Package Generate Multiple Datasets For Every Estimation Result We have already known how to estimate parameters from one or more real datasets and got the estimation results. In this chapter, we will demonstrate how to simulate single-cell transcriptomics data based on the previous estimation results, especially the useful parameters that are usually customized to satisfy the different application situations.</description>
-    </item>
-    
-    <item>
-      <title>Evaluation Datasets</title>
+      <title>Data Assessment</title>
       <link>/programming/4-evaluate_datasets/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
       <guid>/programming/4-evaluate_datasets/</guid>
-      <description>R Markdown Including Plots R Markdown This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see http://rmarkdown.rstudio.com.
-When you click the Knit button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:</description>
+      <description>Evaluate the simulated cell groups Simulate the dataset with cell groups Prepare the labels of cell groups Assess the simulated cell groups Evaluate the simulated DEGs Simulate the dataset with specified proportion of DEGs Prepare the information of DEGs Assess the validity of the simulated DEGs The situation where more than two groups are simulated Evaluate the simulated cell batches Simulate the dataset with cell batches Prepare the information of cell batches Assess the simulated cell batches Evaluate the simulated trajectories Simulate the dataset with cellular trajectory Assess the simulated trajectory Evaluate the functionalities of a method After obtaining the simulated datasets and corresponding information of cells and genes, we can assess the simulation output with the cell or gene information.</description>
     </item>
     
     <item>
@@ -187,6 +186,16 @@ library(simmethods) library(SingleCellExperiment) # Load data ref_data &amp;lt;-
       
       <guid>/references/methods/12-scdesign2/</guid>
       <description>Estimating parameters from a real dataset Default estimation Information of cell groups Information of cell types Simulating datasets using scDesign2 Datasets with default parameters Determin the number of cells Simulate two or more groups Here scDesign2 method will be demonstrated clearly and hope that this document can help you.
+Estimating parameters from a real dataset Before simulating datasets, it is important to estimate some essential parameters from a real dataset in order to make the simulated data more real.</description>
+    </item>
+    
+    <item>
+      <title>scDesign3</title>
+      <link>/references/methods/13-scdesign3/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>/references/methods/13-scdesign3/</guid>
+      <description>Estimating parameters from a real dataset Default estimation Information of cell groups Simulating datasets using scDesign3 Datasets with default parameters Simulate two or more groups Simulate two or more groups Simulate spatial transcriptome data Simulate datasets with cellular differentiation trajectory Here scDesign3 method will be demonstrated clearly and hope that this document can help you.
 Estimating parameters from a real dataset Before simulating datasets, it is important to estimate some essential parameters from a real dataset in order to make the simulated data more real.</description>
     </item>
     
@@ -293,6 +302,16 @@ library(simmethods) library(SingleCellExperiment) # Load data ref_data &amp;lt;-
     </item>
     
     <item>
+      <title>SimBPDD</title>
+      <link>/references/methods/24-simbpdd/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>/references/methods/24-simbpdd/</guid>
+      <description>Simulating datasets using SimBPDD Datasets with default parameters Determin the number of cells Simulate two groups of cells Here SimBPDD method will be demonstrated clearly and hope that this document can help you.
+library(simmethods) library(SingleCellExperiment) # Load data ref_data &amp;lt;- simmethods::data # SimBPDD takes a long time to simulate datasets, so we subset the reference data ref_data &amp;lt;- ref_data[1:100, ] Simulating datasets using SimBPDD There is no individual estimation step using SimBPDD as the estimation is combined with simulation step.</description>
+    </item>
+    
+    <item>
       <title>PROSSTT</title>
       <link>/references/methods/26-prosstt/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
@@ -323,12 +342,31 @@ Estimating parameters from a real dataset Before simulating datasets, it is impo
     </item>
     
     <item>
+      <title>SRTsim</title>
+      <link>/references/methods/28-srtsim/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>/references/methods/28-srtsim/</guid>
+      <description> Sys.sleep(3) </description>
+    </item>
+    
+    <item>
       <title>SymSim</title>
       <link>/references/methods/30-symsim/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
       <guid>/references/methods/30-symsim/</guid>
       <description>Estimating parameters from a real dataset Simulating datasets with cell trajectory using SymSim Datasets with default parameters Determin the number of cells and genes Visualization Here SymSim method will be demonstrated clearly and hope that this document can help you.
+Estimating parameters from a real dataset Before simulating datasets, it is important to estimate some essential parameters from a real dataset in order to make the simulated data more real.</description>
+    </item>
+    
+    <item>
+      <title>scMultiSim</title>
+      <link>/references/methods/31-scmultisim/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>/references/methods/31-scmultisim/</guid>
+      <description>Estimating parameters from a real dataset Simulating datasets using scMultiSim Datasets with default parameters Determin the number of cells and genes Simulate groups Simulate batches Simulate cellular differential trajectory Here SymSim method will be demonstrated clearly and hope that this document can help you.
 Estimating parameters from a real dataset Before simulating datasets, it is important to estimate some essential parameters from a real dataset in order to make the simulated data more real.</description>
     </item>
     

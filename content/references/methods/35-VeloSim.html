@@ -1,0 +1,123 @@
+---
+title: "VeloSim"
+output:
+  blogdown::html_page:
+    toc: yes
+weight: 35
+---
+
+
+<div id="TOC">
+<ul>
+<li><a href="#estimating-parameters-from-a-real-dataset" id="toc-estimating-parameters-from-a-real-dataset">Estimating parameters from a real dataset</a></li>
+<li><a href="#simulating-datasets-with-cell-trajectory-using-velosim" id="toc-simulating-datasets-with-cell-trajectory-using-velosim">Simulating datasets with cell trajectory using VeloSim</a>
+<ul>
+<li><a href="#datasets-with-default-parameters" id="toc-datasets-with-default-parameters">Datasets with default parameters</a></li>
+<li><a href="#determin-the-number-of-cells-and-genes" id="toc-determin-the-number-of-cells-and-genes">Determin the number of cells and genes</a></li>
+<li><a href="#visualization" id="toc-visualization">Visualization</a></li>
+</ul></li>
+</ul>
+</div>
+
+<!-- github markdown built using 
+rmarkdown::render("vignettes/VeloSim.Rmd", output_format = rmarkdown::github_document())
+-->
+<p>Here VeloSim method will be demonstrated clearly and hope that this document can help you.</p>
+<div id="estimating-parameters-from-a-real-dataset" class="section level2">
+<h2>Estimating parameters from a real dataset</h2>
+<p>Before simulating datasets, it is important to estimate some essential parameters from a real dataset in order to make the simulated data more real.</p>
+<pre class="r"><code>library(simmethods)
+library(SingleCellExperiment)
+# Load data
+ref_data &lt;- simmethods::data</code></pre>
+<pre class="r"><code>estimate_result &lt;- simmethods::VeloSim_estimation(
+  ref_data = ref_data,
+  verbose = T,
+  seed = 10
+)
+# Estimating parameters using VeloSim
+# Loading required package: amap
+# Computing nearest neighbor graph
+# Computing SNN
+# Your data has 3 groups</code></pre>
+<p>Users can also input the group information of cells:</p>
+<pre class="r"><code>group &lt;- as.numeric(simmethods::group_condition)
+estimate_result &lt;- simmethods::VeloSim_estimation(
+  ref_data = ref_data,
+  other_prior = list(group.condition = group),
+  verbose = T,
+  seed = 10
+)
+# Estimating parameters using VeloSim</code></pre>
+</div>
+<div id="simulating-datasets-with-cell-trajectory-using-velosim" class="section level2">
+<h2>Simulating datasets with cell trajectory using VeloSim</h2>
+<p>After estimating parameter from a real dataset, we will simulate a dataset based on the learned parameters with different scenarios.</p>
+<ol style="list-style-type: decimal">
+<li>Datasets with default parameters</li>
+<li>Determin the number of cells and genes</li>
+<li>Visualization</li>
+</ol>
+<div id="datasets-with-default-parameters" class="section level3">
+<h3>Datasets with default parameters</h3>
+<p>The reference data contains 160 cells and 4000 genes, if we simulate datasets with default parameters and then we will obtain a new data which has the same size as the reference data.</p>
+<pre class="r"><code>simulate_result &lt;- simmethods::VeloSim_simulation(
+  parameters = estimate_result[[&quot;estimate_result&quot;]],
+  other_prior = NULL,
+  return_format = &quot;SCE&quot;,
+  seed = 111
+)
+# nCells: 160
+# nGenes: 4000</code></pre>
+<pre class="r"><code>SCE_result &lt;- simulate_result[[&quot;simulate_result&quot;]]
+dim(SCE_result)
+# [1] 4000  160</code></pre>
+</div>
+<div id="determin-the-number-of-cells-and-genes" class="section level3">
+<h3>Determin the number of cells and genes</h3>
+<p>In VeloSim, we can set <code>nCells</code> and <code>nGenes</code> to specify the number of cells and genes.</p>
+<p>Here, we simulate a new dataset with 200 cells and 2000 genes:</p>
+<pre class="r"><code>simulate_result &lt;- simmethods::VeloSim_simulation(
+  parameters = estimate_result[[&quot;estimate_result&quot;]],
+  return_format = &quot;list&quot;,
+  other_prior = list(nCells = 200,
+                     nGenes = 2000),
+  seed = 111
+)
+# nCells: 200
+# nGenes: 2000</code></pre>
+<pre class="r"><code>result &lt;- simulate_result[[&quot;simulate_result&quot;]][[&quot;count_data&quot;]]
+dim(result)
+# [1] 2000  200</code></pre>
+</div>
+<div id="visualization" class="section level3">
+<h3>Visualization</h3>
+<p>Make sure that you have already installed several R packages:</p>
+<pre class="r"><code>if(!requireNamespace(&quot;dynwrap&quot;, quietly = TRUE)){install.packages(&quot;dynwrap&quot;)}
+if(!requireNamespace(&quot;dyndimred&quot;, quietly = TRUE)){install.packages(&quot;dyndimred&quot;)}
+if(!requireNamespace(&quot;dynplot&quot;, quietly = TRUE)){install.packages(&quot;dynplot&quot;)}
+if(!requireNamespace(&quot;tislingshot&quot;, quietly = TRUE)){devtools::install_github(&quot;dynverse/ti_slingshot/package/&quot;)}</code></pre>
+<p>First we should wrap the data into a standard object:</p>
+<pre class="r"><code>dyn_object &lt;- dynwrap::wrap_expression(counts = t(result),
+                                       expression = log2(t(result) + 1))</code></pre>
+<p>Next, we infer the trajectory using SlingShot which has been proved to be the most best method to do this:</p>
+<pre class="r"><code>model &lt;- dynwrap::infer_trajectory(dataset = dyn_object,
+                                   method = tislingshot::ti_slingshot(),
+                                   parameters = NULL,
+                                   give_priors = NULL,
+                                   seed = 111,
+                                   verbose = TRUE)
+# Executing &#39;slingshot&#39; on &#39;20230816_112827__data_wrapper__zj4D9ACXnS&#39;
+# With parameters: list(cluster_method = &quot;pam&quot;, ndim = 20L, shrink = 1L, reweight = TRUE,     reassign = TRUE, thresh = 0.001, maxit = 10L, stretch = 2L,     smoother = &quot;smooth.spline&quot;, shrink.method = &quot;cosine&quot;)
+# inputs: expression
+# priors :
+# Using full covariance matrix</code></pre>
+<p>Finally, we can plot the trajectory after performing dimensionality reduction:</p>
+<pre class="r"><code>dimred &lt;- dyndimred::dimred_umap(dyn_object$expression)
+dynplot::plot_dimred(model, dimred = dimred)
+# Coloring by milestone
+# Using milestone_percentages from trajectory</code></pre>
+<p><img src="/references/methods/35-VeloSim_files/figure-html/unnamed-chunk-8-1.png" width="1152" style="display: block; margin: auto;" /></p>
+<p>For more details about trajectory inference and visualization, please check <a href="https://dynverse.org/">dynverse</a>.</p>
+</div>
+</div>

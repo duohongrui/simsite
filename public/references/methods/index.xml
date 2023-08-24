@@ -6,7 +6,7 @@
     <description>Recent content in Vignettes on simsite</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Fri, 02 Sep 2022 18:49:42 +0800</lastBuildDate><atom:link href="/references/methods/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Thu, 01 Sep 2022 20:22:45 +0800</lastBuildDate><atom:link href="/references/methods/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>Splat</title>
       <link>/references/methods/splat/</link>
@@ -119,6 +119,16 @@ Estimating parameters from a real dataset Before simulating datasets, it is impo
     </item>
     
     <item>
+      <title>scDesign3</title>
+      <link>/references/methods/13-scdesign3/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>/references/methods/13-scdesign3/</guid>
+      <description>Estimating parameters from a real dataset Default estimation Information of cell groups Simulating datasets using scDesign3 Datasets with default parameters Simulate two or more groups Simulate two or more groups Simulate spatial transcriptome data Simulate datasets with cellular differentiation trajectory Here scDesign3 method will be demonstrated clearly and hope that this document can help you.
+Estimating parameters from a real dataset Before simulating datasets, it is important to estimate some essential parameters from a real dataset in order to make the simulated data more real.</description>
+    </item>
+    
+    <item>
       <title>zinbwave</title>
       <link>/references/methods/13-zinbwave/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
@@ -221,6 +231,16 @@ library(simmethods) library(SingleCellExperiment) # Load data ref_data &amp;lt;-
     </item>
     
     <item>
+      <title>SimBPDD</title>
+      <link>/references/methods/24-simbpdd/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>/references/methods/24-simbpdd/</guid>
+      <description>Simulating datasets using SimBPDD Datasets with default parameters Determin the number of cells Simulate two groups of cells Here SimBPDD method will be demonstrated clearly and hope that this document can help you.
+library(simmethods) library(SingleCellExperiment) # Load data ref_data &amp;lt;- simmethods::data # SimBPDD takes a long time to simulate datasets, so we subset the reference data ref_data &amp;lt;- ref_data[1:100, ] Simulating datasets using SimBPDD There is no individual estimation step using SimBPDD as the estimation is combined with simulation step.</description>
+    </item>
+    
+    <item>
       <title>PROSSTT</title>
       <link>/references/methods/26-prosstt/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
@@ -251,12 +271,31 @@ Estimating parameters from a real dataset Before simulating datasets, it is impo
     </item>
     
     <item>
+      <title>SRTsim</title>
+      <link>/references/methods/28-srtsim/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>/references/methods/28-srtsim/</guid>
+      <description> Sys.sleep(3) </description>
+    </item>
+    
+    <item>
       <title>SymSim</title>
       <link>/references/methods/30-symsim/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
       <guid>/references/methods/30-symsim/</guid>
       <description>Estimating parameters from a real dataset Simulating datasets with cell trajectory using SymSim Datasets with default parameters Determin the number of cells and genes Visualization Here SymSim method will be demonstrated clearly and hope that this document can help you.
+Estimating parameters from a real dataset Before simulating datasets, it is important to estimate some essential parameters from a real dataset in order to make the simulated data more real.</description>
+    </item>
+    
+    <item>
+      <title>scMultiSim</title>
+      <link>/references/methods/31-scmultisim/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>/references/methods/31-scmultisim/</guid>
+      <description>Estimating parameters from a real dataset Simulating datasets using scMultiSim Datasets with default parameters Determin the number of cells and genes Simulate groups Simulate batches Simulate cellular differential trajectory Here SymSim method will be demonstrated clearly and hope that this document can help you.
 Estimating parameters from a real dataset Before simulating datasets, it is important to estimate some essential parameters from a real dataset in order to make the simulated data more real.</description>
     </item>
     

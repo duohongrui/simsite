@@ -1,5 +1,5 @@
 ---
-title: "Methods List"
+title: "Method Overview"
 output:
   blogdown::html_page:
     toc: true
@@ -7,34 +7,128 @@ weight: 1
 ---
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
+knitr::opts_chunk$set(echo = FALSE, warning = FALSE, error = FALSE, message = FALSE)
 ```
 
-## R Markdown
 
-This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
+Here, we show all of collected simulation methods, their basic information and the links of usage documentation. We hope it will help you to learn the usage of the method that satisfies your simulation requirements and benefit for your research.
 
-When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
 
-```{r cars}
-summary(cars)
+```{r echo=FALSE}
+library(dplyr)
+library(kableExtra)
+method_expand <- function(method_name){
+  method_name <- c(method_name,
+                   "ESCO-tree",
+                   "ESCO-traj",
+                   "SCRIP-GP-trendedBCV",
+                   "SCRIP-GP-commonBCV",
+                   "SCRIP-BGP-commonBCV",
+                   "SCRIP-BP",
+                   "SCRIP-BGP-trendedBCV",
+                   "Splat-paths",
+                   "SplatPop-paths",
+                   "SCRIP-paths",
+                   "scDesign3-tree",
+                   "scMultiSim-tree")
+  method_name <- method_name[-24]
+  return(method_name)
+}
 ```
 
-## Including Plots
 
-You can also embed plots, for example:
-
-```{r pressure, echo=FALSE}
-plot(pressure)
+```{r}
+methods <- simmethods::get_method()
 ```
 
-Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
+#### The Table of Simulation Methods
 
+```{r}
+method_name <- names(methods)
+method_name <- method_expand(method_name)
 
-## Methods
-
-<a href="/references/methods/splat">Splat</a>
-
-
-
+method_table <- purrr::map_dfr(method_name, .f = function(x){
+  real_name <- stringr::str_split(x, pattern = "-", simplify = TRUE)[1]
+  method_definition <- methods[[real_name]][[paste0(real_name, "_method")]]
+  
+  ## Language
+  if(method_definition$programming == "R"){
+    logo <- "'/images/R_logo.png?height=34.5px&amp;width=45px'"
+    Language <- paste0("<img src=", logo, paste0(" alt='", real_name, "'"), ">")
+  }else{
+    logo <- "'/images/python_logo.png?height=28px&amp;width=84px'"
+    Language <- paste0("<img src=", logo, paste0(" alt='", real_name, "'"), ">")
+  }
+  
+  ## DOI
+  if(!is.null(method_definition$manuscript$doi)){
+    DOI <- paste0("<a href=",
+                  paste0("'https://doi.org/", method_definition$manuscript$doi),
+                  "'><img src='/images/doi_logo.png?height=36px&amp;width=36px'></a>")
+  }else{
+    DOI <- ""
+  }
+  
+  ## URL
+  if(!is.null(method_definition$url) | !is.null(method_definition$authors$github)){
+    if(stringr::str_detect(method_definition$url, pattern = "cran")){
+      png_logo <- "'/images/CRAN.png"
+      url_size <- "?height=20px&amp;width=48px'"
+    }else if(stringr::str_detect(method_definition$url, pattern = "bioconductor")){
+      png_logo <- "'/images/bioconductor_logo.png"
+      url_size <- "?height=46.8px&amp;width=39px'"
+    }else if(stringr::str_detect(method_definition$url, pattern = "github")){
+      png_logo <- "'/images/github_logo.png"
+      url_size <- "?height=33.6px&amp;width=60.8px'"
+    }else{
+      png_logo <- "'/images/URL.png"
+      url_size <- "?height=25px&amp;width=25px'"
+    }
+    if(!is.null(method_definition$authors$github)){
+      png_logo2 <- "'/images/github_logo.png"
+      url_size2 <- "?height=33.6px&amp;width=60.8px'"
+    }
+    if(!is.null(method_definition$authors$github)){
+      if(method_definition$authors$github == method_definition$url){
+        URL <- paste0("<a href=",
+                  paste0("'", method_definition$url),
+                  paste0("'><img src=", png_logo, url_size, "></a>"))
+      }else{
+        URL <- paste0("<a href=",
+                  paste0("'", method_definition$url),
+                  paste0("'><img src=", png_logo, url_size, "></a>"))
+      }
+    }else{
+      URL <- paste0("<a href=",
+                  paste0("'", method_definition$url),
+                  paste0("'><img src=", png_logo, url_size, "></a>"))
+    }
+  }else{
+    URL <- ""
+  }
+  
+  ## Journal
+  if(is.null(method_definition$manuscript$journal)){
+    Journal <- ""
+  }else{
+    Journal <- method_definition$manuscript$journal
+  }
+  
+  ## link
+  web_link <- paste0("<a href=",
+                  paste0("'/references/methods/", tolower(real_name), "'>"),
+                  paste0("link</a>"))
+  
+  method_summary <- tibble::tibble(Method = x,
+                                   Vignette = web_link,
+                                   Language = Language,
+                                   URL = URL,
+                                   DOI = DOI,
+                                   Journal = Journal)
+  method_summary
+})
+method_table <- plyr::arrange(method_table, Method)
+method_table <- tibble::add_column(method_table, ID=1:nrow(method_table), .before = "Method")
+knitr::kable(method_table, format = "simple", align = "ccccccc")
+```
 

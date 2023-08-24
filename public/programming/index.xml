@@ -30,7 +30,7 @@ Depend on local R environment Utilize Docker and link Docker and R Special estim
     </item>
     
     <item>
-      <title>Simulation Datasets</title>
+      <title>Data Simulation</title>
       <link>/programming/3-simulation/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
@@ -39,13 +39,12 @@ Depend on local R environment Utilize Docker and link Docker and R Special estim
     </item>
     
     <item>
-      <title>Evaluation Datasets</title>
+      <title>Data Assessment</title>
       <link>/programming/4-evaluate_datasets/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
       <guid>/programming/4-evaluate_datasets/</guid>
-      <description>R Markdown Including Plots R Markdown This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see http://rmarkdown.rstudio.com.
-When you click the Knit button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:</description>
+      <description>Evaluate the simulated cell groups Simulate the dataset with cell groups Prepare the labels of cell groups Assess the simulated cell groups Evaluate the simulated DEGs Simulate the dataset with specified proportion of DEGs Prepare the information of DEGs Assess the validity of the simulated DEGs The situation where more than two groups are simulated Evaluate the simulated cell batches Simulate the dataset with cell batches Prepare the information of cell batches Assess the simulated cell batches Evaluate the simulated trajectories Simulate the dataset with cellular trajectory Assess the simulated trajectory Evaluate the functionalities of a method After obtaining the simulated datasets and corresponding information of cells and genes, we can assess the simulation output with the cell or gene information.</description>
     </item>
     
   </channel>

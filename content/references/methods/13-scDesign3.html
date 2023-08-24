@@ -1,0 +1,226 @@
+---
+title: "scDesign3"
+output:
+  blogdown::html_page:
+    toc: yes
+weight: 13
+---
+
+
+<div id="TOC">
+<ul>
+<li><a href="#estimating-parameters-from-a-real-dataset" id="toc-estimating-parameters-from-a-real-dataset">Estimating parameters from a real dataset</a>
+<ul>
+<li><a href="#default-estimation" id="toc-default-estimation">Default estimation</a></li>
+<li><a href="#information-of-cell-groups" id="toc-information-of-cell-groups">Information of cell groups</a></li>
+</ul></li>
+<li><a href="#simulating-datasets-using-scdesign3" id="toc-simulating-datasets-using-scdesign3">Simulating datasets using scDesign3</a>
+<ul>
+<li><a href="#datasets-with-default-parameters" id="toc-datasets-with-default-parameters">Datasets with default parameters</a></li>
+<li><a href="#simulate-two-or-more-groups" id="toc-simulate-two-or-more-groups">Simulate two or more groups</a></li>
+<li><a href="#simulate-two-or-more-groups-1" id="toc-simulate-two-or-more-groups-1">Simulate two or more groups</a></li>
+<li><a href="#simulate-spatial-transcriptome-data" id="toc-simulate-spatial-transcriptome-data">Simulate spatial transcriptome data</a></li>
+<li><a href="#simulate-datasets-with-cellular-differentiation-trajectory" id="toc-simulate-datasets-with-cellular-differentiation-trajectory">Simulate datasets with cellular differentiation trajectory</a></li>
+</ul></li>
+</ul>
+</div>
+
+<!-- github markdown built using 
+rmarkdown::render("vignettes/Splat.Rmd", output_format = rmarkdown::github_document())
+-->
+<p>Here scDesign3 method will be demonstrated clearly and hope that this document can help you.</p>
+<div id="estimating-parameters-from-a-real-dataset" class="section level2">
+<h2>Estimating parameters from a real dataset</h2>
+<p>Before simulating datasets, it is important to estimate some essential parameters from a real dataset in order to make the simulated data more real. If you do not have a single-cell transcriptomics count matrix now, you can use the data collected in simmethods package by <code>simmethods:data</code> command.</p>
+<pre class="r"><code>library(simmethods)
+library(SingleCellExperiment)
+# Load data
+ref_data &lt;- simmethods::data</code></pre>
+<div id="default-estimation" class="section level3">
+<h3>Default estimation</h3>
+<pre class="r"><code>estimate_result &lt;- simmethods::scDesign3_estimation(
+  ref_data = ref_data,
+  verbose = TRUE,
+  seed = 111
+)
+# Estimating parameters using scDesign3
+# Convert Residuals to Multivariate Gaussian
+# Converting End
+# Copula group A starts</code></pre>
+</div>
+<div id="information-of-cell-groups" class="section level3">
+<h3>Information of cell groups</h3>
+<p>If the information of cell groups is available, you can use another way to estimate the parameters.</p>
+<pre class="r"><code>## cell groups
+group_condition &lt;- as.numeric(simmethods::group_condition)</code></pre>
+<pre class="r"><code>estimate_result &lt;- simmethods::scDesign3_estimation(
+  ref_data = ref_data,
+  other_prior = list(group.condition = group_condition),
+  verbose = TRUE,
+  seed = 111
+)
+# Estimating parameters using scDesign3
+# Convert Residuals to Multivariate Gaussian
+# Converting End
+# Copula group Group1 starts
+# Copula group Group2 starts</code></pre>
+</div>
+</div>
+<div id="simulating-datasets-using-scdesign3" class="section level2">
+<h2>Simulating datasets using scDesign3</h2>
+<p>After estimating parameter from a real dataset, we will simulate a dataset based on the learned parameters with different scenarios.</p>
+<ol style="list-style-type: decimal">
+<li>Datasets with default parameters</li>
+<li>Simulate two or more groups</li>
+<li>Simulate two or more batches</li>
+<li>Simulate spatial transcriptome data</li>
+<li>Simulate data with cellular differentiation trajectory</li>
+</ol>
+<div id="datasets-with-default-parameters" class="section level3">
+<h3>Datasets with default parameters</h3>
+<p>The reference data contains 160 cells and 4000 genes, if we simulate datasets with default parameters and then we will obtain a new data which has the same size as the reference data.</p>
+<pre class="r"><code>simulate_result &lt;- simmethods::scDesign3_simulation(
+  parameters = estimate_result[[&quot;estimate_result&quot;]],
+  return_format = &quot;SCE&quot;,
+  seed = 111
+)
+# nCells: 160
+# nGenes: 4000
+# nGroups: 2
+# nBatches: 1
+# Use Copula to sample a multivariate quantile matrix
+# Sample Copula group Group1 starts
+# Sample Copula group Group2 starts
+# Some genes have zero variance. Replace a random one with 1.</code></pre>
+<p>{{% notice note %}}
+We will get two or groups if information of cell groups is used in estimation step.
+{{% /notice %}}</p>
+<pre class="r"><code>SCE_result &lt;- simulate_result[[&quot;simulate_result&quot;]]
+dim(SCE_result)
+# [1] 4000  160</code></pre>
+<pre class="r"><code>table(colData(SCE_result)$group)
+# 
+# Group1 Group2 
+#     80     80</code></pre>
+<p>{{% notice note %}}
+We can not set the cell or gene number in scDesign3 unless a data frame which contains covariates of targeted simulated data from construct_data function is provided through new_covariate parameter.
+{{% /notice %}}</p>
+</div>
+<div id="simulate-two-or-more-groups" class="section level3">
+<h3>Simulate two or more groups</h3>
+<p>In scDesign3, we can not set <code>nGroups</code> directly and should specify the group labels of cells in the <strong>estimation</strong> step in <code>scDesign3_estimation</code> function.</p>
+<p>We randomly assign four group labels to cells.</p>
+<pre class="r"><code>set.seed(666)
+estimate_result &lt;- simmethods::scDesign3_estimation(
+  ref_data = ref_data,
+  other_prior = list(group.condition = sample(1:4, ncol(ref_data), replace = TRUE)),
+  verbose = TRUE,
+  seed = 111
+)
+# Estimating parameters using scDesign3
+# Convert Residuals to Multivariate Gaussian
+# Converting End
+# Copula group Group2 starts
+# Copula group Group4 starts
+# Copula group Group3 starts
+# Copula group Group1 starts</code></pre>
+<pre class="r"><code>simulate_result &lt;- simmethods::scDesign3_simulation(
+  parameters = estimate_result[[&quot;estimate_result&quot;]],
+  return_format = &quot;SCE&quot;,
+  seed = 111
+)
+# nCells: 160
+# nGenes: 4000
+# nGroups: 4
+# nBatches: 1
+# Use Copula to sample a multivariate quantile matrix
+# Sample Copula group Group2 starts
+# Sample Copula group Group4 starts
+# Sample Copula group Group3 starts
+# Sample Copula group Group1 starts</code></pre>
+<p>Check cell groups</p>
+<pre class="r"><code>SCE_result &lt;- simulate_result[[&quot;simulate_result&quot;]]
+table(colData(SCE_result)$group)
+# 
+# Group1 Group2 Group3 Group4 
+#     29     43     43     45</code></pre>
+</div>
+<div id="simulate-two-or-more-groups-1" class="section level3">
+<h3>Simulate two or more groups</h3>
+<p>In scDesign3, we can not set <code>nBatches</code> directly and should the batch labels of cells in the <strong>estimation</strong> step in <code>scDesign3_estimation</code> function.</p>
+<p>{{% notice warning %}}
+If you custom the simulated cell number which is not equal to that of the real data, the batch information for simulated cells is not returned.
+{{% /notice %}}</p>
+</div>
+<div id="simulate-spatial-transcriptome-data" class="section level3">
+<h3>Simulate spatial transcriptome data</h3>
+</div>
+<div id="simulate-datasets-with-cellular-differentiation-trajectory" class="section level3">
+<h3>Simulate datasets with cellular differentiation trajectory</h3>
+<p>Before modeling from the reference data, we should construct <code>dynwrap::expression</code> data using <code>dynwrap::wrap_expression</code> function and perform trajectory inference using Slingshot using <code>tislingshot::ti_slingshot</code> or other methods.</p>
+<pre class="r"><code>if(!requireNamespace(&quot;tislingshot&quot;, quietly = TRUE)){
+  devtools::install_github(&quot;dynverse/ti_slingshot/package/&quot;)
+}</code></pre>
+<pre class="r"><code>dyn_data &lt;- dynwrap::wrap_expression(
+  counts = t(ref_data),
+  expression = log2(t(ref_data) + 1)
+)
+dyn_data &lt;- dynwrap::add_grouping(dyn_data, group_condition)
+dyn_model &lt;- dynwrap::infer_trajectory(dyn_data, tislingshot::ti_slingshot())
+# Using full covariance matrix</code></pre>
+<p>The <code>traj</code> parameter must be <code>TURE</code> and <code>dynwrap_data</code> is needed when you want to estimate parameters from trajectory data.</p>
+<pre class="r"><code>estimate_result &lt;- simmethods::scDesign3_estimation(
+  ref_data = ref_data,
+  other_prior = list(traj = TRUE,
+                     group.condition = group_condition,
+                     dynwrap_data = dyn_model),
+  verbose = TRUE,
+  seed = 111
+)
+# Constructing lineages for the data...
+# Estimating parameters using scDesign3
+# Convert Residuals to Multivariate Gaussian
+# Converting End
+# Copula group Group1 starts
+# Copula group Group2 starts</code></pre>
+<p>Next, we can simulate trajectory data using scDesign3.</p>
+<pre class="r"><code>simulate_result &lt;- simmethods::scDesign3_simulation(
+  parameters = estimate_result[[&quot;estimate_result&quot;]],
+  return_format = &quot;list&quot;,
+  seed = 111
+)
+# nCells: 160
+# nGenes: 4000
+# nGroups: 2
+# nBatches: 1
+# Use Copula to sample a multivariate quantile matrix
+# Sample Copula group Group1 starts
+# Sample Copula group Group2 starts
+# Some genes have zero variance. Replace a random one with 1.</code></pre>
+<p>Before visualization, make sure that you have already installed several R packages:</p>
+<pre class="r"><code>if(!requireNamespace(&quot;dyndimred&quot;, quietly = TRUE)){install.packages(&quot;dyndimred&quot;)}
+if(!requireNamespace(&quot;dynplot&quot;, quietly = TRUE)){install.packages(&quot;dynplot&quot;)}</code></pre>
+<p>First we should wrap the data into a standard object:</p>
+<pre class="r"><code>dyn_object &lt;- dynwrap::wrap_expression(counts = t(simulate_result$simulate_result$count_data),
+                                       expression = log2(t(simulate_result$simulate_result$count_data) + 1))</code></pre>
+<p>Next, we infer the trajectory using SlingShot which has been proved to be the most best method to do this:</p>
+<pre class="r"><code>model &lt;- dynwrap::infer_trajectory(dataset = dyn_object,
+                                   method = tislingshot::ti_slingshot(),
+                                   parameters = NULL,
+                                   give_priors = NULL,
+                                   seed = 666,
+                                   verbose = TRUE)
+# Executing &#39;slingshot&#39; on &#39;20230806_223434__data_wrapper__FJQcaDVHq7&#39;
+# With parameters: list(cluster_method = &quot;pam&quot;, ndim = 20L, shrink = 1L, reweight = TRUE,     reassign = TRUE, thresh = 0.001, maxit = 10L, stretch = 2L,     smoother = &quot;smooth.spline&quot;, shrink.method = &quot;cosine&quot;)
+# inputs: expression
+# priors :
+# Using full covariance matrix</code></pre>
+<p>Finally, we can plot the trajectory after performing dimensionality reduction:</p>
+<pre class="r"><code>dimred &lt;- dyndimred::dimred_umap(dyn_object$expression)
+dynplot::plot_dimred(model, dimred = dimred)
+# Coloring by milestone
+# Using milestone_percentages from trajectory</code></pre>
+<p><img src="/references/methods/13-scDesign3_files/figure-html/unnamed-chunk-9-1.png" width="1152" style="display: block; margin: auto;" /></p>
+<p>For more details about trajectory inference and visualization, please check <a href="https://dynverse.org/">dynverse</a>.</p>
+</div>
+</div>

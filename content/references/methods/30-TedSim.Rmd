@@ -1,0 +1,134 @@
+---
+title: "TedSim"
+output:
+  blogdown::html_page:
+    toc: yes
+weight: 30
+---
+
+<!-- github markdown built using 
+rmarkdown::render("vignettes/TedSim.Rmd", output_format = rmarkdown::github_document())
+-->
+
+```{r setup, include=FALSE, echo=FALSE}
+knitr::opts_chunk$set(echo = TRUE, comment = "#", collapse = TRUE)
+```
+Here TedSim method will be demonstrated clearly and hope that this document can help you.
+
+## Estimating parameters from a real dataset
+
+Before simulating datasets, it is important to estimate some essential parameters from a real dataset in order to make the simulated data more real. 
+
+```{r load_data, message=FALSE, warning=FALSE, error=FALSE}
+library(simmethods)
+library(SingleCellExperiment)
+# Load data
+ref_data <- simmethods::data
+```
+
+
+```{r, warning=FALSE}
+estimate_result <- simmethods::TedSim_estimation(
+  ref_data = ref_data,
+  verbose = T,
+  seed = 10
+)
+```
+
+TedSim can only simulate the dataset where the cell number is the power of 2, so if the reference data does not meet the requirement, the procedure will synthesize extra fake cells to achive this goal.
+
+Users can also input the group information of cells and the k-means will not be used:
+
+```{r}
+group <- as.numeric(simmethods::group_condition)
+estimate_result <- simmethods::TedSim_estimation(
+  ref_data = ref_data,
+  other_prior = list(group.condition = group),
+  verbose = T,
+  seed = 10
+)
+```
+
+
+## Simulating datasets with cell trajectory using TedSim
+
+After estimating parameter from a real dataset, we will simulate a dataset based on the learned parameters with different scenarios.
+
+1. Datasets with default parameters
+2. Determin the number of genes
+3. Visualization
+
+### Datasets with default parameters
+
+The reference data contains 256 cells (160 real cells and 96 fake cells) and 4000 genes, if we simulate datasets with default parameters and then we will obtain a new data which has the same size as the reference data.
+
+```{r default_params}
+simulate_result <- simmethods::TedSim_simulation(
+  parameters = estimate_result[["estimate_result"]],
+  other_prior = NULL,
+  return_format = "SCE",
+  seed = 111
+)
+```
+
+```{r}
+SCE_result <- simulate_result[["simulate_result"]]
+dim(SCE_result)
+```
+
+### Determin the number of cells and genes
+
+In TedSim, we can set `nGenes` to specify the number of genes.
+
+Here, we simulate a new dataset with 1000 genes:
+
+```{r customed cell and gene number, warning=FALSE}
+simulate_result <- simmethods::TedSim_simulation(
+  parameters = estimate_result[["estimate_result"]],
+  return_format = "list",
+  other_prior = list(nGenes = 1000),
+  seed = 111
+)
+```
+
+```{r}
+result <- simulate_result[["simulate_result"]][["count_data"]]
+dim(result)
+```
+
+
+### Visualization
+
+Make sure that you have already installed several R packages:
+```{r}
+if(!requireNamespace("dynwrap", quietly = TRUE)){install.packages("dynwrap")}
+if(!requireNamespace("dyndimred", quietly = TRUE)){install.packages("dyndimred")}
+if(!requireNamespace("dynplot", quietly = TRUE)){install.packages("dynplot")}
+if(!requireNamespace("tislingshot", quietly = TRUE)){devtools::install_github("dynverse/ti_slingshot/package/")}
+```
+
+First we should wrap the data into a standard object:
+
+```{r}
+dyn_object <- dynwrap::wrap_expression(counts = t(result),
+                                       expression = log2(t(result) + 1))
+```
+
+Next, we infer the trajectory using SlingShot which has been proved to be the most best method to do this:
+
+```{r}
+model <- dynwrap::infer_trajectory(dataset = dyn_object,
+                                   method = tislingshot::ti_slingshot(),
+                                   parameters = NULL,
+                                   give_priors = NULL,
+                                   seed = 111,
+                                   verbose = TRUE)
+```
+
+Finally, we can plot the trajectory after performing dimensionality reduction:
+```{r, fig.align='center', fig.height=6, fig.width=12}
+dimred <- dyndimred::dimred_umap(dyn_object$expression)
+dynplot::plot_dimred(model, dimred = dimred)
+```
+
+For more details about trajectory inference and visualization, please check [dynverse](https://dynverse.org/).

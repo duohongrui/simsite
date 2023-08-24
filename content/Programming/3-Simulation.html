@@ -1,5 +1,5 @@
 ---
-title: "Simulation Datasets"
+title: "Data Simulation"
 output:
   blogdown::html_page:
     toc: true
@@ -150,7 +150,7 @@ estimation_result &lt;- simmethods::Splat_estimation(
 # Active assay: originalexp (20000 features, 0 variable features)</code></pre>
 <p>Check the execution time:</p>
 <pre class="r"><code>data_10000_20000$simulate_detection$Elapsed_Time_sec
-# [1] 45.764</code></pre>
+# [1] 44.628</code></pre>
 </div>
 <div id="task2-cell-groups" class="section level4">
 <h4>Task2: Cell Groups</h4>
@@ -507,15 +507,15 @@ test_docker_installation(detailed = TRUE)
 )
 # Learning parameters from data 1
 # Running /usr/local/bin/docker run --name \
-#   20230527_100216__container__uxBxg1JNLM -e &#39;TMPDIR=/tmp2&#39; --workdir \
+#   20230807_112948__container__uxBxg1JNLM -e &#39;TMPDIR=/tmp2&#39; --workdir \
 #   /home/admin/ -v \
-#   &#39;/var/folders/1l/xmc98tgx0m37wxtbtwnl6h7c0000gn/T//RtmpG1lxF9:/home/admin/docker_path&#39; \
+#   &#39;/var/folders/1l/xmc98tgx0m37wxtbtwnl6h7c0000gn/T//RtmpMrBHAW:/home/admin/docker_path&#39; \
 #   -v \
-#   &#39;/tmp/folders/1l/xmc98tgx0m37wxtbtwnl6h7c0000gn/T//RtmpG1lxF9/file1172cf5b656/tmp:/tmp2&#39; \
+#   &#39;/tmp/folders/1l/xmc98tgx0m37wxtbtwnl6h7c0000gn/T//RtmpMrBHAW/file8d9326fd785/tmp:/tmp2&#39; \
 #   duohongrui/simpipe
 # WARNING: The requested image&#39;s platform (linux/amd64) does not match the detected host platform (linux/arm64/v8) and no specific platform was requested
 # Estimating parameters using Splat
-# Output is saved to  /var/folders/1l/xmc98tgx0m37wxtbtwnl6h7c0000gn/T//RtmpG1lxF9 
+# Output is saved to  /var/folders/1l/xmc98tgx0m37wxtbtwnl6h7c0000gn/T//RtmpMrBHAW 
 # Attempting to read output into R</code></pre>
 <p>Simulate new datasets from Docker:</p>
 <pre class="r"><code>## simulate 1000 cells and 1000 genes
@@ -529,11 +529,11 @@ simulated_data &lt;- simpipe2docker::simulate_datasets_container(
 )
 # Simulating dataset 1
 # Running /usr/local/bin/docker run --name \
-#   20230527_100404__container__NigapuTAlX -e &#39;TMPDIR=/tmp2&#39; --workdir \
+#   20230807_113135__container__NigapuTAlX -e &#39;TMPDIR=/tmp2&#39; --workdir \
 #   /home/admin/ -v \
-#   &#39;/var/folders/1l/xmc98tgx0m37wxtbtwnl6h7c0000gn/T//RtmpG1lxF9:/home/admin/docker_path&#39; \
+#   &#39;/var/folders/1l/xmc98tgx0m37wxtbtwnl6h7c0000gn/T//RtmpMrBHAW:/home/admin/docker_path&#39; \
 #   -v \
-#   &#39;/tmp/folders/1l/xmc98tgx0m37wxtbtwnl6h7c0000gn/T//RtmpG1lxF9/file11726ee3671/tmp:/tmp2&#39; \
+#   &#39;/tmp/folders/1l/xmc98tgx0m37wxtbtwnl6h7c0000gn/T//RtmpMrBHAW/file8d913c1e7cb/tmp:/tmp2&#39; \
 #   duohongrui/simpipe
 # WARNING: The requested image&#39;s platform (linux/amd64) does not match the detected host platform (linux/arm64/v8) and no specific platform was requested
 # Registered S3 method overwritten by &#39;SeuratDisk&#39;:
@@ -561,7 +561,7 @@ simulated_data &lt;- simpipe2docker::simulate_datasets_container(
 # Skipping &#39;TrueCounts&#39;: estimated sparse size 2.21 * dense matrix
 # Skipping &#39;counts&#39;: estimated sparse size 2.21 * dense matrix
 # Done!
-# Output is saved to  /var/folders/1l/xmc98tgx0m37wxtbtwnl6h7c0000gn/T//RtmpG1lxF9 
+# Output is saved to  /var/folders/1l/xmc98tgx0m37wxtbtwnl6h7c0000gn/T//RtmpMrBHAW 
 # Attempting to read output into R
 simulated_data$refdata_Splat_1$simulate_result
 # class: SingleCellExperiment 
@@ -588,11 +588,11 @@ simulated_data &lt;- simpipe2docker::simulate_datasets_container(
 )
 # Simulating dataset 1
 # Running /usr/local/bin/docker run --name \
-#   20230527_100508__container__4YsDYtfOI7 -e &#39;TMPDIR=/tmp2&#39; --workdir \
+#   20230807_113237__container__4YsDYtfOI7 -e &#39;TMPDIR=/tmp2&#39; --workdir \
 #   /home/admin/ -v \
-#   &#39;/var/folders/1l/xmc98tgx0m37wxtbtwnl6h7c0000gn/T//RtmpG1lxF9:/home/admin/docker_path&#39; \
+#   &#39;/var/folders/1l/xmc98tgx0m37wxtbtwnl6h7c0000gn/T//RtmpMrBHAW:/home/admin/docker_path&#39; \
 #   -v \
-#   &#39;/tmp/folders/1l/xmc98tgx0m37wxtbtwnl6h7c0000gn/T//RtmpG1lxF9/file11726e0d7069/tmp:/tmp2&#39; \
+#   &#39;/tmp/folders/1l/xmc98tgx0m37wxtbtwnl6h7c0000gn/T//RtmpMrBHAW/file8d938ac09a/tmp:/tmp2&#39; \
 #   duohongrui/simpipe
 # WARNING: The requested image&#39;s platform (linux/amd64) does not match the detected host platform (linux/arm64/v8) and no specific platform was requested
 # Registered S3 method overwritten by &#39;SeuratDisk&#39;:
@@ -620,7 +620,7 @@ simulated_data &lt;- simpipe2docker::simulate_datasets_container(
 # Skipping &#39;TrueCounts&#39;: estimated sparse size 2.21 * dense matrix
 # Skipping &#39;counts&#39;: estimated sparse size 2.21 * dense matrix
 # Done!
-# Output is saved to  /var/folders/1l/xmc98tgx0m37wxtbtwnl6h7c0000gn/T//RtmpG1lxF9 
+# Output is saved to  /var/folders/1l/xmc98tgx0m37wxtbtwnl6h7c0000gn/T//RtmpMrBHAW 
 # Attempting to read output into R</code></pre>
 </div>
 <div id="simulate-datasets-by-simpipe-package" class="section level2">
