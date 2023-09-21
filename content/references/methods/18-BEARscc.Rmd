@@ -1,0 +1,80 @@
+---
+title: "BEARscc"
+output:
+  blogdown::html_page:
+    toc: yes
+weight: 18
+---
+
+<!-- github markdown built using 
+rmarkdown::render("vignettes/BEARscc.Rmd", output_format = rmarkdown::github_document())
+-->
+
+```{r setup, include=FALSE, echo=FALSE}
+knitr::opts_chunk$set(echo = TRUE, comment = "#", collapse = TRUE)
+```
+Here BEARscc method will be demonstrated clearly and hope that this document can help you.
+
+## Estimating parameters from a real dataset
+
+Before simulating datasets, it is important to estimate some essential parameters from a real dataset in order to make the simulated data more real. The reference data can be downloaded [here](https://zenodo.org/record/8251596/files/data23_GSE62270.rds?download=1).
+
+BEARscc needs spike-in ERCC genes as the reference to measure the variation of the
+real dataset and there are some notes that users must pay attention to.
+
+1. Make sure that there are spike-in genes in your count matrix whose prefix are `ERCC-`.
+If not, the error may occur.
+
+2. BEARscc needs ensembl gene id to execute estimation step, so it is better
+to transform the gene id previously. But users can also input official gene id
+and the procedure will convert them into ensembl gene id and note that this
+step may result in losing some genes when matching gene ids.
+
+3. If users need the transformation of gene ids, users must input the `species`
+name parameter: `mouse` or `human`. And we will match the according database to
+accomplish the conversion step.
+
+4. Another important parameters: `dilution.factor`, `volume`
+- `dilution.factor`: The dilution factor to dilute the ERCC spike-in mix liquid.
+- `volume`: The volume (microliter) of spike-in mix used in sequencing step.
+
+```{r load_data, message=FALSE, warning=FALSE, error=FALSE}
+library(simmethods)
+library(SingleCellExperiment)
+# Load data (downloaded from https://zenodo.org/record/8251596/files/data23_GSE62270.rds?download=1)
+data <- readRDS("../../../../preprocessed_data/data23_GSE62270.rds")
+ref_data <- data$data
+## group_condition can must be a numeric vector.
+other_prior <- list(dilution.factor = 50000, volume = 0.03, species = "mouse")
+```
+
+Using `simmethods::BEARscc_estimation` command to execute the estimation step.
+
+```{r estimate, warning=FALSE}
+estimate_result <- simmethods::BEARscc_estimation(
+  ref_data = ref_data,
+  other_prior = other_prior,
+  verbose = TRUE,
+  seed = 8
+)
+```
+
+## Simulating datasets using BEARscc
+
+{{% notice note %}}
+Users can not set the number of cells or genes in BEARscc.
+{{% /notice %}}
+
+```{r default_params}
+simulate_result <- simmethods::BEARscc_simulation(
+  parameters = estimate_result[["estimate_result"]],
+  return_format = "list",
+  seed = 111
+)
+```
+
+
+```{r}
+result <- simulate_result[["simulate_result"]]
+dim(result$count_data)
+```

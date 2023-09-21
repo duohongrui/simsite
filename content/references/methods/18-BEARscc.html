@@ -1,0 +1,82 @@
+---
+title: "BEARscc"
+output:
+  blogdown::html_page:
+    toc: yes
+weight: 18
+---
+
+
+<div id="TOC">
+<ul>
+<li><a href="#estimating-parameters-from-a-real-dataset" id="toc-estimating-parameters-from-a-real-dataset">Estimating parameters from a real dataset</a></li>
+<li><a href="#simulating-datasets-using-bearscc" id="toc-simulating-datasets-using-bearscc">Simulating datasets using BEARscc</a></li>
+</ul>
+</div>
+
+<!-- github markdown built using 
+rmarkdown::render("vignettes/BEARscc.Rmd", output_format = rmarkdown::github_document())
+-->
+<p>Here BEARscc method will be demonstrated clearly and hope that this document can help you.</p>
+<div id="estimating-parameters-from-a-real-dataset" class="section level2">
+<h2>Estimating parameters from a real dataset</h2>
+<p>Before simulating datasets, it is important to estimate some essential parameters from a real dataset in order to make the simulated data more real. The reference data can be downloaded <a href="https://zenodo.org/record/8251596/files/data23_GSE62270.rds?download=1">here</a>.</p>
+<p>BEARscc needs spike-in ERCC genes as the reference to measure the variation of the
+real dataset and there are some notes that users must pay attention to.</p>
+<ol style="list-style-type: decimal">
+<li><p>Make sure that there are spike-in genes in your count matrix whose prefix are <code>ERCC-</code>.
+If not, the error may occur.</p></li>
+<li><p>BEARscc needs ensembl gene id to execute estimation step, so it is better
+to transform the gene id previously. But users can also input official gene id
+and the procedure will convert them into ensembl gene id and note that this
+step may result in losing some genes when matching gene ids.</p></li>
+<li><p>If users need the transformation of gene ids, users must input the <code>species</code>
+name parameter: <code>mouse</code> or <code>human</code>. And we will match the according database to
+accomplish the conversion step.</p></li>
+<li><p>Another important parameters: <code>dilution.factor</code>, <code>volume</code></p></li>
+</ol>
+<ul>
+<li><code>dilution.factor</code>: The dilution factor to dilute the ERCC spike-in mix liquid.</li>
+<li><code>volume</code>: The volume (microliter) of spike-in mix used in sequencing step.</li>
+</ul>
+<pre class="r"><code>library(simmethods)
+library(SingleCellExperiment)
+# Load data (downloaded from https://zenodo.org/record/8251596/files/data23_GSE62270.rds?download=1)
+data &lt;- readRDS(&quot;../../../../preprocessed_data/data23_GSE62270.rds&quot;)
+ref_data &lt;- data$data
+## group_condition can must be a numeric vector.
+other_prior &lt;- list(dilution.factor = 50000, volume = 0.03, species = &quot;mouse&quot;)</code></pre>
+<p>Using <code>simmethods::BEARscc_estimation</code> command to execute the estimation step.</p>
+<pre class="r"><code>estimate_result &lt;- simmethods::BEARscc_estimation(
+  ref_data = ref_data,
+  other_prior = other_prior,
+  verbose = TRUE,
+  seed = 8
+)
+# Estimating parameters using BEARscc
+# [1] &quot;Fitting parameter alpha to establish spike-in derived noise model.&quot;
+# [1] &quot;Estimating error for spike-ins with alpha = 0&quot;
+# [1] &quot;Estimating error for spike-ins with alpha = 0.25&quot;
+# [1] &quot;Estimating error for spike-ins with alpha = 0.5&quot;
+# [1] &quot;Estimating error for spike-ins with alpha = 0.75&quot;
+# [1] &quot;Estimating error for spike-ins with alpha = 1&quot;
+# [1] &quot;Warning: there are no spike-ins that were detected inevery sample. As a result the actual transcript countthreshold, k, at which drop-outs are not present will beextrapolated rather than interpolated. The extrapolated value for k is, 2205.&quot;
+# [1] &quot;There are adequate spike-in drop-outs to build the drop-out model. Estimating the drop-out model now.&quot;</code></pre>
+</div>
+<div id="simulating-datasets-using-bearscc" class="section level2">
+<h2>Simulating datasets using BEARscc</h2>
+<p>{{% notice note %}}
+Users can not set the number of cells or genes in BEARscc.
+{{% /notice %}}</p>
+<pre class="r"><code>simulate_result &lt;- simmethods::BEARscc_simulation(
+  parameters = estimate_result[[&quot;estimate_result&quot;]],
+  return_format = &quot;list&quot;,
+  seed = 111
+)
+# nCells: 672
+# nGenes: 21427
+# [1] &quot;Creating a simulated replicated counts matrix: 1.&quot;</code></pre>
+<pre class="r"><code>result &lt;- simulate_result[[&quot;simulate_result&quot;]]
+dim(result$count_data)
+# [1] 21427   672</code></pre>
+</div>

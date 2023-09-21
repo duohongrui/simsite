@@ -24,7 +24,7 @@ weight: 31
 <!-- github markdown built using 
 rmarkdown::render("vignettes/scMultiSim.Rmd", output_format = rmarkdown::github_document())
 -->
-<p>Here SymSim method will be demonstrated clearly and hope that this document can help you.</p>
+<p>Here scMultiSim method will be demonstrated clearly and hope that this document can help you.</p>
 <div id="estimating-parameters-from-a-real-dataset" class="section level2">
 <h2>Estimating parameters from a real dataset</h2>
 <p>Before simulating datasets, it is important to estimate some essential parameters from a real dataset in order to make the simulated data more real.</p>
@@ -80,7 +80,7 @@ estimate_result &lt;- simmethods::scMultiSim_estimation(
 # Time spent: 0.17 mins
 # Adding experimental noise...
 # 50..100..150..Using atac_counts
-# Time spent: 0.52 mins</code></pre>
+# Time spent: 0.54 mins</code></pre>
 <pre class="r"><code>SCE_result &lt;- simulate_result[[&quot;simulate_result&quot;]]
 dim(SCE_result)
 # [1] 4000  160</code></pre>
@@ -111,7 +111,7 @@ dim(SCE_result)
 # Time spent: 0.15 mins
 # Adding experimental noise...
 # 50..100..150..200..250..300..350..400..450..500..Using atac_counts
-# Time spent: 0.44 mins</code></pre>
+# Time spent: 0.45 mins</code></pre>
 <pre class="r"><code>SCE_result &lt;- simulate_result[[&quot;simulate_result&quot;]]
 dim(SCE_result)
 # [1] 1000  500</code></pre>
@@ -138,10 +138,10 @@ The group number should be equal to that used or detected in the estimation step
 # nGenes: 4000
 # nGroups: 2
 # nBatches: 1
-# Time spent: 0.17 mins
+# Time spent: 0.18 mins
 # Adding experimental noise...
 # 50..100..150..Using atac_counts
-# Time spent: 0.53 mins</code></pre>
+# Time spent: 0.56 mins</code></pre>
 <pre class="r"><code>col_data &lt;- simulate_result[[&quot;simulate_result&quot;]][[&quot;col_meta&quot;]]
 table(col_data$group)
 # 
@@ -162,10 +162,10 @@ table(col_data$group)
 # nGenes: 4000
 # nGroups: 2
 # nBatches: 2
-# Time spent: 0.16 mins
+# Time spent: 0.17 mins
 # Adding experimental noise...
 # 50..100..150..Using atac_counts
-# Time spent: 0.51 mins
+# Time spent: 0.55 mins
 # Adding batch effects...</code></pre>
 <pre class="r"><code>## cell information
 col_data &lt;- simulate_result[[&quot;simulate_result&quot;]][[&quot;col_meta&quot;]]</code></pre>
@@ -191,7 +191,7 @@ col_data &lt;- simulate_result[[&quot;simulate_result&quot;]][[&quot;col_meta&qu
 # Time spent: 0.16 mins
 # Adding experimental noise...
 # 50..100..150..Using atac_counts
-# Time spent: 0.95 mins</code></pre>
+# Time spent: 0.99 mins</code></pre>
 <p>Before visualization, Make sure that you have already installed several R packages:</p>
 <pre class="r"><code>if(!requireNamespace(&quot;dynwrap&quot;, quietly = TRUE)){install.packages(&quot;dynwrap&quot;)}
 if(!requireNamespace(&quot;dyndimred&quot;, quietly = TRUE)){install.packages(&quot;dyndimred&quot;)}
@@ -208,7 +208,7 @@ dyn_object &lt;- dynwrap::wrap_expression(counts = t(data),
                                    give_priors = NULL,
                                    seed = 111,
                                    verbose = TRUE)
-# Executing &#39;slingshot&#39; on &#39;20230807_111904__data_wrapper__Wad2hj4sH8&#39;
+# Executing &#39;slingshot&#39; on &#39;20230903_172409__data_wrapper__Wad2hj4sH8&#39;
 # With parameters: list(cluster_method = &quot;pam&quot;, ndim = 20L, shrink = 1L, reweight = TRUE,     reassign = TRUE, thresh = 0.001, maxit = 10L, stretch = 2L,     smoother = &quot;smooth.spline&quot;, shrink.method = &quot;cosine&quot;)
 # inputs: expression
 # priors :

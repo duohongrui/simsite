@@ -1,0 +1,128 @@
+---
+title: "BASiCS"
+output:
+  blogdown::html_page:
+    toc: yes
+weight: 17
+---
+
+
+<div id="TOC">
+<ul>
+<li><a href="#estimating-parameters-from-a-real-dataset" id="toc-estimating-parameters-from-a-real-dataset">Estimating parameters from a real dataset</a>
+<ul>
+<li><a href="#prior-information-of-cell-batches" id="toc-prior-information-of-cell-batches">prior information of cell batches</a></li>
+<li><a href="#prior-information-of-ercc-spike-in-control-rna" id="toc-prior-information-of-ercc-spike-in-control-rna">prior information of ERCC spike-in control RNA</a></li>
+</ul></li>
+<li><a href="#simulating-datasets-using-basics" id="toc-simulating-datasets-using-basics">Simulating datasets using BASiCS</a>
+<ul>
+<li><a href="#determin-the-number-of-cells-and-genes" id="toc-determin-the-number-of-cells-and-genes">Determin the number of cells and genes</a></li>
+<li><a href="#simulate-two-or-more-batches" id="toc-simulate-two-or-more-batches">Simulate two or more batches</a></li>
+</ul></li>
+</ul>
+</div>
+
+<!-- github markdown built using 
+rmarkdown::render("vignettes/BASiCS.Rmd", output_format = rmarkdown::github_document())
+-->
+<p>Here BASiCS method will be demonstrated clearly and hope that this document can help you.</p>
+<div id="estimating-parameters-from-a-real-dataset" class="section level2">
+<h2>Estimating parameters from a real dataset</h2>
+<p>Before simulating datasets, it is important to estimate some essential parameters from a real dataset in order to make the simulated data more real. Errors usually occurred when using BASiCS, so that we used a dataset which can successfully pass through the execution for demonstration and it can be downloaded <a href="https://zenodo.org/record/8251596/files/data95_pancreatic-alpha-cell-maturation_zhang.rds?download=1">here</a>.</p>
+<pre class="r"><code>library(simmethods)
+# Load data
+file_path &lt;- &quot;../../../../preprocessed_data/data95_pancreatic-alpha-cell-maturation_zhang.rds&quot;
+data &lt;- readRDS(file_path)
+ref_data &lt;- t(data$data$counts)</code></pre>
+<div id="prior-information-of-cell-batches" class="section level3">
+<h3>prior information of cell batches</h3>
+<p>BASiCS allows users to input the prior information of cell batches, which is a numeric vector that specifies the batch label for each cell. Data95 does not contain the batch information, so we can randomly sample some labels for cells.</p>
+<pre class="r"><code>set.seed(666)
+batch_label &lt;- sample(c(1,2), size = ncol(ref_data), replace = TRUE)</code></pre>
+<p>Using <code>simmethods::BASiCS_estimation</code> command to execute the estimation step, but it may take a lot of time.</p>
+<pre class="r"><code>estimate_result &lt;- simmethods::BASiCS_estimation(
+  ref_data = ref_data,
+  other_prior = list(batch.condition = batch_label),
+  verbose = TRUE,
+  seed = 8
+)</code></pre>
+</div>
+<div id="prior-information-of-ercc-spike-in-control-rna" class="section level3">
+<h3>prior information of ERCC spike-in control RNA</h3>
+<p>Otherwise, users can also input the prior information of ERCC spike-in control RNA, which contains three important parameters:</p>
+<ul>
+<li>Make sure that there are spike-in genes in your count matrix whose prefix are <code>ERCC-</code>. If not, the error may occur.</li>
+<li><code>dilution.factor</code>: The dilution factor to dilute the ERCC spike-in mix liquid.</li>
+<li><code>volume</code>: The volume (microliter) of spike-in mix used in sequencing step.</li>
+</ul>
+<p>Check out the names of ERCC spike-in RNA:</p>
+<pre class="r"><code>rownames(ref_data)[grep(&quot;^ERCC-&quot;, rownames(ref_data))]
+#  [1] &quot;ERCC-00116&quot; &quot;ERCC-00025&quot; &quot;ERCC-00165&quot; &quot;ERCC-00053&quot; &quot;ERCC-00112&quot;
+#  [6] &quot;ERCC-00078&quot; &quot;ERCC-00084&quot; &quot;ERCC-00019&quot; &quot;ERCC-00163&quot; &quot;ERCC-00099&quot;
+# [11] &quot;ERCC-00160&quot; &quot;ERCC-00059&quot; &quot;ERCC-00035&quot; &quot;ERCC-00092&quot; &quot;ERCC-00170&quot;
+# [16] &quot;ERCC-00144&quot; &quot;ERCC-00062&quot; &quot;ERCC-00044&quot; &quot;ERCC-00157&quot;</code></pre>
+<p>Prepare other two parameters:</p>
+<pre class="r"><code>other_prior &lt;- list(dilution.factor = data$data_info$dilution_factor,
+                    volume = data$data_info$volume)</code></pre>
+<p>Execute the parameter estimation (it may take a long time):</p>
+<pre class="r"><code>estimate_result &lt;- simmethods::BASiCS_estimation(
+  ref_data = ref_data,
+  other_prior = other_prior,
+  verbose = TRUE,
+  seed = 8
+)</code></pre>
+</div>
+</div>
+<div id="simulating-datasets-using-basics" class="section level2">
+<h2>Simulating datasets using BASiCS</h2>
+<p>After estimating parameter from a real dataset, we will simulate a dataset based on the learned parameters with different scenarios.</p>
+<ol style="list-style-type: decimal">
+<li>Datasets with default parameters</li>
+<li>Determin the number of cells and genes</li>
+<li>Simulate two or more batches</li>
+</ol>
+<pre class="r"><code>simulate_result &lt;- simmethods::BASiCS_simulation(
+  parameters = estimate_result[[&quot;estimate_result&quot;]],
+  return_format = &quot;list&quot;,
+  seed = 1
+)
+# nCells: 322
+# nGenes: 6119
+# nBatches: 1</code></pre>
+<pre class="r"><code>result &lt;- simulate_result[[&quot;simulate_result&quot;]]
+dim(result$count_data)
+# [1] 6138  322</code></pre>
+<div id="determin-the-number-of-cells-and-genes" class="section level3">
+<h3>Determin the number of cells and genes</h3>
+<p>In BASiCS, we can set <code>batchCells</code> and <code>nGenes</code> to specify the number of cells and genes.</p>
+<p>Here, we simulate a new dataset with 1000 cells and 1000 genes:</p>
+<pre class="r"><code>simulate_result &lt;- simmethods::BASiCS_simulation(
+  parameters = estimate_result[[&quot;estimate_result&quot;]],
+  return_format = &quot;list&quot;,
+  other_prior = list(batchCells = 1000,
+                     nGenes = 1000),
+  seed = 3
+)
+# nCells: 1000
+# nGenes: 1000
+# nBatches: 1</code></pre>
+<pre class="r"><code>result &lt;- simulate_result[[&quot;simulate_result&quot;]][[&quot;count_data&quot;]]
+dim(result)
+# [1] 1019 1000</code></pre>
+</div>
+<div id="simulate-two-or-more-batches" class="section level3">
+<h3>Simulate two or more batches</h3>
+<p>{{% notice note %}}
+There is a strict rule for simulating cell batches using BASiCS: 1) Users can simulate cell batches when the information of cell batch labels is used for parameter estimation; 2) The number of the simulated batches must be equal to that of the real cell batches used in parameter estimation.
+{{% /notice %}}.</p>
+<p>As we did not use the information of cell batches in parameter estimation, so we can not simulate the data with batch effects. But for demonstrations, we will show the approaches for simulating cell batches.</p>
+<p>The number of cell batches is determined by <code>batchCells</code> parameter, whose length represents the number of batches that need to be simulated. For example, <strong>three batches of cells</strong> will be simulated by setting <code>batchCells=c(100,200,300)</code>.</p>
+<pre class="r"><code>simulate_result &lt;- simmethods::BASiCS_simulation(
+  parameters = estimate_result[[&quot;estimate_result&quot;]],
+  return_format = &quot;list&quot;,
+  other_prior = list(batchCells = c(100,200,300),
+                     nGenes = 1000),
+  seed = 3
+)</code></pre>
+</div>
+</div>

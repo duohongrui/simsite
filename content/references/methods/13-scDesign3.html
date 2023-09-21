@@ -18,9 +18,9 @@ weight: 13
 <ul>
 <li><a href="#datasets-with-default-parameters" id="toc-datasets-with-default-parameters">Datasets with default parameters</a></li>
 <li><a href="#simulate-two-or-more-groups" id="toc-simulate-two-or-more-groups">Simulate two or more groups</a></li>
-<li><a href="#simulate-two-or-more-groups-1" id="toc-simulate-two-or-more-groups-1">Simulate two or more groups</a></li>
-<li><a href="#simulate-spatial-transcriptome-data" id="toc-simulate-spatial-transcriptome-data">Simulate spatial transcriptome data</a></li>
+<li><a href="#simulate-two-or-more-batches" id="toc-simulate-two-or-more-batches">Simulate two or more batches</a></li>
 <li><a href="#simulate-datasets-with-cellular-differentiation-trajectory" id="toc-simulate-datasets-with-cellular-differentiation-trajectory">Simulate datasets with cellular differentiation trajectory</a></li>
+<li><a href="#simulate-spatial-transcriptome-data" id="toc-simulate-spatial-transcriptome-data">Simulate spatial transcriptome data</a></li>
 </ul></li>
 </ul>
 </div>
@@ -73,8 +73,8 @@ group_condition &lt;- as.numeric(simmethods::group_condition)</code></pre>
 <li>Datasets with default parameters</li>
 <li>Simulate two or more groups</li>
 <li>Simulate two or more batches</li>
-<li>Simulate spatial transcriptome data</li>
 <li>Simulate data with cellular differentiation trajectory</li>
+<li>Simulate spatial transcriptome data</li>
 </ol>
 <div id="datasets-with-default-parameters" class="section level3">
 <h3>Datasets with default parameters</h3>
@@ -90,8 +90,7 @@ group_condition &lt;- as.numeric(simmethods::group_condition)</code></pre>
 # nBatches: 1
 # Use Copula to sample a multivariate quantile matrix
 # Sample Copula group Group1 starts
-# Sample Copula group Group2 starts
-# Some genes have zero variance. Replace a random one with 1.</code></pre>
+# Sample Copula group Group2 starts</code></pre>
 <p>{{% notice note %}}
 We will get two or groups if information of cell groups is used in estimation step.
 {{% /notice %}}</p>
@@ -145,15 +144,12 @@ table(colData(SCE_result)$group)
 # Group1 Group2 Group3 Group4 
 #     29     43     43     45</code></pre>
 </div>
-<div id="simulate-two-or-more-groups-1" class="section level3">
-<h3>Simulate two or more groups</h3>
+<div id="simulate-two-or-more-batches" class="section level3">
+<h3>Simulate two or more batches</h3>
 <p>In scDesign3, we can not set <code>nBatches</code> directly and should the batch labels of cells in the <strong>estimation</strong> step in <code>scDesign3_estimation</code> function.</p>
 <p>{{% notice warning %}}
 If you custom the simulated cell number which is not equal to that of the real data, the batch information for simulated cells is not returned.
 {{% /notice %}}</p>
-</div>
-<div id="simulate-spatial-transcriptome-data" class="section level3">
-<h3>Simulate spatial transcriptome data</h3>
 </div>
 <div id="simulate-datasets-with-cellular-differentiation-trajectory" class="section level3">
 <h3>Simulate datasets with cellular differentiation trajectory</h3>
@@ -195,8 +191,7 @@ dyn_model &lt;- dynwrap::infer_trajectory(dyn_data, tislingshot::ti_slingshot())
 # nBatches: 1
 # Use Copula to sample a multivariate quantile matrix
 # Sample Copula group Group1 starts
-# Sample Copula group Group2 starts
-# Some genes have zero variance. Replace a random one with 1.</code></pre>
+# Sample Copula group Group2 starts</code></pre>
 <p>Before visualization, make sure that you have already installed several R packages:</p>
 <pre class="r"><code>if(!requireNamespace(&quot;dyndimred&quot;, quietly = TRUE)){install.packages(&quot;dyndimred&quot;)}
 if(!requireNamespace(&quot;dynplot&quot;, quietly = TRUE)){install.packages(&quot;dynplot&quot;)}</code></pre>
@@ -210,7 +205,7 @@ if(!requireNamespace(&quot;dynplot&quot;, quietly = TRUE)){install.packages(&quo
                                    give_priors = NULL,
                                    seed = 666,
                                    verbose = TRUE)
-# Executing &#39;slingshot&#39; on &#39;20230806_223434__data_wrapper__FJQcaDVHq7&#39;
+# Executing &#39;slingshot&#39; on &#39;20230911_114342__data_wrapper__3AFJQcaDVH&#39;
 # With parameters: list(cluster_method = &quot;pam&quot;, ndim = 20L, shrink = 1L, reweight = TRUE,     reassign = TRUE, thresh = 0.001, maxit = 10L, stretch = 2L,     smoother = &quot;smooth.spline&quot;, shrink.method = &quot;cosine&quot;)
 # inputs: expression
 # priors :
@@ -222,5 +217,53 @@ dynplot::plot_dimred(model, dimred = dimred)
 # Using milestone_percentages from trajectory</code></pre>
 <p><img src="/references/methods/13-scDesign3_files/figure-html/unnamed-chunk-9-1.png" width="1152" style="display: block; margin: auto;" /></p>
 <p>For more details about trajectory inference and visualization, please check <a href="https://dynverse.org/">dynverse</a>.</p>
+</div>
+<div id="simulate-spatial-transcriptome-data" class="section level3">
+<h3>Simulate spatial transcriptome data</h3>
+<p>scDesign3 can also simulate spatial transcriptome data. Besides the gene expression profile, users should also provide the spatial coordinates of each cell (spot). The reference data can be downloaded <a href="https://zenodo.org/record/8251596/files/data118_spatial_OV.rds?download=1">here</a>.</p>
+<pre class="r"><code># Load data (downloaded from https://zenodo.org/record/8251596/files/data118_spatial_OV.rds?download=1)
+data &lt;- readRDS(&quot;../../../../preprocessed_data/data118_spatial_OV.rds&quot;)
+ref_data &lt;- t(as.matrix(data$data$counts))</code></pre>
+<p>In addition, we can set the spatial coordinates by <code>spatial.x</code> and <code>spatial.y</code> parameters.</p>
+<pre class="r"><code>other_prior &lt;- list(spatial.x = data$data_info$spatial_coordinate$x,
+                    spatial.y = data$data_info$spatial_coordinate$y,
+                    group.condition = as.numeric(as.factor(data$data_info$cluster_info)))</code></pre>
+<p>Execute the parameter estimation:</p>
+<pre class="r"><code>estimate_result &lt;- simmethods::scDesign3_estimation(
+  ref_data = ref_data,
+  other_prior = other_prior,
+  verbose = T,
+  seed = 10
+)
+# Estimating parameters using scDesign3
+# Convert Residuals to Multivariate Gaussian
+# Converting End
+# Copula group Group2 starts
+# Copula group Group1 starts</code></pre>
+<p>Simulate spatial transcriptome data:</p>
+<pre class="r"><code>simulate_result &lt;- simmethods::scDesign3_simulation(
+  parameters = estimate_result[[&quot;estimate_result&quot;]],
+  return_format = &quot;list&quot;,
+  seed = 111
+)
+# nCells: 3492
+# nGenes: 1056
+# nGroups: 2
+# nBatches: 1
+# Use Copula to sample a multivariate quantile matrix
+# Sample Copula group Group2 starts
+# Sample Copula group Group1 starts</code></pre>
+<p>Notably, the simulated cells can match the real ones, so that the spatial coordinates are the same as the previously input ones.</p>
+<p>Visualize the spatial spots:</p>
+<pre class="r"><code>library(ggplot2)
+location &lt;- simulate_result$simulate_result$col_meta
+p &lt;- ggplot(location, aes(x = x, y = y))+
+  geom_point(aes(color = group))+
+  theme(panel.grid = element_blank(),
+        axis.title = element_blank(),
+        axis.text = element_blank(),
+        legend.position = &quot;bottom&quot;)
+p</code></pre>
+<p><img src="/references/methods/13-scDesign3_files/figure-html/plot_spatial-1.png" width="576" style="display: block; margin: auto;" /></p>
 </div>
 </div>

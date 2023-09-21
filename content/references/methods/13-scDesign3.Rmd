@@ -64,8 +64,8 @@ After estimating parameter from a real dataset, we will simulate a dataset based
 1. Datasets with default parameters
 2. Simulate two or more groups
 3. Simulate two or more batches
-4. Simulate spatial transcriptome data
-5. Simulate data with cellular differentiation trajectory
+4. Simulate data with cellular differentiation trajectory
+5. Simulate spatial transcriptome data
 
 ### Datasets with default parameters
 
@@ -128,7 +128,7 @@ table(colData(SCE_result)$group)
 ```
 
 
-### Simulate two or more groups
+### Simulate two or more batches
 
 In scDesign3, we can not set `nBatches` directly and should the batch labels of cells in the **estimation** step in `scDesign3_estimation` function.
 
@@ -136,9 +136,6 @@ In scDesign3, we can not set `nBatches` directly and should the batch labels of 
 If you custom the simulated cell number which is not equal to that of the real data, the batch information for simulated cells is not returned.
 {{% /notice %}}
 
-
-
-### Simulate spatial transcriptome data
 
 ### Simulate datasets with cellular differentiation trajectory
 
@@ -215,3 +212,56 @@ dynplot::plot_dimred(model, dimred = dimred)
 ```
 
 For more details about trajectory inference and visualization, please check [dynverse](https://dynverse.org/).
+
+
+### Simulate spatial transcriptome data
+
+scDesign3 can also simulate spatial transcriptome data. Besides the gene expression profile, users should also provide the spatial coordinates of each cell (spot). The reference data can be downloaded [here](https://zenodo.org/record/8251596/files/data118_spatial_OV.rds?download=1).
+
+```{r load_sptial_data, message=FALSE, warning=FALSE, error=FALSE}
+# Load data (downloaded from https://zenodo.org/record/8251596/files/data118_spatial_OV.rds?download=1)
+data <- readRDS("../../../../preprocessed_data/data118_spatial_OV.rds")
+ref_data <- t(as.matrix(data$data$counts))
+```
+
+In addition, we can set the spatial coordinates by `spatial.x` and `spatial.y` parameters.
+
+```{r coordinate}
+other_prior <- list(spatial.x = data$data_info$spatial_coordinate$x,
+                    spatial.y = data$data_info$spatial_coordinate$y,
+                    group.condition = as.numeric(as.factor(data$data_info$cluster_info)))
+```
+
+Execute the parameter estimation:
+```{r, warning=FALSE}
+estimate_result <- simmethods::scDesign3_estimation(
+  ref_data = ref_data,
+  other_prior = other_prior,
+  verbose = T,
+  seed = 10
+)
+```
+
+Simulate spatial transcriptome data:
+```{r simulate ST data}
+simulate_result <- simmethods::scDesign3_simulation(
+  parameters = estimate_result[["estimate_result"]],
+  return_format = "list",
+  seed = 111
+)
+```
+
+Notably, the simulated cells can match the real ones, so that the spatial coordinates are the same as the previously input ones.
+
+Visualize the spatial spots:
+```{r plot_spatial, fig.align='center', fig.height=5, fig.width=6}
+library(ggplot2)
+location <- simulate_result$simulate_result$col_meta
+p <- ggplot(location, aes(x = x, y = y))+
+  geom_point(aes(color = group))+
+  theme(panel.grid = element_blank(),
+        axis.title = element_blank(),
+        axis.text = element_blank(),
+        legend.position = "bottom")
+p
+```

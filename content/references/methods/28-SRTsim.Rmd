@@ -14,8 +14,119 @@ rmarkdown::render("vignettes/SPsimSeq.Rmd", output_format = rmarkdown::github_do
 knitr::opts_chunk$set(echo = TRUE, comment = "#", collapse = TRUE)
 ```
 
+SRTsim was specifically developed for simulating spatial transcriptome data. Besides the gene expression profile, users should also provide the spatial coordinates of each cell (spot). The reference data can be downloaded [here](https://zenodo.org/record/8251596/files/data118_spatial_OV.rds?download=1).
 
-```{r}
-Sys.sleep(3)
+## Estimating parameters from a real dataset
+
+Before simulating datasets, it is important to estimate some essential parameters from a real dataset in order to make the simulated data more real. 
+
+```{r load_data, message=FALSE, warning=FALSE, error=FALSE}
+library(simmethods)
+# Load data (downloaded from https://zenodo.org/record/8251596/files/data118_spatial_OV.rds?download=1)
+data <- readRDS("../../../../preprocessed_data/data118_spatial_OV.rds")
+ref_data <- t(as.matrix(data$data$counts))
 ```
 
+In addition, we can set the spatial coordinates by `spatial.x` and `spatial.y` parameters.
+
+```{r coordinate}
+other_prior <- list(spatial.x = data$data_info$spatial_coordinate$x,
+                    spatial.y = data$data_info$spatial_coordinate$y)
+```
+
+Execute the parameter estimation:
+```{r, warning=FALSE}
+estimate_result <- simmethods::SRTsim_estimation(
+  ref_data = ref_data,
+  other_prior = other_prior,
+  verbose = T,
+  seed = 10
+)
+```
+
+Users can also input the group information of cells:
+
+```{r, warning=FALSE}
+other_prior <- list(spatial.x = data$data_info$spatial_coordinate$x,
+                    spatial.y = data$data_info$spatial_coordinate$y,
+                    group.condition = data$data_info$group_condition)
+estimate_result <- simmethods::SRTsim_estimation(
+  ref_data = ref_data,
+  other_prior = other_prior,
+  verbose = T,
+  seed = 10
+)
+```
+
+
+## Simulating datasets using SRTsim
+
+1. Datasets with default parameters
+2. Simulate cell groups
+
+### Datasets with default parameters
+
+```{r default_params}
+simulate_result <- simmethods::SRTsim_simulation(
+  parameters = estimate_result$estimate_result,
+  other_prior = NULL,
+  return_format = "SCE",
+  seed = 111
+)
+```
+
+```{r}
+SCE_result <- simulate_result[["simulate_result"]]
+dim(SCE_result)
+```
+
+```{r}
+head(colData(SCE_result))
+```
+
+### Simulate cell groups
+
+There is a strict rule for simulating cell groups using SRTsim:
+
+1. Users can simulate cell groups when the information of cell group labels is used for parameter estimation;
+
+2. The number of the simulated cell groups must be equal to that of the real groups used in parameter estimation.
+
+
+As we used the information of cell groups in parameter estimation, so we can simulate the data with cell groups.
+
+```{r}
+simulate_result <- simmethods::SRTsim_simulation(
+  parameters = estimate_result$estimate_result,
+  other_prior = NULL,
+  return_format = "list",
+  seed = 111
+)
+```
+
+
+```{r}
+cell_meta <- simulate_result$simulate_result$col_meta
+head(cell_meta)
+```
+
+The `x` and `y` columns represent the spatial positions of cells (spots), and the `group` column denotes the group labels of cells.
+
+Check the group labels of cells:
+
+```{r check_group_label}
+table(cell_meta$group)
+```
+
+Visualize the spatial spots:
+```{r plot_spatial, fig.align='center', fig.height=4, fig.width=5}
+library(ggplot2)
+location <- simulate_result$simulate_result$col_meta
+p <- ggplot(location, aes(x = x, y = y))+
+  geom_point(aes(color = group))+
+  theme(panel.grid = element_blank(),
+        axis.title = element_blank(),
+        axis.text = element_blank(),
+        legend.position = "bottom")
+p
+```

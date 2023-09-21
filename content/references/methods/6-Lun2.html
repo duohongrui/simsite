@@ -14,7 +14,7 @@ weight: 6
 <ul>
 <li><a href="#datasets-with-default-parameters" id="toc-datasets-with-default-parameters">Datasets with default parameters</a></li>
 <li><a href="#determin-the-number-of-cells-and-genes" id="toc-determin-the-number-of-cells-and-genes">Determin the number of cells and genes</a></li>
-<li><a href="#simulate-two-or-more-groups" id="toc-simulate-two-or-more-groups">Simulate two or more groups</a></li>
+<li><a href="#simulate-two-or-more-batches" id="toc-simulate-two-or-more-batches">Simulate two or more batches</a></li>
 </ul></li>
 </ul>
 </div>
@@ -26,14 +26,14 @@ rmarkdown::render("vignettes/Lun2.Rmd", output_format = rmarkdown::github_docume
 <div id="estimating-parameters-from-a-real-dataset" class="section level2">
 <h2>Estimating parameters from a real dataset</h2>
 <p>Before simulating datasets, it is important to estimate some essential parameters from a real dataset in order to make the simulated data more real. If you do not have a single-cell transcriptomics count matrix now, you can use the data collected in simmethods package by <code>simmethods:data</code> command.</p>
-<p>When you use Lun2 to estimate parameters from a real dataset, you must input a numeric vector to specify the groups or plates that each cell comes from, like <code>other_prior = list(group.condition = the numeric vector)</code>.</p>
+<p>When you use Lun2 to estimate parameters from a real dataset, you must input a numeric vector to specify the batches or plates that each cell comes from, like <code>other_prior = list(batch.condition = the numeric vector)</code>.</p>
 <pre class="r"><code>library(simmethods)
 library(SingleCellExperiment)
 # Load data
 ref_data &lt;- simmethods::data
-group_condition &lt;- simmethods::group_condition
-## group_condition can must be a numeric vector.
-other_prior &lt;- list(group.condition = as.numeric(group_condition))</code></pre>
+plates &lt;- simmethods::group_condition
+## plates can must be a numeric vector.
+other_prior &lt;- list(batch.condition = as.numeric(plates))</code></pre>
 <p>Using <code>simmethods::Lun2_estimation</code> command to execute the estimation step.</p>
 <pre class="r"><code>estimate_result &lt;- simmethods::Lun2_estimation(ref_data = ref_data,
                                                other_prior = other_prior,
@@ -74,11 +74,11 @@ other_prior &lt;- list(group.condition = as.numeric(group_condition))</code></pr
 <ol style="list-style-type: decimal">
 <li>Datasets with default parameters</li>
 <li>Determin the number of cells and genes</li>
-<li>Simulate two or more groups</li>
+<li>Simulate two or more batches</li>
 </ol>
 <div id="datasets-with-default-parameters" class="section level3">
 <h3>Datasets with default parameters</h3>
-<p>The reference data contains 160 cells and 4000 genes, if we simulate datasets with default parameters and then we will obtain a new data which has the same size as the reference data. In addtion, the simulated dataset will have one group of cells.</p>
+<p>The reference data contains 160 cells and 4000 genes, if we simulate datasets with default parameters and then we will obtain a new data which has the same size as the reference data. In addtion, the simulated dataset will have one batch of cells.</p>
 <pre class="r"><code>simulate_result &lt;- simmethods::Lun2_simulation(
   parameters = estimate_result[[&quot;estimate_result&quot;]],
   return_format = &quot;SCE&quot;,
@@ -86,9 +86,7 @@ other_prior &lt;- list(group.condition = as.numeric(group_condition))</code></pr
 )
 # nCells: 160
 # nGenes: 3973
-# nPlates: 2
-# de.prob: 0
-# fc.group: 3</code></pre>
+# nPlates: 2</code></pre>
 <pre class="r"><code>SCE_result &lt;- simulate_result[[&quot;simulate_result&quot;]]
 dim(SCE_result)
 # [1] 3973  160</code></pre>
@@ -127,8 +125,6 @@ Here, we simulate a new dataset with 500 cells and 2000 genes:</p>
 # nCells: 500
 # nGenes: 2000
 # nPlates: 1
-# de.prob: 0
-# fc.group: 3
 # Warning in splatter::lun2Simulate(parameters, verbose = verbose, zinb = zinb):
 # Number of lib.sizes not equal to nCells. lib.sizes will be sampled.
 # Warning in splatter::lun2Simulate(parameters, verbose = verbose, zinb = zinb):
@@ -141,24 +137,20 @@ The cell.plates parameter represents the sampling source of cells in real experi
 dim(result)
 # [1] 2000  500</code></pre>
 </div>
-<div id="simulate-two-or-more-groups" class="section level3">
-<h3>Simulate two or more groups</h3>
-<p>In Lun2, we can not set <code>nGroups</code> directly and should set <code>cell.plates</code> instead. For example, if we want to simulate 2 groups, we can type <code>other_prior = list(cell.plates  = sample(1:2, 500, replace = TRUE))</code>. Note that the length of <code>cell.plates</code> numeric vector must be equal to the cell number.</p>
-<p>For demonstration, we will simulate three groups using the learned parameters. We can set <code>de.prob = 0.2</code> to simulate 20% genes as DEGs.</p>
+<div id="simulate-two-or-more-batches" class="section level3">
+<h3>Simulate two or more batches</h3>
+<p>In Lun2, we can not set <code>nbatches</code> directly and should set <code>cell.plates</code> instead. For example, if we want to simulate 2 batches, we can type <code>other_prior = list(cell.plates  = sample(1:2, 500, replace = TRUE))</code>. Note that the length of <code>cell.plates</code> numeric vector must be equal to the cell number.</p>
+<p>For demonstration, we will simulate three batches using the learned parameters.</p>
 <pre class="r"><code>simulate_result &lt;- simmethods::Lun2_simulation(
   parameters = estimate_result[[&quot;estimate_result&quot;]],
   return_format = &quot;list&quot;,
   other_prior = list(cell.plates = sample(1:2, 500, replace = TRUE),
-                     nGenes = 2000,
-                     de.prob = 0.2,
-                     fc.group = 2),
+                     nGenes = 2000),
   seed = 111
 )
 # nCells: 500
 # nGenes: 2000
 # nPlates: 2
-# de.prob: 0.2
-# fc.group: 2
 # Warning in splatter::lun2Simulate(parameters, verbose = verbose, zinb = zinb):
 # Number of lib.sizes not equal to nCells. lib.sizes will be sampled.
 # Warning in splatter::lun2Simulate(parameters, verbose = verbose, zinb = zinb):
@@ -173,11 +165,5 @@ table(cell_info$plate)
 # 
 #   1   2 
 # 236 264</code></pre>
-<pre class="r"><code>## gene information
-gene_info &lt;- simulate_result[[&quot;simulate_result&quot;]][[&quot;row_meta&quot;]]
-### the proportion of DEGs
-table(gene_info$de_gene)[2]/nrow(result) ## de.prob = 0.2
-# yes 
-# 0.2</code></pre>
 </div>
 </div>

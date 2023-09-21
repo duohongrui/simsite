@@ -7,8 +7,124 @@ weight: 28
 ---
 
 
+<div id="TOC">
+<ul>
+<li><a href="#estimating-parameters-from-a-real-dataset" id="toc-estimating-parameters-from-a-real-dataset">Estimating parameters from a real dataset</a></li>
+<li><a href="#simulating-datasets-using-srtsim" id="toc-simulating-datasets-using-srtsim">Simulating datasets using SRTsim</a>
+<ul>
+<li><a href="#datasets-with-default-parameters" id="toc-datasets-with-default-parameters">Datasets with default parameters</a></li>
+<li><a href="#simulate-cell-groups" id="toc-simulate-cell-groups">Simulate cell groups</a></li>
+</ul></li>
+</ul>
+</div>
 
 <!-- github markdown built using 
 rmarkdown::render("vignettes/SPsimSeq.Rmd", output_format = rmarkdown::github_document())
 -->
-<pre class="r"><code>Sys.sleep(3)</code></pre>
+<p>SRTsim was specifically developed for simulating spatial transcriptome data. Besides the gene expression profile, users should also provide the spatial coordinates of each cell (spot). The reference data can be downloaded <a href="https://zenodo.org/record/8251596/files/data118_spatial_OV.rds?download=1">here</a>.</p>
+<div id="estimating-parameters-from-a-real-dataset" class="section level2">
+<h2>Estimating parameters from a real dataset</h2>
+<p>Before simulating datasets, it is important to estimate some essential parameters from a real dataset in order to make the simulated data more real.</p>
+<pre class="r"><code>library(simmethods)
+# Load data (downloaded from https://zenodo.org/record/8251596/files/data118_spatial_OV.rds?download=1)
+data &lt;- readRDS(&quot;../../../../preprocessed_data/data118_spatial_OV.rds&quot;)
+ref_data &lt;- t(as.matrix(data$data$counts))</code></pre>
+<p>In addition, we can set the spatial coordinates by <code>spatial.x</code> and <code>spatial.y</code> parameters.</p>
+<pre class="r"><code>other_prior &lt;- list(spatial.x = data$data_info$spatial_coordinate$x,
+                    spatial.y = data$data_info$spatial_coordinate$y)</code></pre>
+<p>Execute the parameter estimation:</p>
+<pre class="r"><code>estimate_result &lt;- simmethods::SRTsim_estimation(
+  ref_data = ref_data,
+  other_prior = other_prior,
+  verbose = T,
+  seed = 10
+)
+# Estimating parameters using SRTsim</code></pre>
+<p>Users can also input the group information of cells:</p>
+<pre class="r"><code>other_prior &lt;- list(spatial.x = data$data_info$spatial_coordinate$x,
+                    spatial.y = data$data_info$spatial_coordinate$y,
+                    group.condition = data$data_info$group_condition)
+estimate_result &lt;- simmethods::SRTsim_estimation(
+  ref_data = ref_data,
+  other_prior = other_prior,
+  verbose = T,
+  seed = 10
+)
+# Estimating parameters using SRTsim</code></pre>
+</div>
+<div id="simulating-datasets-using-srtsim" class="section level2">
+<h2>Simulating datasets using SRTsim</h2>
+<ol style="list-style-type: decimal">
+<li>Datasets with default parameters</li>
+<li>Simulate cell groups</li>
+</ol>
+<div id="datasets-with-default-parameters" class="section level3">
+<h3>Datasets with default parameters</h3>
+<pre class="r"><code>simulate_result &lt;- simmethods::SRTsim_simulation(
+  parameters = estimate_result$estimate_result,
+  other_prior = NULL,
+  return_format = &quot;SCE&quot;,
+  seed = 111
+)
+# nSpots: 3492
+# nGenes: 1056
+# nGroups: 2</code></pre>
+<pre class="r"><code>SCE_result &lt;- simulate_result[[&quot;simulate_result&quot;]]
+dim(SCE_result)
+# [1] 1056 3492</code></pre>
+<pre class="r"><code>head(colData(SCE_result))
+# DataFrame with 6 rows and 4 columns
+#                            x         y       group          cell_name
+#                    &lt;numeric&gt; &lt;numeric&gt; &lt;character&gt;        &lt;character&gt;
+# AAACAAGTATCTCCCA-1        27        38           B AAACAAGTATCTCCCA-1
+# AAACACCAATAACTGC-1       110        29           B AAACACCAATAACTGC-1
+# AAACAGGGTCTATATT-1       116        41           B AAACAGGGTCTATATT-1
+# AAACATTTCCCGGATT-1        32        27           A AAACATTTCCCGGATT-1
+# AAACCCGAACGAAATC-1        14        43           B AAACCCGAACGAAATC-1
+# AAACCGGAAATGTTAA-1         5        34           B AAACCGGAAATGTTAA-1</code></pre>
+</div>
+<div id="simulate-cell-groups" class="section level3">
+<h3>Simulate cell groups</h3>
+<p>There is a strict rule for simulating cell groups using SRTsim:</p>
+<ol style="list-style-type: decimal">
+<li><p>Users can simulate cell groups when the information of cell group labels is used for parameter estimation;</p></li>
+<li><p>The number of the simulated cell groups must be equal to that of the real groups used in parameter estimation.</p></li>
+</ol>
+<p>As we used the information of cell groups in parameter estimation, so we can simulate the data with cell groups.</p>
+<pre class="r"><code>simulate_result &lt;- simmethods::SRTsim_simulation(
+  parameters = estimate_result$estimate_result,
+  other_prior = NULL,
+  return_format = &quot;list&quot;,
+  seed = 111
+)
+# nSpots: 3492
+# nGenes: 1056
+# nGroups: 2</code></pre>
+<pre class="r"><code>cell_meta &lt;- simulate_result$simulate_result$col_meta
+head(cell_meta)
+#                      x  y group          cell_name
+# AAACAAGTATCTCCCA-1  27 38     B AAACAAGTATCTCCCA-1
+# AAACACCAATAACTGC-1 110 29     B AAACACCAATAACTGC-1
+# AAACAGGGTCTATATT-1 116 41     B AAACAGGGTCTATATT-1
+# AAACATTTCCCGGATT-1  32 27     A AAACATTTCCCGGATT-1
+# AAACCCGAACGAAATC-1  14 43     B AAACCCGAACGAAATC-1
+# AAACCGGAAATGTTAA-1   5 34     B AAACCGGAAATGTTAA-1</code></pre>
+<p>The <code>x</code> and <code>y</code> columns represent the spatial positions of cells (spots), and the <code>group</code> column denotes the group labels of cells.</p>
+<p>Check the group labels of cells:</p>
+<pre class="r"><code>table(cell_meta$group)
+# 
+#    A    B 
+# 1051 2441</code></pre>
+<p>Visualize the spatial spots:</p>
+<pre class="r"><code>library(ggplot2)
+location &lt;- simulate_result$simulate_result$col_meta
+p &lt;- ggplot(location, aes(x = x, y = y))+
+  geom_point(aes(color = group))+
+  theme(panel.grid = element_blank(),
+        axis.title = element_blank(),
+        axis.text = element_blank(),
+        legend.position = &quot;bottom&quot;)
+p</code></pre>
+<p><img src="/references/methods/28-SRTsim_files/figure-html/plot_spatial-1.png" width="480" style="display: block; margin: auto;" /></p>
+</div>
+</div>

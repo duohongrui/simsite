@@ -1,0 +1,149 @@
+---
+title: "BASiCS"
+output:
+  blogdown::html_page:
+    toc: yes
+weight: 17
+---
+
+<!-- github markdown built using 
+rmarkdown::render("vignettes/BASiCS.Rmd", output_format = rmarkdown::github_document())
+-->
+
+```{r setup, include=FALSE, echo=FALSE}
+knitr::opts_chunk$set(echo = TRUE, comment = "#", collapse = TRUE)
+```
+Here BASiCS method will be demonstrated clearly and hope that this document can help you.
+
+## Estimating parameters from a real dataset
+
+Before simulating datasets, it is important to estimate some essential parameters from a real dataset in order to make the simulated data more real. Errors usually occurred when using BASiCS, so that we used a dataset which can successfully pass through the execution for demonstration and it can be downloaded [here](https://zenodo.org/record/8251596/files/data95_pancreatic-alpha-cell-maturation_zhang.rds?download=1).
+
+```{r load_data, message=FALSE, warning=FALSE, error=FALSE}
+library(simmethods)
+# Load data
+file_path <- "../../../../preprocessed_data/data95_pancreatic-alpha-cell-maturation_zhang.rds"
+data <- readRDS(file_path)
+ref_data <- t(data$data$counts)
+```
+
+### prior information of cell batches
+BASiCS allows users to input the prior information of cell batches, which is a numeric vector that specifies the batch label for each cell. Data95 does not contain the batch information, so we can randomly sample some labels for cells.
+
+```{r sample_label}
+set.seed(666)
+batch_label <- sample(c(1,2), size = ncol(ref_data), replace = TRUE)
+```
+
+Using `simmethods::BASiCS_estimation` command to execute the estimation step, but it may take a lot of time.
+
+```{r esti_params1, eval=FALSE}
+estimate_result <- simmethods::BASiCS_estimation(
+  ref_data = ref_data,
+  other_prior = list(batch.condition = batch_label),
+  verbose = TRUE,
+  seed = 8
+)
+```
+
+
+### prior information of ERCC spike-in control RNA
+
+Otherwise, users can also input the prior information of ERCC spike-in control RNA, which contains three important parameters:
+
+- Make sure that there are spike-in genes in your count matrix whose prefix are `ERCC-`. If not, the error may occur.
+- `dilution.factor`: The dilution factor to dilute the ERCC spike-in mix liquid.
+- `volume`: The volume (microliter) of spike-in mix used in sequencing step.
+
+Check out the names of ERCC spike-in RNA:
+
+```{r check_spike-in}
+rownames(ref_data)[grep("^ERCC-", rownames(ref_data))]
+```
+
+Prepare other two parameters:
+
+```{r two_parameters}
+other_prior <- list(dilution.factor = data$data_info$dilution_factor,
+                    volume = data$data_info$volume)
+```
+
+Execute the parameter estimation (it may take a long time):
+
+```{r estimate2, warning=FALSE, eval=FALSE}
+estimate_result <- simmethods::BASiCS_estimation(
+  ref_data = ref_data,
+  other_prior = other_prior,
+  verbose = TRUE,
+  seed = 8
+)
+```
+
+```{r load_pre_result, echo=FALSE}
+estimate_result <- readRDS("../../../../estimation_result/BASiCS_ERCC_data95_pancreatic-alpha-cell-maturation_zhang_estimation_result.rds")[[1]]
+```
+
+
+## Simulating datasets using BASiCS
+
+After estimating parameter from a real dataset, we will simulate a dataset based on the learned parameters with different scenarios.
+
+1. Datasets with default parameters
+2. Determin the number of cells and genes
+3. Simulate two or more batches
+
+```{r default_params, warning=FALSE}
+simulate_result <- simmethods::BASiCS_simulation(
+  parameters = estimate_result[["estimate_result"]],
+  return_format = "list",
+  seed = 1
+)
+```
+
+```{r}
+result <- simulate_result[["simulate_result"]]
+dim(result$count_data)
+```
+
+### Determin the number of cells and genes
+
+In BASiCS, we can set `batchCells` and `nGenes` to specify the number of cells and genes.
+
+Here, we simulate a new dataset with 1000 cells and 1000 genes:
+
+```{r customed cell and gene number, warning=FALSE}
+simulate_result <- simmethods::BASiCS_simulation(
+  parameters = estimate_result[["estimate_result"]],
+  return_format = "list",
+  other_prior = list(batchCells = 1000,
+                     nGenes = 1000),
+  seed = 3
+)
+```
+
+
+```{r}
+result <- simulate_result[["simulate_result"]][["count_data"]]
+dim(result)
+```
+
+
+### Simulate two or more batches
+
+{{% notice note %}}
+There is a strict rule for simulating cell batches using BASiCS: 1) Users can simulate cell batches when the information of cell batch labels is used for parameter estimation; 2) The number of the simulated batches must be equal to that of the real cell batches used in parameter estimation.
+{{% /notice %}}.
+
+As we did not use the information of cell batches in parameter estimation, so we can not simulate the data with batch effects. But for demonstrations, we will show the approaches for simulating cell batches.
+
+The number of cell batches is determined by `batchCells` parameter, whose length represents the number of batches that need to be simulated. For example, **three batches of cells** will be simulated by setting `batchCells=c(100,200,300)`.
+
+```{r set_batches, warning=FALSE, eval=FALSE}
+simulate_result <- simmethods::BASiCS_simulation(
+  parameters = estimate_result[["estimate_result"]],
+  return_format = "list",
+  other_prior = list(batchCells = c(100,200,300),
+                     nGenes = 1000),
+  seed = 3
+)
+```

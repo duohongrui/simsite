@@ -19,16 +19,16 @@ Here Lun2 method will be demonstrated clearly and hope that this document can he
 
 Before simulating datasets, it is important to estimate some essential parameters from a real dataset in order to make the simulated data more real. If you do not have a single-cell transcriptomics count matrix now, you can use the data collected in simmethods package by `simmethods:data` command.
 
-When you use Lun2 to estimate parameters from a real dataset, you must input a numeric vector to specify the groups or plates that each cell comes from, like `other_prior = list(group.condition = the numeric vector)`.
+When you use Lun2 to estimate parameters from a real dataset, you must input a numeric vector to specify the batches or plates that each cell comes from, like `other_prior = list(batch.condition = the numeric vector)`.
 
 ```{r load_data, message=FALSE, warning=FALSE, error=FALSE}
 library(simmethods)
 library(SingleCellExperiment)
 # Load data
 ref_data <- simmethods::data
-group_condition <- simmethods::group_condition
-## group_condition can must be a numeric vector.
-other_prior <- list(group.condition = as.numeric(group_condition))
+plates <- simmethods::group_condition
+## plates can must be a numeric vector.
+other_prior <- list(batch.condition = as.numeric(plates))
 ```
 
 Using `simmethods::Lun2_estimation` command to execute the estimation step.
@@ -46,11 +46,11 @@ After estimating parameter from a real dataset, we will simulate a dataset based
 
 1. Datasets with default parameters
 2. Determin the number of cells and genes
-3. Simulate two or more groups
+3. Simulate two or more batches
 
 ### Datasets with default parameters
 
-The reference data contains 160 cells and 4000 genes, if we simulate datasets with default parameters and then we will obtain a new data which has the same size as the reference data. In addtion, the simulated dataset will have one group of cells.
+The reference data contains 160 cells and 4000 genes, if we simulate datasets with default parameters and then we will obtain a new data which has the same size as the reference data. In addtion, the simulated dataset will have one batch of cells.
 
 ```{r default_params}
 simulate_result <- simmethods::Lun2_simulation(
@@ -98,19 +98,17 @@ dim(result)
 ```
 
 
-### Simulate two or more groups
+### Simulate two or more batches
 
-In Lun2, we can not set `nGroups` directly and should set `cell.plates ` instead. For example, if we want to simulate 2 groups, we can type `other_prior = list(cell.plates  = sample(1:2, 500, replace = TRUE))`. Note that the length of `cell.plates ` numeric vector must be equal to the cell number.
+In Lun2, we can not set `nbatches` directly and should set `cell.plates ` instead. For example, if we want to simulate 2 batches, we can type `other_prior = list(cell.plates  = sample(1:2, 500, replace = TRUE))`. Note that the length of `cell.plates ` numeric vector must be equal to the cell number.
 
-For demonstration, we will simulate three groups using the learned parameters. We can set `de.prob = 0.2` to simulate 20% genes as DEGs.
-```{r groups}
+For demonstration, we will simulate three batches using the learned parameters.
+```{r batches}
 simulate_result <- simmethods::Lun2_simulation(
   parameters = estimate_result[["estimate_result"]],
   return_format = "list",
   other_prior = list(cell.plates = sample(1:2, 500, replace = TRUE),
-                     nGenes = 2000,
-                     de.prob = 0.2,
-                     fc.group = 2),
+                     nGenes = 2000),
   seed = 111
 )
 ```
@@ -125,11 +123,4 @@ dim(result)
 ## cell information
 cell_info <- simulate_result[["simulate_result"]][["col_meta"]]
 table(cell_info$plate)
-```
-
-```{r}
-## gene information
-gene_info <- simulate_result[["simulate_result"]][["row_meta"]]
-### the proportion of DEGs
-table(gene_info$de_gene)[2]/nrow(result) ## de.prob = 0.2
 ```
