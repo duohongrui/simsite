@@ -11,7 +11,7 @@
   </url><url>
     <loc>/references/1-methods_list/</loc>
   </url><url>
-    <loc>/references/methods/splat/</loc>
+    <loc>/references/methods/1-splat/</loc>
   </url><url>
     <loc>/online/</loc>
     <lastmod>2022-09-01T20:22:45+08:00</lastmod>
@@ -21,7 +21,7 @@
   </url><url>
     <loc>/programming/2-estimation/</loc>
   </url><url>
-    <loc>/references/methods/simple/</loc>
+    <loc>/references/methods/2-simple/</loc>
   </url><url>
     <loc>/online/2-simulation_online/</loc>
   </url><url>
@@ -30,11 +30,11 @@
   </url><url>
     <loc>/programming/3-simulation/</loc>
   </url><url>
-    <loc>/references/methods/kersplat/</loc>
+    <loc>/references/methods/3-kersplat/</loc>
   </url><url>
     <loc>/programming/4-evaluate_datasets/</loc>
   </url><url>
-    <loc>/references/methods/splatpop/</loc>
+    <loc>/references/methods/4-splatpop/</loc>
   </url><url>
     <loc>/references/methods/5-lun/</loc>
   </url><url>
@@ -44,6 +44,8 @@
   </url><url>
     <loc>/references/methods/8-powsimr/</loc>
   </url><url>
+    <loc>/references/methods/9-powsc/</loc>
+  </url><url>
     <loc>/references/methods/10-scdd/</loc>
   </url><url>
     <loc>/references/methods/11-scdesign/</loc>
@@ -52,45 +54,53 @@
   </url><url>
     <loc>/references/methods/13-scdesign3/</loc>
   </url><url>
-    <loc>/references/methods/13-zinbwave/</loc>
+    <loc>/references/methods/14-zinbwave/</loc>
   </url><url>
-    <loc>/references/methods/14-zinger/</loc>
+    <loc>/references/methods/15-zinger/</loc>
   </url><url>
-    <loc>/references/methods/15-zinbwavezinger/</loc>
+    <loc>/references/methods/16-zinbwavezinger/</loc>
   </url><url>
-    <loc>/references/methods/18-sparsim/</loc>
+    <loc>/references/methods/17-basics/</loc>
   </url><url>
-    <loc>/references/methods/19-spsimseq/</loc>
+    <loc>/references/methods/18-bearscc/</loc>
   </url><url>
-    <loc>/references/methods/20-esco/</loc>
+    <loc>/references/methods/19-sparsim/</loc>
   </url><url>
-    <loc>/references/methods/21-sparsedc/</loc>
+    <loc>/references/methods/20-spsimseq/</loc>
   </url><url>
-    <loc>/references/methods/22-muscat/</loc>
+    <loc>/references/methods/21-esco/</loc>
   </url><url>
-    <loc>/references/methods/23-hierarchicell/</loc>
+    <loc>/references/methods/22-sparsedc/</loc>
   </url><url>
-    <loc>/references/methods/24-dropsim/</loc>
+    <loc>/references/methods/23-muscat/</loc>
   </url><url>
     <loc>/references/methods/24-simbpdd/</loc>
   </url><url>
-    <loc>/references/methods/26-prosstt/</loc>
+    <loc>/references/methods/25-cancerinsilico/</loc>
   </url><url>
-    <loc>/references/methods/27-tedsim/</loc>
+    <loc>/references/methods/26-hierarchicell/</loc>
   </url><url>
-    <loc>/references/methods/28-dyntoy/</loc>
+    <loc>/references/methods/27-dropsim/</loc>
   </url><url>
     <loc>/references/methods/28-srtsim/</loc>
   </url><url>
-    <loc>/references/methods/30-symsim/</loc>
+    <loc>/references/methods/29-prosstt/</loc>
+  </url><url>
+    <loc>/references/methods/30-tedsim/</loc>
   </url><url>
     <loc>/references/methods/31-scmultisim/</loc>
   </url><url>
-    <loc>/references/methods/31-velosim/</loc>
+    <loc>/references/methods/32-dyntoy/</loc>
   </url><url>
-    <loc>/references/methods/32-mfa/</loc>
+    <loc>/references/methods/33-dyngen/</loc>
   </url><url>
-    <loc>/references/methods/33-phenopath/</loc>
+    <loc>/references/methods/34-symsim/</loc>
+  </url><url>
+    <loc>/references/methods/35-velosim/</loc>
+  </url><url>
+    <loc>/references/methods/36-mfa/</loc>
+  </url><url>
+    <loc>/references/methods/37-phenopath/</loc>
   </url><url>
     <loc>/</loc>
     <lastmod>2022-09-02T17:53:43+08:00</lastmod>

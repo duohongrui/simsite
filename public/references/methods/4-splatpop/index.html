@@ -1,0 +1,2314 @@
+<!DOCTYPE html>
+<html lang="en" class="js csstransforms3d">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="generator" content="Hugo 0.101.0" />
+    <meta name="description" content="Simpipe">
+<meta name="author" content="Hongrui Duo">
+
+    <link rel="shortcut icon" href="../../../images/simsite_logo.png" type="image/x-icon" />
+
+    <title>SplatPop   simsite</title>
+
+    
+    <link href="../../../css/nucleus.css?1695525816" rel="stylesheet">
+    <link href="../../../css/fontawesome-all.min.css?1695525816" rel="stylesheet">
+    <link href="../../../css/hybrid.css?1695525816" rel="stylesheet">
+    <link href="../../../css/featherlight.min.css?1695525816" rel="stylesheet">
+    <link href="../../../css/perfect-scrollbar.min.css?1695525816" rel="stylesheet">
+    <link href="../../../css/auto-complete.css?1695525816" rel="stylesheet">
+    <link href="../../../css/atom-one-dark-reasonable.css?1695525816" rel="stylesheet">
+    <link href="../../../css/theme.css?1695525816" rel="stylesheet">
+    <link href="../../../css/tabs.css?1695525816" rel="stylesheet">
+    <link href="../../../css/hugo-theme.css?1695525816" rel="stylesheet">
+    
+    <link href="../../../css/theme-mine.css?1695525816" rel="stylesheet">
+    
+    <link href="../../../css/foo.css?1695525816" rel="stylesheet"><link href="../../../css/bar.css?1695525816" rel="stylesheet">
+
+    <script src="../../../js/jquery-3.3.1.min.js?1695525816"></script>
+
+    <style>
+      :root #header + #content > #left > #rlblock_left{
+          display:none !important;
+      }
+      
+    </style>
+    
+  </head>
+  <body class="" data-url="../../../references/methods/4-splatpop/">
+    <nav id="sidebar" class="">
+
+
+
+  <div id="header-wrapper">
+    <div id="header">
+      <a id="logo" href="../../../">
+    <img id="simmethods" src="../../../images/simsite_logo.png" width="140" height="160" class="zoom">
+</a>
+    </div>
+    
+        <div class="searchbox">
+    <label for="search-by"><i class="fas fa-search"></i></label>
+    <input data-search-input id="search-by" type="search" placeholder="Search...">
+    <span data-search-clear=""><i class="fas fa-times"></i></span>
+</div>
+
+<script type="text/javascript" src="../../../js/lunr.min.js?1695525816"></script>
+<script type="text/javascript" src="../../../js/auto-complete.js?1695525816"></script>
+<script type="text/javascript">
+    
+        var baseurl = "\/";
+    
+</script>
+<script type="text/javascript" src="../../../js/search.js?1695525816"></script>
+
+    
+  </div>
+  
+
+    <div class="highlightable">
+    <ul class="topics">
+
+        
+          
+          
+
+
+
+
+ 
+  
+    
+    <li data-nav-id="/programming/" title="Programming Usage" class="dd-item
+        
+        
+        
+        ">
+      <a href="../../../programming/">
+          Programming Usage
+          
+      </a>
+      
+      
+        <ul>
+          
+          
+          
+
+        
+          
+            
+            
+
+
+
+
+ 
+  
+    
+      <li data-nav-id="/programming/1-installation/" title="Installation" class="dd-item ">
+        <a href="../../../programming/1-installation/">
+        Installation
+        
+        </a>
+    </li>
+     
+  
+ 
+
+            
+          
+            
+            
+
+
+
+
+ 
+  
+    
+      <li data-nav-id="/programming/2-estimation/" title="Estimation Parameters" class="dd-item ">
+        <a href="../../../programming/2-estimation/">
+        Estimation Parameters
+        
+        </a>
+    </li>
+     
+  
+ 
+
+            
+          
+            
+            
+
+
+
+
+ 
+  
+    
+      <li data-nav-id="/programming/3-simulation/" title="Data Simulation" class="dd-item ">
+        <a href="../../../programming/3-simulation/">
+        Data Simulation
+        
+        </a>
+    </li>
+     
+  
+ 
+
+            
+          
+            
+            
+
+
+
+
+ 
+  
+    
+      <li data-nav-id="/programming/4-evaluate_datasets/" title="Data Assessment" class="dd-item ">
+        <a href="../../../programming/4-evaluate_datasets/">
+        Data Assessment
+        
+        </a>
+    </li>
+     
+  
+ 
+
+            
+          
+        
+        </ul>
+      
+    </li>
+  
+ 
+
+          
+          
+
+
+
+
+ 
+  
+    
+    <li data-nav-id="/online/" title="Online Usage" class="dd-item
+        
+        
+        
+        ">
+      <a href="../../../online/">
+          Online Usage
+          
+      </a>
+      
+      
+        <ul>
+          
+          
+          
+
+        
+          
+            
+            
+
+
+
+
+ 
+  
+    
+      <li data-nav-id="/online/1-choose_methods/" title="Choose Methods" class="dd-item ">
+        <a href="../../../online/1-choose_methods/">
+        Choose Methods
+        
+        </a>
+    </li>
+     
+  
+ 
+
+            
+          
+            
+            
+
+
+
+
+ 
+  
+    
+      <li data-nav-id="/online/2-simulation_online/" title="Simulation Online" class="dd-item ">
+        <a href="../../../online/2-simulation_online/">
+        Simulation Online
+        
+        </a>
+    </li>
+     
+  
+ 
+
+            
+          
+        
+        </ul>
+      
+    </li>
+  
+ 
+
+          
+          
+
+
+
+
+ 
+  
+    
+    <li data-nav-id="/references/" title="References" class="dd-item
+        parent
+        
+        
+        ">
+      <a href="../../../references/">
+          References
+          
+      </a>
+      
+      
+        <ul>
+          
+          
+            
+          
+          
+
+        
+          
+            
+            
+
+
+
+
+ 
+  
+    
+      <li data-nav-id="/references/1-methods_list/" title="Method Overview" class="dd-item ">
+        <a href="../../../references/1-methods_list/">
+        Method Overview
+        
+        </a>
+    </li>
+     
+  
+ 
+
+            
+          
+            
+            
+
+
+
+
+ 
+  
+    
+    <li data-nav-id="/references/methods/" title="Vignettes" class="dd-item
+        parent
+        
+        
+        ">
+      <a href="../../../references/methods/">
+          Vignettes
+          
+      </a>
+      
+      
+        <ul>
+          
+          
+          
+
+        
+          
+            
+            
+
+
+
+
+ 
+  
+    
+      <li data-nav-id="/references/methods/1-splat/" title="Splat" class="dd-item ">
+        <a href="../../../references/methods/1-splat/">
+        Splat
+        
+        </a>
+    </li>
+     
+  
+ 
+
+            
+          
+            
+            
+
+
+
+
+ 
+  
+    
+      <li data-nav-id="/references/methods/2-simple/" title="Simple" class="dd-item ">
+        <a href="../../../references/methods/2-simple/">
+        Simple
+        
+        </a>
+    </li>
+     
+  
+ 
+
+            
+          
+            
+            
+
+
+
+
+ 
+  
+    
+      <li data-nav-id="/references/methods/3-kersplat/" title="Kersplat" class="dd-item ">
+        <a href="../../../references/methods/3-kersplat/">
+        Kersplat
+        
+        </a>
+    </li>
+     
+  
+ 
+
+            
+          
+            
+            
+
+
+
+
+ 
+  
+    
+      <li data-nav-id="/references/methods/4-splatpop/" title="SplatPop" class="dd-item active">
+        <a href="../../../references/methods/4-splatpop/">
+        SplatPop
+        
+        </a>
+    </li>
+     
+  
+ 
+
+            
+          
+            
+            
+
+
+
+
+ 
+  
+    
+      <li data-nav-id="/references/methods/5-lun/" title="Lun" class="dd-item ">
+        <a href="../../../references/methods/5-lun/">
+        Lun
+        
+        </a>
+    </li>
+     
+  
+ 
+
+            
+          
+            
+            
+
+
+
+
+ 
+  
+    
+      <li data-nav-id="/references/methods/6-lun2/" title="Lun2" class="dd-item ">
+        <a href="../../../references/methods/6-lun2/">
+        Lun2
+        
+        </a>
+    </li>
+     
+  
+ 
+
+            
+          
+            
+            
+
+
+
+
+ 
+  
+    
+      <li data-nav-id="/references/methods/7-scrip/" title="SCRIP" class="dd-item ">
+        <a href="../../../references/methods/7-scrip/">
+        SCRIP
+        
+        </a>
+    </li>
+     
+  
+ 
+
+            
+          
+            
+            
+
+
+
+
+ 
+  
+    
+      <li data-nav-id="/references/methods/8-powsimr/" title="powsimR" class="dd-item ">
+        <a href="../../../references/methods/8-powsimr/">
+        powsimR
+        
+        </a>
+    </li>
+     
+  
+ 
+
+            
+          
+            
+            
+
+
+
+
+ 
+  
+    
+      <li data-nav-id="/references/methods/9-powsc/" title="POWSC" class="dd-item ">
+        <a href="../../../references/methods/9-powsc/">
+        POWSC
+        
+        </a>
+    </li>
+     
+  
+ 
+
+            
+          
+            
+            
+
+
+
+
+ 
+  
+    
+      <li data-nav-id="/references/methods/10-scdd/" title="scDD" class="dd-item ">
+        <a href="../../../references/methods/10-scdd/">
+        scDD
+        
+        </a>
+    </li>
+     
+  
+ 
+
+            
+          
+            
+            
+
+
+
+
+ 
+  
+    
+      <li data-nav-id="/references/methods/11-scdesign/" title="scDesign" class="dd-item ">
+        <a href="../../../references/methods/11-scdesign/">
+        scDesign
+        
+        </a>
+    </li>
+     
+  
+ 
+
+            
+          
+            
+            
+
+
+
+
+ 
+  
+    
+      <li data-nav-id="/references/methods/12-scdesign2/" title="scDesign2" class="dd-item ">
+        <a href="../../../references/methods/12-scdesign2/">
+        scDesign2
+        
+        </a>
+    </li>
+     
+  
+ 
+
+            
+          
+            
+            
+
+
+
+
+ 
+  
+    
+      <li data-nav-id="/references/methods/13-scdesign3/" title="scDesign3" class="dd-item ">
+        <a href="../../../references/methods/13-scdesign3/">
+        scDesign3
+        
+        </a>
+    </li>
+     
+  
+ 
+
+            
+          
+            
+            
+
+
+
+
+ 
+  
+    
+      <li data-nav-id="/references/methods/14-zinbwave/" title="zinbwave" class="dd-item ">
+        <a href="../../../references/methods/14-zinbwave/">
+        zinbwave
+        
+        </a>
+    </li>
+     
+  
+ 
+
+            
+          
+            
+            
+
+
+
+
+ 
+  
+    
+      <li data-nav-id="/references/methods/15-zinger/" title="zingeR" class="dd-item ">
+        <a href="../../../references/methods/15-zinger/">
+        zingeR
+        
+        </a>
+    </li>
+     
+  
+ 
+
+            
+          
+            
+            
+
+
+
+
+ 
+  
+    
+      <li data-nav-id="/references/methods/16-zinbwavezinger/" title="zinbwaveZinger" class="dd-item ">
+        <a href="../../../references/methods/16-zinbwavezinger/">
+        zinbwaveZinger
+        
+        </a>
+    </li>
+     
+  
+ 
+
+            
+          
+            
+            
+
+
+
+
+ 
+  
+    
+      <li data-nav-id="/references/methods/17-basics/" title="BASiCS" class="dd-item ">
+        <a href="../../../references/methods/17-basics/">
+        BASiCS
+        
+        </a>
+    </li>
+     
+  
+ 
+
+            
+          
+            
+            
+
+
+
+
+ 
+  
+    
+      <li data-nav-id="/references/methods/18-bearscc/" title="BEARscc" class="dd-item ">
+        <a href="../../../references/methods/18-bearscc/">
+        BEARscc
+        
+        </a>
+    </li>
+     
+  
+ 
+
+            
+          
+            
+            
+
+
+
+
+ 
+  
+    
+      <li data-nav-id="/references/methods/19-sparsim/" title="SPARSim" class="dd-item ">
+        <a href="../../../references/methods/19-sparsim/">
+        SPARSim
+        
+        </a>
+    </li>
+     
+  
+ 
+
+            
+          
+            
+            
+
+
+
+
+ 
+  
+    
+      <li data-nav-id="/references/methods/20-spsimseq/" title="SPsimSeq" class="dd-item ">
+        <a href="../../../references/methods/20-spsimseq/">
+        SPsimSeq
+        
+        </a>
+    </li>
+     
+  
+ 
+
+            
+          
+            
+            
+
+
+
+
+ 
+  
+    
+      <li data-nav-id="/references/methods/21-esco/" title="ESCO" class="dd-item ">
+        <a href="../../../references/methods/21-esco/">
+        ESCO
+        
+        </a>
+    </li>
+     
+  
+ 
+
+            
+          
+            
+            
+
+
+
+
+ 
+  
+    
+      <li data-nav-id="/references/methods/22-sparsedc/" title="SparseDC" class="dd-item ">
+        <a href="../../../references/methods/22-sparsedc/">
+        SparseDC
+        
+        </a>
+    </li>
+     
+  
+ 
+
+            
+          
+            
+            
+
+
+
+
+ 
+  
+    
+      <li data-nav-id="/references/methods/23-muscat/" title="muscat" class="dd-item ">
+        <a href="../../../references/methods/23-muscat/">
+        muscat
+        
+        </a>
+    </li>
+     
+  
+ 
+
+            
+          
+            
+            
+
+
+
+
+ 
+  
+    
+      <li data-nav-id="/references/methods/24-simbpdd/" title="SimBPDD" class="dd-item ">
+        <a href="../../../references/methods/24-simbpdd/">
+        SimBPDD
+        
+        </a>
+    </li>
+     
+  
+ 
+
+            
+          
+            
+            
+
+
+
+
+ 
+  
+    
+      <li data-nav-id="/references/methods/25-cancerinsilico/" title="CancerInSilico" class="dd-item ">
+        <a href="../../../references/methods/25-cancerinsilico/">
+        CancerInSilico
+        
+        </a>
+    </li>
+     
+  
+ 
+
+            
+          
+            
+            
+
+
+
+
+ 
+  
+    
+      <li data-nav-id="/references/methods/26-hierarchicell/" title="hierarchicell" class="dd-item ">
+        <a href="../../../references/methods/26-hierarchicell/">
+        hierarchicell
+        
+        </a>
+    </li>
+     
+  
+ 
+
+            
+          
+            
+            
+
+
+
+
+ 
+  
+    
+      <li data-nav-id="/references/methods/27-dropsim/" title="dropsim" class="dd-item ">
+        <a href="../../../references/methods/27-dropsim/">
+        dropsim
+        
+        </a>
+    </li>
+     
+  
+ 
+
+            
+          
+            
+            
+
+
+
+
+ 
+  
+    
+      <li data-nav-id="/references/methods/28-srtsim/" title="SRTsim" class="dd-item ">
+        <a href="../../../references/methods/28-srtsim/">
+        SRTsim
+        
+        </a>
+    </li>
+     
+  
+ 
+
+            
+          
+            
+            
+
+
+
+
+ 
+  
+    
+      <li data-nav-id="/references/methods/29-prosstt/" title="PROSSTT" class="dd-item ">
+        <a href="../../../references/methods/29-prosstt/">
+        PROSSTT
+        
+        </a>
+    </li>
+     
+  
+ 
+
+            
+          
+            
+            
+
+
+
+
+ 
+  
+    
+      <li data-nav-id="/references/methods/30-tedsim/" title="TedSim" class="dd-item ">
+        <a href="../../../references/methods/30-tedsim/">
+        TedSim
+        
+        </a>
+    </li>
+     
+  
+ 
+
+            
+          
+            
+            
+
+
+
+
+ 
+  
+    
+      <li data-nav-id="/references/methods/31-scmultisim/" title="scMultiSim" class="dd-item ">
+        <a href="../../../references/methods/31-scmultisim/">
+        scMultiSim
+        
+        </a>
+    </li>
+     
+  
+ 
+
+            
+          
+            
+            
+
+
+
+
+ 
+  
+    
+      <li data-nav-id="/references/methods/32-dyntoy/" title="dyntoy" class="dd-item ">
+        <a href="../../../references/methods/32-dyntoy/">
+        dyntoy
+        
+        </a>
+    </li>
+     
+  
+ 
+
+            
+          
+            
+            
+
+
+
+
+ 
+  
+    
+      <li data-nav-id="/references/methods/33-dyngen/" title="dyngen" class="dd-item ">
+        <a href="../../../references/methods/33-dyngen/">
+        dyngen
+        
+        </a>
+    </li>
+     
+  
+ 
+
+            
+          
+            
+            
+
+
+
+
+ 
+  
+    
+      <li data-nav-id="/references/methods/34-symsim/" title="SymSim" class="dd-item ">
+        <a href="../../../references/methods/34-symsim/">
+        SymSim
+        
+        </a>
+    </li>
+     
+  
+ 
+
+            
+          
+            
+            
+
+
+
+
+ 
+  
+    
+      <li data-nav-id="/references/methods/35-velosim/" title="VeloSim" class="dd-item ">
+        <a href="../../../references/methods/35-velosim/">
+        VeloSim
+        
+        </a>
+    </li>
+     
+  
+ 
+
+            
+          
+            
+            
+
+
+
+
+ 
+  
+    
+      <li data-nav-id="/references/methods/36-mfa/" title="MFA" class="dd-item ">
+        <a href="../../../references/methods/36-mfa/">
+        MFA
+        
+        </a>
+    </li>
+     
+  
+ 
+
+            
+          
+            
+            
+
+
+
+
+ 
+  
+    
+      <li data-nav-id="/references/methods/37-phenopath/" title="phenopath" class="dd-item ">
+        <a href="../../../references/methods/37-phenopath/">
+        phenopath
+        
+        </a>
+    </li>
+     
+  
+ 
+
+            
+          
+        
+        </ul>
+      
+    </li>
+  
+ 
+
+            
+          
+        
+        </ul>
+      
+    </li>
+  
+ 
+
+          
+        
+    </ul>
+
+    
+    
+
+    
+    <section id="footer">
+      
+    </section>
+  </div>
+</nav>
+
+
+
+
+        <section id="body">
+        <div id="overlay"></div>
+        <div class="padding highlightable">
+              
+              <div>
+                <div id="top-bar">
+                
+                
+                <div id="breadcrumbs" itemscope="" itemtype="http://data-vocabulary.org/Breadcrumb">
+                    <span id="sidebar-toggle-span">
+                        <a href="#" id="sidebar-toggle" data-sidebar-toggle="">
+                          <i class="fas fa-bars"></i>
+                        </a>
+                    </span>
+                  
+                  <span id="toc-menu"><i class="fas fa-list-alt"></i></span>
+                  
+                  <span class="links">
+                 
+                 
+                    
+          
+          
+            
+            
+          
+          
+            
+            
+          
+          
+            
+            
+          
+          
+            <a href='../../../'></a> > <a href='../../../references/'>References</a> > <a href='../../../references/methods/'>Vignettes</a> > SplatPop
+          
+        
+          
+        
+          
+        
+          
+        
+                 
+                  </span>
+                </div>
+                
+                    <div class="progress">
+    <div class="wrapper">
+
+    </div>
+</div>
+
+                
+              </div>
+            </div>
+            
+        <div id="head-tags">
+        
+        </div>
+        
+        <div id="body-inner">
+          
+            <h1>
+              
+              SplatPop
+            </h1>
+          
+
+        
+
+
+
+
+<div id="TOC">
+<ul>
+<li><a href="#estimating-parameters-from-a-real-dataset" id="toc-estimating-parameters-from-a-real-dataset">Estimating parameters from a real dataset</a></li>
+<li><a href="#simulating-datasets-using-splatpop" id="toc-simulating-datasets-using-splatpop">Simulating datasets using SplatPop</a>
+<ul>
+<li><a href="#datasets-with-default-parameters" id="toc-datasets-with-default-parameters">Datasets with default parameters</a></li>
+<li><a href="#determin-the-number-of-cells-and-genes" id="toc-determin-the-number-of-cells-and-genes">Determin the number of cells and genes</a></li>
+<li><a href="#simulate-two-or-more-groups" id="toc-simulate-two-or-more-groups">Simulate two or more groups</a></li>
+<li><a href="#simulate-two-or-more-batches" id="toc-simulate-two-or-more-batches">Simulate two or more batches</a></li>
+<li><a href="#simulate-more-groups-and-batches-simutaniously" id="toc-simulate-more-groups-and-batches-simutaniously">Simulate more groups and batches simutaniously</a></li>
+</ul></li>
+</ul>
+</div>
+
+<!-- github markdown built using 
+rmarkdown::render("vignettes/SplatPop.Rmd", output_format = rmarkdown::github_document())
+-->
+<p>Here SplatPop method will be demonstrated clearly and hope that this document can help you.</p>
+<div id="estimating-parameters-from-a-real-dataset" class="section level2">
+<h2>Estimating parameters from a real dataset</h2>
+<p>Before simulating datasets, it is important to estimate some essential parameters from a real dataset in order to make the simulated data more real. If you do not have a single-cell transcriptomics count matrix now, you can use the data collected in simmethods package by <code>simmethods:data</code> command.</p>
+<pre class="r"><code>library(simmethods)
+library(SingleCellExperiment)
+# Load data
+ref_data &lt;- simmethods::data
+dim(ref_data)
+# [1] 4000  160</code></pre>
+<p>Using <code>simmethods::SplatPop_estimation</code> command to execute the estimation step.</p>
+<pre class="r"><code>estimate_result &lt;- simmethods::SplatPop_estimation(ref_data = ref_data,
+                                                   verbose = T,
+                                                   seed = 10)
+# Estimating parameters using SplatPop</code></pre>
+</div>
+<div id="simulating-datasets-using-splatpop" class="section level2">
+<h2>Simulating datasets using SplatPop</h2>
+<p>After estimating parameter from a real dataset, we will simulate a dataset based on the learned parameters with different scenarios.</p>
+<ol style="list-style-type: decimal">
+<li>Datasets with default parameters</li>
+<li>Determin the number of cells and genes</li>
+<li>Simulate two or more groups</li>
+<li>Simulate two or more batches</li>
+<li>Simulate more groups and batches simutaniously</li>
+</ol>
+<div id="datasets-with-default-parameters" class="section level3">
+<h3>Datasets with default parameters</h3>
+<p>The reference data contains 160 cells and 4000 genes, if we simulate datasets with default parameters and then we will obtain a new data which has the same size as the reference data. In addtion, the simulated dataset will have one group and one batch of cells.</p>
+<pre class="r"><code>simulate_result &lt;- simmethods::SplatPop_simulation(
+  parameters = estimate_result[[&quot;estimate_result&quot;]],
+  return_format = &quot;SCE&quot;,
+  seed = 111
+)
+# nCells: 160
+# nGenes: 4000
+# nGroups: 1
+# de.prob: 0.1
+# nBatches: 1</code></pre>
+<pre class="r"><code>SCE_result &lt;- simulate_result[[&quot;simulate_result&quot;]]
+dim(SCE_result)
+# [1] 4000  160</code></pre>
+<pre class="r"><code>head(colData(SCE_result))
+# DataFrame with 6 rows and 3 columns
+#         cell_name       batch       group
+#       &lt;character&gt; &lt;character&gt; &lt;character&gt;
+# Cell1       Cell1      Batch1      Group1
+# Cell2       Cell2      Batch1      Group1
+# Cell3       Cell3      Batch1      Group1
+# Cell4       Cell4      Batch1      Group1
+# Cell5       Cell5      Batch1      Group1
+# Cell6       Cell6      Batch1      Group1</code></pre>
+<pre class="r"><code>head(rowData(SCE_result))
+# DataFrame with 6 rows and 1 column
+#         gene_name
+#       &lt;character&gt;
+# Gene1       Gene1
+# Gene2       Gene2
+# Gene3       Gene3
+# Gene4       Gene4
+# Gene5       Gene5
+# Gene6       Gene6</code></pre>
+</div>
+<div id="determin-the-number-of-cells-and-genes" class="section level3">
+<h3>Determin the number of cells and genes</h3>
+<p>In SplatPop, we can not set <code>nCells</code> directly and should set <code>batchCells</code> instead. For example, if we want to simulate 500 cells, we can type <code>other_prior = list(batchCells = 500)</code>. For genes, we can just set <code>nGenes</code>.
+Here, we simulate a new dataset with 500 cells and 1000 genes:</p>
+<pre class="r"><code>simulate_result &lt;- simmethods::SplatPop_simulation(
+  parameters = estimate_result[[&quot;estimate_result&quot;]],
+  return_format = &quot;list&quot;,
+  other_prior = list(batchCells = 500,
+                     nGenes = 1000),
+  seed = 111
+)
+# nCells: 500
+# nGenes: 1000
+# nGroups: 1
+# de.prob: 0.1
+# nBatches: 1</code></pre>
+<pre class="r"><code>result &lt;- simulate_result[[&quot;simulate_result&quot;]][[&quot;count_data&quot;]]
+dim(result)
+# [1] 1000  500</code></pre>
+</div>
+<div id="simulate-two-or-more-groups" class="section level3">
+<h3>Simulate two or more groups</h3>
+<p>In SplatPop, we can not set <code>nGroups</code> directly and should set <code>prob.group</code> instead. For example, if we want to simulate 2 groups, we can type <code>other_prior = list(prob.group = c(0.5, 0.5))</code>. Note that the sum of <code>prob.group</code> numeric vector must equal to 1, so we can also set <code>prob.group = c(0.3, 0.7)</code>.</p>
+<p>In addtion, if we want to simulate three or more groups, we should obey the rules:</p>
+<ul>
+<li>The length of <code>prob.group</code> vector must always equal to the number of groups.</li>
+<li>The sum of <code>prob.group</code> numeric vector must equal to 1.</li>
+</ul>
+<p>For demonstration, we will simulate three groups using the learned parameters.</p>
+<pre class="r"><code>simulate_result &lt;- simmethods::SplatPop_simulation(
+  parameters = estimate_result[[&quot;estimate_result&quot;]],
+  return_format = &quot;list&quot;,
+  other_prior = list(batchCells = 500,
+                     nGenes = 1000,
+                     prob.group = c(0.1, 0.3, 0.6)),
+  seed = 111
+)
+# nCells: 500
+# nGenes: 1000
+# nGroups: 3
+# de.prob: 0.1
+# nBatches: 1</code></pre>
+<pre class="r"><code>result &lt;- simulate_result[[&quot;simulate_result&quot;]][[&quot;count_data&quot;]]
+dim(result)
+# [1] 1000  500</code></pre>
+<pre class="r"><code>## cell information
+cell_info &lt;- simulate_result[[&quot;simulate_result&quot;]][[&quot;col_meta&quot;]]
+table(cell_info$group)
+# 
+# Group1 Group2 Group3 
+#     50    150    300</code></pre>
+<pre class="r"><code>## gene information
+gene_info &lt;- simulate_result[[&quot;simulate_result&quot;]][[&quot;row_meta&quot;]]
+### the proportion of DEGs
+table(gene_info$de_gene)[2]/nrow(result) ## de.prob = 0.1
+#   yes 
+# 0.094</code></pre>
+<p>We can see that the proportion of differential expressed genes is 0.1 (equals to the default). Next, if we want to know the fold change between two groups, we will do division with the groups that we are interested in.</p>
+<pre class="r"><code>## fc between group2 and group1
+fc_group1_to_group2 &lt;- gene_info$DEFacGroup2/gene_info$DEFacGroup1
+## fc between group3 and group1
+fc_group1_to_group3 &lt;- gene_info$DEFacGroup3/gene_info$DEFacGroup1
+## fc between group3 and group2
+fc_group2_to_group3 &lt;- gene_info$DEFacGroup3/gene_info$DEFacGroup2</code></pre>
+</div>
+<div id="simulate-two-or-more-batches" class="section level3">
+<h3>Simulate two or more batches</h3>
+<p>In SplatPop, we can not set <code>nBatches</code> directly and should set <code>batchCells</code> instead. For example, if we want to simulate 2 batches, we can type <code>other_prior = list(batchCells = c(250, 250))</code>. Note that the sum of <code>batchCells</code> numeric vector represents the total number of cells and the length of the vector equals to the number of batches.</p>
+<p>In addtion, if we want to simulate three or more batches, we should obey the rules:</p>
+<ul>
+<li>The length of <code>batchCells</code> vector always equals to the number of batches.</li>
+<li>The sum of <code>batchCells</code> numeric vector represents the total number of cells.</li>
+</ul>
+<p>For demonstration, we will simulate three batches using the learned parameters.</p>
+<pre class="r"><code>simulate_result &lt;- simmethods::SplatPop_simulation(
+  parameters = estimate_result[[&quot;estimate_result&quot;]],
+  return_format = &quot;list&quot;,
+  other_prior = list(batchCells = c(200, 300),
+                     nGenes = 1000),
+  seed = 111
+)
+# nCells: 500
+# nGenes: 1000
+# nGroups: 1
+# de.prob: 0.1
+# nBatches: 2</code></pre>
+<pre class="r"><code>result &lt;- simulate_result[[&quot;simulate_result&quot;]][[&quot;count_data&quot;]]
+dim(result)
+# [1] 1000  500</code></pre>
+<pre class="r"><code>## cell information
+cell_info &lt;- simulate_result[[&quot;simulate_result&quot;]][[&quot;col_meta&quot;]]
+table(cell_info$batch)
+# 
+# Batch1 Batch2 
+#    201    299</code></pre>
+</div>
+<div id="simulate-more-groups-and-batches-simutaniously" class="section level3">
+<h3>Simulate more groups and batches simutaniously</h3>
+<p>As mentioned before, we can set <code>prob.group</code> and <code>batchCells</code> to determine the number of groups and batches and we can also set <code>de.prob</code> to specify the proportion of DEGs. Here, we simulate a dataset with following settings:</p>
+<ul>
+<li>1000 cells</li>
+<li>2000 genes</li>
+<li>three groups with 0.2 proportion of DEGs</li>
+<li>two batches</li>
+</ul>
+<pre class="r"><code>simulate_result &lt;- simmethods::SplatPop_simulation(
+  parameters = estimate_result[[&quot;estimate_result&quot;]],
+  return_format = &quot;list&quot;,
+  other_prior = list(batchCells = c(500, 500),
+                     nGenes = 2000,
+                     de.prob = 0.2,
+                     prob.group = c(0.2, 0.3, 0.5)),
+  seed = 111
+)
+# nCells: 1000
+# nGenes: 2000
+# nGroups: 3
+# de.prob: 0.2
+# nBatches: 2</code></pre>
+<pre class="r"><code>result &lt;- simulate_result[[&quot;simulate_result&quot;]][[&quot;count_data&quot;]]
+dim(result)
+# [1] 2000 1000</code></pre>
+<pre class="r"><code>## cell information
+cell_info &lt;- simulate_result[[&quot;simulate_result&quot;]][[&quot;col_meta&quot;]]
+table(cell_info$batch)
+# 
+# Batch1 Batch2 
+#    524    476
+table(cell_info$group)
+# 
+# Group1 Group2 Group3 
+#    209    299    492</code></pre>
+<pre class="r"><code>## gene information
+gene_info &lt;- simulate_result[[&quot;simulate_result&quot;]][[&quot;row_meta&quot;]]
+### proportion of DEGs
+table(gene_info$de_gene)[2]/nrow(result)
+#    yes 
+# 0.1725
+### fc
+fc_group2_to_group3 &lt;- gene_info$DEFacGroup3/gene_info$DEFacGroup2</code></pre>
+</div>
+</div>
+
+
+<footer class="footline">
+	
+</footer>
+
+        
+        </div>
+        
+
+      </div>
+
+    <div id="navigation">
+        
+        
+
+        
+            
+            
+                
+                    
+                    
+                
+                
+
+                    
+                    
+                        
+                    
+                    
+
+                    
+                        
+            
+            
+                
+                    
+                        
+                        
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                    
+                
+                
+
+                    
+                    
+                        
+                    
+                    
+
+                    
+                        
+            
+            
+                
+                    
+                        
+                        
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+                        
+            
+            
+                
+                    
+                        
+                        
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                        
+                        
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+            
+        
+                    
+            
+        
+                    
+            
+        
+
+        
+
+
+	 
+	 
+		
+			<a class="nav nav-prev" href="../../../references/methods/3-kersplat/" title="Kersplat"> <i class="fa fa-chevron-left"></i></a>
+		
+		
+			<a class="nav nav-next" href="../../../references/methods/5-lun/" title="Lun" style="margin-right: 0px;"><i class="fa fa-chevron-right"></i></a>
+		
+	
+    </div>
+
+    </section>
+
+    <div style="left: -1000px; overflow: scroll; position: absolute; top: -1000px; border: none; box-sizing: content-box; height: 200px; margin: 0px; padding: 0px; width: 200px;">
+      <div style="border: none; box-sizing: content-box; height: 200px; margin: 0px; padding: 0px; width: 200px;"></div>
+    </div>
+    <script src="../../../js/clipboard.min.js?1695525816"></script>
+    <script src="../../../js/perfect-scrollbar.min.js?1695525816"></script>
+    <script src="../../../js/perfect-scrollbar.jquery.min.js?1695525816"></script>
+    <script src="../../../js/jquery.sticky.js?1695525816"></script>
+    <script src="../../../js/featherlight.min.js?1695525816"></script>
+    <script src="../../../js/highlight.pack.js?1695525816"></script>
+    <script>hljs.initHighlightingOnLoad();</script>
+    <script src="../../../js/modernizr.custom-3.6.0.js?1695525816"></script>
+    <script src="../../../js/learn.js?1695525816"></script>
+    <script src="../../../js/hugo-learn.js?1695525816"></script>
+    
+        
+            <script src="https://unpkg.com/mermaid@8.8.0/dist/mermaid.min.js"></script>
+        
+        <script>
+            mermaid.initialize({ startOnLoad: true });
+        </script>
+    
+    
+
+  </body>
+</html>
+
