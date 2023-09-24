@@ -19,7 +19,6 @@ SRTsim was specifically developed for simulating spatial transcriptome data. Bes
 ## Estimating parameters from a real dataset
 
 Before simulating datasets, it is important to estimate some essential parameters from a real dataset in order to make the simulated data more real. 
-
 ```{r load_data, message=FALSE, warning=FALSE, error=FALSE}
 library(simmethods)
 # Load data (downloaded from https://zenodo.org/record/8251596/files/data118_spatial_OV.rds?download=1)

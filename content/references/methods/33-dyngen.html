@@ -1,0 +1,159 @@
+---
+title: "dyngen"
+output:
+  blogdown::html_page:
+    toc: yes
+weight: 33
+---
+
+
+<div id="TOC">
+<ul>
+<li><a href="#estimating-parameters-from-a-real-dataset">Estimating parameters from a real dataset</a>
+<ul>
+<li><a href="#default-estimation">Default estimation</a></li>
+<li><a href="#information-of-cell-groups">Information of cell groups</a></li>
+</ul></li>
+<li><a href="#simulating-datasets-using-dyngen">Simulating datasets using dyngen</a>
+<ul>
+<li><a href="#datasets-with-default-parameters">Datasets with default parameters</a></li>
+<li><a href="#determin-the-number-of-cells-and-genes">Determin the number of cells and genes</a></li>
+</ul></li>
+</ul>
+</div>
+
+<!-- github markdown built using 
+rmarkdown::render("vignettes/dyngen.Rmd", output_format = rmarkdown::github_document())
+-->
+<p>Here dyngen method will be demonstrated clearly and hope that this document can help you.</p>
+<div id="estimating-parameters-from-a-real-dataset" class="section level2">
+<h2>Estimating parameters from a real dataset</h2>
+<p>Before simulating datasets, it is important to estimate some essential parameters from a real dataset in order to make the simulated data more real.</p>
+<pre class="r"><code>library(simmethods)
+# Load data (downloaded from https://zenodo.org/record/8251596/files/data82_cellbench-SC1_luyitian.rds?download=1)
+data &lt;- readRDS(&quot;../../../../preprocessed_data/data82_cellbench-SC1_luyitian.rds&quot;)
+ref_data &lt;- t(as.matrix(data$data$counts))</code></pre>
+<div id="default-estimation" class="section level3">
+<h3>Default estimation</h3>
+<pre class="r"><code>estimate_result &lt;- simmethods::dyngen_estimation(
+  ref_data = ref_data,
+  other_prior = NULL,
+  verbose = TRUE,
+  seed = 111
+)
+# Performing k-means and determin the best number of clusters...
+# Add grouping to data...
+# Estimating parameters using dyngen
+# Executing &#39;slingshot&#39; on &#39;20230924_105246__data_wrapper__p1tJGIOUko&#39;
+# With parameters: list(cluster_method = &quot;pam&quot;, ndim = 20L, shrink = 1L, reweight = TRUE,     reassign = TRUE, thresh = 0.001, maxit = 10L, stretch = 2L,     smoother = &quot;smooth.spline&quot;, shrink.method = &quot;cosine&quot;)
+# inputs: expression
+# priors :
+# Using full covariance matrix</code></pre>
+</div>
+<div id="information-of-cell-groups" class="section level3">
+<h3>Information of cell groups</h3>
+<p>If the information of cell groups is available, you can use another way to estimate the parameters.</p>
+<pre class="r"><code>## cell groups
+group_condition &lt;- as.numeric(data$data_info$group_condition)</code></pre>
+<pre class="r"><code>estimate_result &lt;- simmethods::dyngen_estimation(
+  ref_data = ref_data,
+  other_prior = list(group.condition = group_condition),
+  verbose = TRUE,
+  seed = 111
+)
+# Add grouping to data...
+# Estimating parameters using dyngen
+# Executing &#39;slingshot&#39; on &#39;20230924_105250__data_wrapper__lC7s9gqYTq&#39;
+# With parameters: list(cluster_method = &quot;pam&quot;, ndim = 20L, shrink = 1L, reweight = TRUE,     reassign = TRUE, thresh = 0.001, maxit = 10L, stretch = 2L,     smoother = &quot;smooth.spline&quot;, shrink.method = &quot;cosine&quot;)
+# inputs: expression
+# priors :
+# Using full covariance matrix</code></pre>
+</div>
+</div>
+<div id="simulating-datasets-using-dyngen" class="section level2">
+<h2>Simulating datasets using dyngen</h2>
+<p>After estimating parameter from a real dataset, we will simulate a dataset based on the learned parameters with different scenarios.</p>
+<ol style="list-style-type: decimal">
+<li>Datasets with default parameters</li>
+<li>Determin the number of cells and genes</li>
+</ol>
+<div id="datasets-with-default-parameters" class="section level3">
+<h3>Datasets with default parameters</h3>
+<p>The reference data contains 157 cells and 1770 genes, if we simulate datasets with default parameters and then we will obtain a new data which has the same size as the reference data.</p>
+<pre class="r"><code>simulate_result &lt;- simmethods::dyngen_simulation(
+  parameters = estimate_result[[&quot;estimate_result&quot;]],
+  return_format = &quot;SCE&quot;,
+  seed = 111
+)
+# nCells: 154
+# nGenes: 1770
+# Generating TF network
+# Sampling feature network from real network
+# Generating kinetics for 1770 features
+# Generating formulae
+# Generating gold standard mod changes
+# Precompiling reactions for gold standard
+# Running gold simulations
+# 
+  |                                                  | 0 % elapsed=00s   
+  |========                                          | 14% elapsed=00s, remaining~01s
+  |===============                                   | 29% elapsed=00s, remaining~01s
+  |======================                            | 43% elapsed=00s, remaining~01s
+  |=============================                     | 57% elapsed=01s, remaining~00s
+  |====================================              | 71% elapsed=01s, remaining~00s
+  |===========================================       | 86% elapsed=01s, remaining~00s
+  |==================================================| 100% elapsed=01s, remaining~00s
+# Precompiling reactions for simulations
+# Running 1 simulations
+# Mapping simulations to gold standard
+# Performing dimred
+# Simulating experiment
+# Wrapping dataset as list
+# as(&lt;dgeMatrix&gt;, &quot;dgCMatrix&quot;) is deprecated since Matrix 1.5-0; do as(., &quot;CsparseMatrix&quot;) instead</code></pre>
+<pre class="r"><code>SCE_result &lt;- simulate_result[[&quot;simulate_result&quot;]]
+dim(SCE_result)
+# [1] 1770  154</code></pre>
+</div>
+<div id="determin-the-number-of-cells-and-genes" class="section level3">
+<h3>Determin the number of cells and genes</h3>
+<p>In dyngen, we can set <code>nCells</code> and <code>nGenes</code> parameters to specify the number of cells and genes that need to be simulated.
+Here, we simulate a new dataset with 100 cells and 100 genes:</p>
+<pre class="r"><code>simulate_result &lt;- simmethods::dyngen_simulation(
+  parameters = estimate_result[[&quot;estimate_result&quot;]],
+  return_format = &quot;list&quot;,
+  other_prior = list(nCells = 100,
+                     nGenes = 100),
+  seed = 111
+)
+# nCells: 100
+# nGenes: 100
+# Generating TF network
+# Sampling feature network from real network
+# Generating kinetics for 100 features
+# Generating formulae
+# Generating gold standard mod changes
+# Precompiling reactions for gold standard
+# Running gold simulations
+# 
+  |                                                  | 0 % elapsed=00s   
+  |========                                          | 14% elapsed=00s, remaining~01s
+  |===============                                   | 29% elapsed=00s, remaining~01s
+  |======================                            | 43% elapsed=00s, remaining~01s
+  |=============================                     | 57% elapsed=01s, remaining~00s
+  |====================================              | 71% elapsed=01s, remaining~00s
+  |===========================================       | 86% elapsed=01s, remaining~00s
+  |==================================================| 100% elapsed=01s, remaining~00s
+# Precompiling reactions for simulations
+# Running 1 simulations
+# Mapping simulations to gold standard
+# Performing dimred
+# Simulating experiment
+# Wrapping dataset as list</code></pre>
+<pre class="r"><code>result &lt;- simulate_result[[&quot;simulate_result&quot;]][[&quot;count_data&quot;]]
+dim(result)
+# [1] 100 100</code></pre>
+<p>{{% notice note %}}
+Dyngen may need a large amount of memory when simulating new datasets, so users should always focus on your occupied computational resources.
+{{% /notice %}}</p>
+</div>
+</div>

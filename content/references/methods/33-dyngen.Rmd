@@ -1,0 +1,105 @@
+---
+title: "dyngen"
+output:
+  blogdown::html_page:
+    toc: yes
+weight: 33
+---
+
+<!-- github markdown built using 
+rmarkdown::render("vignettes/dyngen.Rmd", output_format = rmarkdown::github_document())
+-->
+
+```{r setup, include=FALSE, echo=FALSE}
+knitr::opts_chunk$set(echo = TRUE, comment = "#", collapse = TRUE)
+```
+Here dyngen method will be demonstrated clearly and hope that this document can help you.
+
+## Estimating parameters from a real dataset
+
+Before simulating datasets, it is important to estimate some essential parameters from a real dataset in order to make the simulated data more real. 
+```{r load_data, message=FALSE, warning=FALSE, error=FALSE}
+library(simmethods)
+# Load data (downloaded from https://zenodo.org/record/8251596/files/data82_cellbench-SC1_luyitian.rds?download=1)
+data <- readRDS("../../../../preprocessed_data/data82_cellbench-SC1_luyitian.rds")
+ref_data <- t(as.matrix(data$data$counts))
+```
+
+### Default estimation
+
+```{r, warning=FALSE}
+estimate_result <- simmethods::dyngen_estimation(
+  ref_data = ref_data,
+  other_prior = NULL,
+  verbose = TRUE,
+  seed = 111
+)
+```
+
+
+### Information of cell groups
+
+If the information of cell groups is available, you can use another way to estimate the parameters.
+
+```{r}
+## cell groups
+group_condition <- as.numeric(data$data_info$group_condition)
+```
+
+
+```{r estimate, warning=FALSE}
+estimate_result <- simmethods::dyngen_estimation(
+  ref_data = ref_data,
+  other_prior = list(group.condition = group_condition),
+  verbose = TRUE,
+  seed = 111
+)
+```
+
+
+## Simulating datasets using dyngen
+
+After estimating parameter from a real dataset, we will simulate a dataset based on the learned parameters with different scenarios.
+
+1. Datasets with default parameters
+2. Determin the number of cells and genes
+
+### Datasets with default parameters
+
+The reference data contains 157 cells and 1770 genes, if we simulate datasets with default parameters and then we will obtain a new data which has the same size as the reference data.
+
+```{r default_params, warning=FALSE}
+simulate_result <- simmethods::dyngen_simulation(
+  parameters = estimate_result[["estimate_result"]],
+  return_format = "SCE",
+  seed = 111
+)
+```
+
+```{r}
+SCE_result <- simulate_result[["simulate_result"]]
+dim(SCE_result)
+```
+
+### Determin the number of cells and genes
+
+In dyngen, we can set `nCells` and `nGenes` parameters to specify the number of cells and genes that need to be simulated.
+Here, we simulate a new dataset with 100 cells and 100 genes:
+```{r customed cell and gene number, warning=FALSE}
+simulate_result <- simmethods::dyngen_simulation(
+  parameters = estimate_result[["estimate_result"]],
+  return_format = "list",
+  other_prior = list(nCells = 100,
+                     nGenes = 100),
+  seed = 111
+)
+```
+
+```{r}
+result <- simulate_result[["simulate_result"]][["count_data"]]
+dim(result)
+```
+
+{{% notice note %}}
+Dyngen may need a large amount of memory when simulating new datasets, so users should always focus on your occupied computational resources.
+{{% /notice %}}
