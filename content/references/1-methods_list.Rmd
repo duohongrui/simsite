@@ -119,8 +119,13 @@ method_table <- purrr::map_dfr(method_name, .f = function(x){
                   paste0("'/references/methods/", tolower(real_name), "'>"),
                   paste0("link</a>"))
   
+  ## vignette
+  Vignette <- paste0("<a href=",
+                     paste0("'", method_definition$vignette),
+                     paste0("'><img src=", "'/images/paperclip.png", "?height=30px&amp;width=30px'", "></a>"))
+  
   method_summary <- tibble::tibble(Method = x,
-                                   Vignette = web_link,
+                                   Vignette = Vignette,
                                    Language = Language,
                                    URL = URL,
                                    DOI = DOI,
