@@ -10,7 +10,7 @@ There are two ways to configure programming environment and execute simulation p
 
 * install multiple R packages and dependencies from github, it may take 5-30 mins.
 
-* install [Docker](https://www.docker.com/) first and download [simpipe Docker image](https://hub.docker.com/r/duohongrui/simpipe) from DockerHub. All manipulations in R can be done by a lightweight [simpipe2doker](https://github.com/duohongrui/simpipe2docker) package.
+* install [Docker](https://www.docker.com/) first and download [simpipe Docker image](https://hub.docker.com/repository/docker/duohongrui/simpipe/general) from DockerHub. All manipulations in R can be done by a lightweight [simpipe2doker](https://github.com/duohongrui/simpipe2docker) package.
 
 ## Choice1: Installation from Github 
 
@@ -67,7 +67,7 @@ babelwhale::list_docker_images("duohongrui/simpipe")
 
 Get the simpipe2docker package from github by:
 ```{r eval=FALSE}
-devtools::install_github("duhongrui/simpipe2docker")
+devtools::install_github("duohongrui/simpipe2docker")
 ```
 
 Load the package and check whether it is installed successfully:

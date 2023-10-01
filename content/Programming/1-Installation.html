@@ -22,7 +22,7 @@ weight: 1
 <p>There are two ways to configure programming environment and execute simulation procedure:</p>
 <ul>
 <li><p>install multiple R packages and dependencies from github, it may take 5-30 mins.</p></li>
-<li><p>install <a href="https://www.docker.com/">Docker</a> first and download <a href="https://hub.docker.com/r/duohongrui/simpipe">simpipe Docker image</a> from DockerHub. All manipulations in R can be done by a lightweight <a href="https://github.com/duohongrui/simpipe2docker">simpipe2doker</a> package.</p></li>
+<li><p>install <a href="https://www.docker.com/">Docker</a> first and download <a href="https://hub.docker.com/repository/docker/duohongrui/simpipe/general">simpipe Docker image</a> from DockerHub. All manipulations in R can be done by a lightweight <a href="https://github.com/duohongrui/simpipe2docker">simpipe2doker</a> package.</p></li>
 </ul>
 <div id="choice1-installation-from-github" class="section level2">
 <h2>Choice1: Installation from Github</h2>
@@ -64,17 +64,14 @@ The version of Docker Desktop for Apple Chip is available
 babelwhale::pull_container(&quot;duohongrui/simpipe&quot;)</code></pre>
 <p>Once the image has been downloaded, check the image list:</p>
 <pre class="r"><code>babelwhale::list_docker_images(&quot;duohongrui/simpipe&quot;)
-            ID         Repository    Tag
-1 a9d30539a083 duohongrui/simpipe latest
-                                                                   Digest
-1 sha256:eae62ba3d06916db8216ef8b240de2c64b691efd8ecd96735f8c111bb5911f8c
-   CreatedSince                     CreatedAt   Size
-1 10 months ago 2022-07-13 02:11:51 +0800 CST 4.94GB</code></pre>
+# A tibble: 0 × 7
+# ℹ 7 variables: ID &lt;chr&gt;, Repository &lt;chr&gt;, Tag &lt;chr&gt;, Digest &lt;chr&gt;,
+#   CreatedSince &lt;chr&gt;, CreatedAt &lt;chr&gt;, Size &lt;chr&gt;</code></pre>
 </div>
 <div id="install-simpipe2docker" class="section level3">
 <h3>Install simpipe2docker</h3>
 <p>Get the simpipe2docker package from github by:</p>
-<pre class="r"><code>devtools::install_github(&quot;duhongrui/simpipe2docker&quot;)</code></pre>
+<pre class="r"><code>devtools::install_github(&quot;duohongrui/simpipe2docker&quot;)</code></pre>
 <p>Load the package and check whether it is installed successfully:</p>
 <pre class="r"><code>library(simpipe2docker)</code></pre>
 <p>Until now, you have successfully established the programming environment 👍👍👍. Go to the <a href="/programming/2-estimation">next page</a>.👈️</p>

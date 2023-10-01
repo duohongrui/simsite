@@ -296,7 +296,7 @@ Eight metrics are used for assessing the quality of cell batches:
 
 **ISI**: Inverse Simpson’s Index. ISI is an interpretable metric used to measure diversity within each neighborhood. A lower ISI score indicates the stronger batch effects. Otherwise, a higher ISI score suggests cells are well-mixed across different batches.
 
-**LISI**: Local Inverse Simpson’s Index.
+**LISI**: Local Inverse Simpson’s Index. To address the problems of the metric sensitivity to the local distances between cells and the interpretation, LISI builds Gaussian kernel-based distributions of neighborhoods and uses the inverse Simpson’s Index. LISI scores represent the expected cell numbers to be sampled before two are drawn from the same batch. A lower LISI score indicates stronger batch effects. Otherwise, a LISI score close to the batch number suggests cells are well-mixed across different batches.
 
 **mm**: Mixing metric. The mixing metric utilizes the median position of the k-th cell in the KNN graphs from each batch to determine the degree of batch effects. The lower value of this score, the better mixed the cells from different batches are.
 
@@ -373,7 +373,4 @@ Four metrics are used in the assessment of two cellular trajectories:
 **F1_milestones**: F1 score for milestones. F1milestones is for comparing the arrangements of cells belonging to different milestones.
 
 **Cor_dist**: Correlation between geodesic distances. A cell located at the same position in the real and simulated trajectories should have equal relative distances to all other cells. Correlation between geodesic distance measures the correlation between the two relative distances of a cell from the real and simulated trajectory. To match the real and simulated cells within two trajectories, the Hungarian algorithm implemented in [RcppHungarian](https://cran.r-project.org/web/packages/RcppHungarian/index.html) R package was adopted.
-
-
-## Evaluate the functionalities of a method
 

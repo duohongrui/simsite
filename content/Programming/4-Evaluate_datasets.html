@@ -33,7 +33,6 @@ weight: 4
 <li><a href="#simulate-the-dataset-with-cellular-trajectory" id="toc-simulate-the-dataset-with-cellular-trajectory">Simulate the dataset with cellular trajectory</a></li>
 <li><a href="#assess-the-simulated-trajectory" id="toc-assess-the-simulated-trajectory">Assess the simulated trajectory</a></li>
 </ul></li>
-<li><a href="#evaluate-the-functionalities-of-a-method" id="toc-evaluate-the-functionalities-of-a-method">Evaluate the functionalities of a method</a></li>
 </ul>
 </div>
 
@@ -232,7 +231,7 @@ model_method &lt;- &quot;SVM&quot;</code></pre>
 #  $ data:List of 3
 #   ..$ distribution_score:List of 2
 #   .. ..$ DEA_result_combinations:List of 1
-#   .. .. ..$ Group2vsGroup1:&#39;data.frame&#39;:  646 obs. of  5 variables:
+#   .. .. ..$ Group2vsGroup1:&#39;data.frame&#39;:	646 obs. of  5 variables:
 #   .. .. .. ..$ logFC : num [1:646] -0.223 -0.199 0.21 -0.138 0.134 ...
 #   .. .. .. ..$ logCPM: num [1:646] 8.17 8.31 7.88 9.6 9.58 ...
 #   .. .. .. ..$ F     : num [1:646] 10.9 9.08 8.66 7.35 6.1 ...
@@ -247,7 +246,7 @@ model_method &lt;- &quot;SVM&quot;</code></pre>
 #   .. .. .. ..$ Group2vsGroup1:List of 1
 #   .. .. .. .. ..$ edgeRQLFDetRate:List of 2
 #   .. .. .. .. .. ..$ de_genes  : chr [1:330] &quot;Gene529&quot; &quot;Gene552&quot; &quot;Gene758&quot; &quot;Gene569&quot; ...
-#   .. .. .. .. .. ..$ DEA_result:&#39;data.frame&#39;: 1000 obs. of  5 variables:
+#   .. .. .. .. .. ..$ DEA_result:&#39;data.frame&#39;:	1000 obs. of  5 variables:
 #   .. .. .. .. .. .. ..$ logFC : num [1:1000] 1.32 -1.91 1.67 0.97 1.48 ...
 #   .. .. .. .. .. .. ..$ logCPM: num [1:1000] 13.79 10.93 9.92 13.93 10.26 ...
 #   .. .. .. .. .. .. ..$ F     : num [1:1000] 2451 2095 1061 1037 1007 ...
@@ -412,7 +411,7 @@ table(cell_metadata$batch)
 <p>Eight metrics are used for assessing the quality of cell batches:</p>
 <p><strong>cms</strong>: <a href="https://github.com/almutlue/CellMixS">Cell-specific mixing score</a>. CMS is an innovative measurement to determine whether the batch-wise distances in a KNN graph follow the same distribution using the Andersion-Darling test. Ideally, the method yields a lower CMS, indicating it can simulate more reliable data with different batches.</p>
 <p><strong>ISI</strong>: Inverse Simpson’s Index. ISI is an interpretable metric used to measure diversity within each neighborhood. A lower ISI score indicates the stronger batch effects. Otherwise, a higher ISI score suggests cells are well-mixed across different batches.</p>
-<p><strong>LISI</strong>: Local Inverse Simpson’s Index.</p>
+<p><strong>LISI</strong>: Local Inverse Simpson’s Index. To address the problems of the metric sensitivity to the local distances between cells and the interpretation, LISI builds Gaussian kernel-based distributions of neighborhoods and uses the inverse Simpson’s Index. LISI scores represent the expected cell numbers to be sampled before two are drawn from the same batch. A lower LISI score indicates stronger batch effects. Otherwise, a LISI score close to the batch number suggests cells are well-mixed across different batches.</p>
 <p><strong>mm</strong>: Mixing metric. The mixing metric utilizes the median position of the k-th cell in the KNN graphs from each batch to determine the degree of batch effects. The lower value of this score, the better mixed the cells from different batches are.</p>
 <p><strong>shannon_entropy</strong>: Shannon entropy quantifies the randomness and complexity of scRNA-seq datasets containing cells from different sources of batches.</p>
 <p><strong>kBET</strong>: k-nearest neighbor batch effect test. kBET assesses the batch mixing by comparing the batch distribution within KNNs of a cell with the global one.</p>
@@ -475,13 +474,13 @@ sim_data_grouping &lt;- simulate_result$simulate_result$col_meta$group</code></p
 # -------------------------------------------------
 # The group information of reference data is input...
 # Performing trajectory inference by Slingshot for reference data...
-# Executing &#39;slingshot&#39; on &#39;20230807_224814__data_wrapper__o90IhR6HPl&#39;
+# Executing &#39;slingshot&#39; on &#39;20231001_211112__data_wrapper__o90IhR6HPl&#39;
 # With parameters: list(cluster_method = &quot;pam&quot;, ndim = 20L, shrink = 1L, reweight = TRUE,     reassign = TRUE, thresh = 0.001, maxit = 10L, stretch = 2L,     smoother = &quot;smooth.spline&quot;, shrink.method = &quot;cosine&quot;)
 # inputs: expression
 # priors :
 # Using full covariance matrix
 # Performing trajectory inference by Slingshot for simulated data...
-# Executing &#39;slingshot&#39; on &#39;20230807_224814__data_wrapper__0KawbKxpqj&#39;
+# Executing &#39;slingshot&#39; on &#39;20231001_211112__data_wrapper__0KawbKxpqj&#39;
 # With parameters: list(cluster_method = &quot;pam&quot;, ndim = 20L, shrink = 1L, reweight = TRUE,     reassign = TRUE, thresh = 0.001, maxit = 10L, stretch = 2L,     smoother = &quot;smooth.spline&quot;, shrink.method = &quot;cosine&quot;)
 # inputs: expression
 # priors :
@@ -548,7 +547,7 @@ names(traj_result$data)
 #   .. .. ..- attr(*, &quot;dimnames&quot;)=List of 2
 #   .. .. .. ..$ : chr [1:320] &quot;SC_2i_1&quot; &quot;SC_2i_2&quot; &quot;SC_2i_3&quot; &quot;SC_2i_4&quot; ...
 #   .. .. .. ..$ : chr [1:50] &quot;PC1&quot; &quot;PC2&quot; &quot;PC3&quot; &quot;PC4&quot; ...
-#   .. ..$ cell_pair         :&#39;data.frame&#39;: 160 obs. of  3 variables:
+#   .. ..$ cell_pair         :&#39;data.frame&#39;:	160 obs. of  3 variables:
 #   .. .. ..$ reference  : chr [1:160] &quot;SC_serum_45&quot; &quot;SC_serum_3&quot; &quot;SC_2i_12&quot; &quot;SC_2i_39&quot; ...
 #   .. .. ..$ simulation : chr [1:160] &quot;Cell1&quot; &quot;Cell2&quot; &quot;Cell3&quot; &quot;Cell4&quot; ...
 #   .. .. ..$ match_value: num [1:160] 0.391 0.23 0.311 0.257 0.36 ...
@@ -559,7 +558,4 @@ names(traj_result$data)
 <p><strong>F1_milestones</strong>: F1 score for milestones. F1milestones is for comparing the arrangements of cells belonging to different milestones.</p>
 <p><strong>Cor_dist</strong>: Correlation between geodesic distances. A cell located at the same position in the real and simulated trajectories should have equal relative distances to all other cells. Correlation between geodesic distance measures the correlation between the two relative distances of a cell from the real and simulated trajectory. To match the real and simulated cells within two trajectories, the Hungarian algorithm implemented in <a href="https://cran.r-project.org/web/packages/RcppHungarian/index.html">RcppHungarian</a> R package was adopted.</p>
 </div>
-</div>
-<div id="evaluate-the-functionalities-of-a-method" class="section level2">
-<h2>Evaluate the functionalities of a method</h2>
 </div>

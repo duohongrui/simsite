@@ -8,17 +8,6 @@
     <language>en-us</language>
     <lastBuildDate>Fri, 02 Sep 2022 17:53:43 +0800</lastBuildDate><atom:link href="/index.xml" rel="self" type="application/rss+xml" />
     <item>
-      <title>Choose Methods</title>
-      <link>/online/1-choose_methods/</link>
-      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      
-      <guid>/online/1-choose_methods/</guid>
-      <description> Installation Guide Installation Guide A
-devtools::install_github(&amp;quot;duohongrui/simpipe&amp;quot;) B
-print(&amp;quot;Hello World!&amp;quot;) [1] &amp;quot;Hello World!&amp;quot; </description>
-    </item>
-    
-    <item>
       <title>Installation</title>
       <link>/programming/1-installation/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
@@ -71,16 +60,6 @@ Estimating parameters from a real dataset Before simulating datasets, it is impo
     </item>
     
     <item>
-      <title>Simulation Online</title>
-      <link>/online/2-simulation_online/</link>
-      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      
-      <guid>/online/2-simulation_online/</guid>
-      <description>R Markdown Including Plots R Markdown This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see http://rmarkdown.rstudio.com.
-When you click the Knit button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:</description>
-    </item>
-    
-    <item>
       <title>Data Simulation</title>
       <link>/programming/3-simulation/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
@@ -105,7 +84,7 @@ Estimating parameters from a real dataset Before simulating datasets, it is impo
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
       <guid>/programming/4-evaluate_datasets/</guid>
-      <description>Evaluate the simulated cell groups Simulate the dataset with cell groups Prepare the labels of cell groups Assess the simulated cell groups Evaluate the simulated DEGs Simulate the dataset with specified proportion of DEGs Prepare the information of DEGs Assess the validity of the simulated DEGs The situation where more than two groups are simulated Evaluate the simulated cell batches Simulate the dataset with cell batches Prepare the information of cell batches Assess the simulated cell batches Evaluate the simulated trajectories Simulate the dataset with cellular trajectory Assess the simulated trajectory Evaluate the functionalities of a method After obtaining the simulated datasets and corresponding information of cells and genes, we can assess the simulation output with the cell or gene information.</description>
+      <description>Evaluate the simulated cell groups Simulate the dataset with cell groups Prepare the labels of cell groups Assess the simulated cell groups Evaluate the simulated DEGs Simulate the dataset with specified proportion of DEGs Prepare the information of DEGs Assess the validity of the simulated DEGs The situation where more than two groups are simulated Evaluate the simulated cell batches Simulate the dataset with cell batches Prepare the information of cell batches Assess the simulated cell batches Evaluate the simulated trajectories Simulate the dataset with cellular trajectory Assess the simulated trajectory After obtaining the simulated datasets and corresponding information of cells and genes, we can assess the simulation output with the cell or gene information.</description>
     </item>
     
     <item>
